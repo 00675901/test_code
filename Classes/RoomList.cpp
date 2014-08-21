@@ -96,15 +96,15 @@ void RoomList::testPool(){
 }
 
 void RoomList::recvClient(){
+    //    pthread_mutex_lock(gmut);
+    //    pthread_mutex_unlock(gmut);
     CCLog("recvClient--");
     if(mainID==pthread_self()){
         CCLog("In Main Pthread");
     }else{
         CCLog("In Chirld Pthread");
     }
-//    pthread_mutex_lock(gmut);
-    gtpool.push_back("testtest");
-//    pthread_mutex_unlock(gmut);
+//    gtpool.push_back("testtest");
 }
 
 void RoomList::testPthread(){

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>078946B6-0FBC-4F4E-A068-AC145651F9A6</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TestCocos2dx</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>33511179-A4BB-46E9-B381-1C5D2C973A2B</key>
+		<string>ssh://github.com/00675901/test_code.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>proj.ios/TestCocos2dx.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>33511179-A4BB-46E9-B381-1C5D2C973A2B</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/00675901/test_code.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>33511179-A4BB-46E9-B381-1C5D2C973A2B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>33511179-A4BB-46E9-B381-1C5D2C973A2B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TestCocos2dx</string>
+		</dict>
+	</array>
+</dict>
+</plist>
