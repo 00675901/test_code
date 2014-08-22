@@ -17,12 +17,13 @@
 #include "UdpServer.h"
 #include "TestSer.h"
 #include "pthread.h"
+#include "GSNotificationPool.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
 
-class RoomList : public cocos2d::CCLayer
+class RoomList : public CCLayer
 {
     pthread_mutex_t* gmut;
     vector<string> gtpool;
@@ -48,10 +49,6 @@ public:
     static void* recvClientService(void* obj);
     void createListView();
     void closeListView();
-    
-    void testPool();
-    void testPthread();
-
 };
 
 #endif /* defined(__TestCocos2dx__RoomList__) */

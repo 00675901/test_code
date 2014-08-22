@@ -43,7 +43,7 @@ bool RoomList::init(){
     
     mainID=pthread_self();
     
-    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(RoomList::testPool), this, 1.0/60.0, false);
+//    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     return true;
 }
 
@@ -69,7 +69,6 @@ void RoomList::joinRoom(){
         CCLog("In Chirld Pthread");
     }
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::recvClient), "recvclient", NULL);
-    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::testPthread), "testtest", NULL);
     
     tcps=new TcpServer(12345);
     if (tcps->iniServer(10)) {
@@ -82,33 +81,13 @@ void* RoomList::listenRoom(void* obj){
     TcpServer *temp=(TcpServer *)obj;
     while (true) {
         temp->isAccept();
-        CCNotificationCenter::sharedNotificationCenter()->postNotification("recvclient");
+        GSNotificationPool::shareInstance()->postNotification("recvclient", NULL);
     }
     return NULL;
 }
 
-void RoomList::testPool(){
-    int t=gtpool.size();
-    for (int i=0; i<t; i++) {
-        CCNotificationCenter::sharedNotificationCenter()->postNotification(gtpool[i].c_str());
-    }
-    gtpool.clear();
-}
-
 void RoomList::recvClient(){
-    //    pthread_mutex_lock(gmut);
-    //    pthread_mutex_unlock(gmut);
     CCLog("recvClient--");
-    if(mainID==pthread_self()){
-        CCLog("In Main Pthread");
-    }else{
-        CCLog("In Chirld Pthread");
-    }
-//    gtpool.push_back("testtest");
-}
-
-void RoomList::testPthread(){
-    CCLog("testPthread--");
     if(mainID==pthread_self()){
         CCLog("In Main Pthread");
     }else{

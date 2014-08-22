@@ -241,6 +241,8 @@
 		379BB9D417F03F3700829B88 /* SceneReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 379BB99317F03F3700829B88 /* SceneReader.cpp */; };
 		46513EB1187BFBA200B5ABE1 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */; };
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
+		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
+		B083C3AF19A740DD00F7E23D /* GMutexManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3AD19A740DD00F7E23D /* GMutexManager.cpp */; };
 		B09D466119A3362E001F1C64 /* TestSer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09D465F19A3362E001F1C64 /* TestSer.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
@@ -764,6 +766,10 @@
 		46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITouchGroup.cpp; sourceTree = "<group>"; };
 		46513EB0187BFBA200B5ABE1 /* UITouchGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITouchGroup.h; sourceTree = "<group>"; };
 		7855E0DF153FEF240059DD9A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = SOURCE_ROOT; };
+		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
+		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
+		B083C3AD19A740DD00F7E23D /* GMutexManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GMutexManager.cpp; path = ../Classes/GMutexManager.cpp; sourceTree = "<group>"; };
+		B083C3AE19A740DD00F7E23D /* GMutexManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GMutexManager.h; path = ../Classes/GMutexManager.h; sourceTree = "<group>"; };
 		B09D465F19A3362E001F1C64 /* TestSer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSer.cpp; path = ../Classes/TestSer.cpp; sourceTree = "<group>"; };
 		B09D466019A3362E001F1C64 /* TestSer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSer.h; path = ../Classes/TestSer.h; sourceTree = "<group>"; };
 		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
@@ -1320,6 +1326,10 @@
 				B09D466019A3362E001F1C64 /* TestSer.h */,
 				B0F477D919A476A700074890 /* GUtils.cpp */,
 				B0F477DA19A476A700074890 /* GUtils.h */,
+				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
+				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+				B083C3AD19A740DD00F7E23D /* GMutexManager.cpp */,
+				B083C3AE19A740DD00F7E23D /* GMutexManager.h */,
 			);
 			name = Classes;
 			path = ../classes;
@@ -2185,6 +2195,7 @@
 				1A8F3B76175E05DA00049216 /* BoneData.cpp in Sources */,
 				1A8F3B77175E05DA00049216 /* CCSkeleton.cpp in Sources */,
 				1A8F3B78175E05DA00049216 /* CCSkeletonAnimation.cpp in Sources */,
+				B083C3AF19A740DD00F7E23D /* GMutexManager.cpp in Sources */,
 				375BD5121868454E0024609E /* CCActionNode.cpp in Sources */,
 				1A8F3B79175E05DA00049216 /* extension.cpp in Sources */,
 				1A8F3B7A175E05DA00049216 /* Json.cpp in Sources */,
@@ -2242,6 +2253,7 @@
 				379BB9C317F03F3700829B88 /* UILabel.cpp in Sources */,
 				379BB9C417F03F3700829B88 /* UILabelAtlas.cpp in Sources */,
 				379BB9C517F03F3700829B88 /* UILabelBMFont.cpp in Sources */,
+				B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */,
 				379BB9C617F03F3700829B88 /* UILoadingBar.cpp in Sources */,
 				379BB9C717F03F3700829B88 /* UISlider.cpp in Sources */,
 				379BB9C917F03F3700829B88 /* UITextField.cpp in Sources */,
@@ -2266,6 +2278,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = NO;
@@ -2301,6 +2314,7 @@
 					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-O2";
 				PRODUCT_NAME = TestCocos2dx;
 				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
@@ -2315,6 +2329,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = YES;
@@ -2348,6 +2363,7 @@
 					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = TestCocos2dx;
 				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
 				SDKROOT = iphoneos;
