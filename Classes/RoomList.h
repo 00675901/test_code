@@ -46,7 +46,6 @@ public:
     void joinRoom();
     static void* listenRoom(void* obj);
     void recvClient();
-    static void* recvClientService(void* obj);
     void createListView();
     void closeListView();
 };

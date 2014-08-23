@@ -12,22 +12,13 @@
 #include <iostream>
 #include <vector>
 #include "cocos2d.h"
+//#include "GMutexManager.h"
 
 USING_NS_CC;
 using namespace std;
 
 class GSNotificationPool:public CCObject{
-    
-    class GSInner{
-    public:
-        GSInner(){
-            cout<<"test Inner class"<<endl;
-        }
-        ~GSInner(){
-            cout<<"test Inner class destroy"<<endl;
-        }
-    };
-    GSInner gict;
+    pthread_mutex_t mutex;
     typedef struct{
         string name;
         CCObject* obj;

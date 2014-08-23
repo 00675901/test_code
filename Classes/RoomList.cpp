@@ -43,12 +43,12 @@ bool RoomList::init(){
     
     mainID=pthread_self();
     
-//    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
+    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     return true;
 }
 
 void RoomList::createRoom(){
-    createListView();
+//    createListView();
 //    for (int i=1; i<10; i++) {
 //        CCControlButton *button = CCControlButton::create("Quit", "Marker Felt", 30);
 //        button->setTitleColorForState(ccBLACK, CCControlStateNormal);
@@ -60,6 +60,7 @@ void RoomList::createRoom(){
 //    }
     printf("create.\n");
 }
+
 void RoomList::joinRoom(){
 //    createListView();
     CCLog("joinRoom--");
@@ -69,7 +70,6 @@ void RoomList::joinRoom(){
         CCLog("In Chirld Pthread");
     }
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::recvClient), "recvclient", NULL);
-    
     tcps=new TcpServer(12345);
     if (tcps->iniServer(10)) {
         pthread_t tid;
@@ -93,10 +93,6 @@ void RoomList::recvClient(){
     }else{
         CCLog("In Chirld Pthread");
     }
-}
-
-void* RoomList::recvClientService(void* obj){
-    return NULL;
 }
 
 void RoomList::createListView(){
