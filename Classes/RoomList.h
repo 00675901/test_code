@@ -25,16 +25,13 @@ using namespace std;
 
 class RoomList : public CCLayer
 {
-    pthread_mutex_t* gmut;
     vector<string> gtpool;
 private:
     CCLayerColor *listView;
     CCControlButton *createBtn;
     CCControlButton *joinBtn;
     TcpServer *tcps;
-
-    pthread_t mainID;
-
+    UdpServer *udps;
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
@@ -44,6 +41,7 @@ public:
     CREATE_FUNC(RoomList);
     void createRoom();
     void joinRoom();
+    static void* sendRoom(void* obj);
     static void* listenRoom(void* obj);
     void recvClient();
     void createListView();

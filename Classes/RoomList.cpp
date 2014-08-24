@@ -40,59 +40,88 @@ bool RoomList::init(){
     joinBtn->setAnchorPoint(ccp(0,1));
     joinBtn->setPosition(20, visibleSize.height-70);
     this->addChild(joinBtn);
-    
-    mainID=pthread_self();
-    
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     return true;
 }
 
 void RoomList::createRoom(){
-//    createListView();
-//    for (int i=1; i<10; i++) {
-//        CCControlButton *button = CCControlButton::create("Quit", "Marker Felt", 30);
-//        button->setTitleColorForState(ccBLACK, CCControlStateNormal);
-//        button->setTitleColorForState(ccRED, CCControlStateHighlighted);
-//        button->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomList::closeListView), CCControlEventTouchUpInside);
-//        button->setAnchorPoint(ccp(0,1));
-//        button->setPosition(20, listView->getContentSize().height-(i*40));
-//        listView->addChild(button);
+    udps=new UdpServer(40001,40002);
+    
+//    udps->iniServer();
+//    int len=8;
+//    char s[len];
+//    string contents;
+//    while (true) {
+//        udps->recvMsg(s,len);
+//        contents.append(s, strlen(s));
+//        cout<<"recvUDP:"<<contents<<endl;
+//        sockaddr_in* sss=udps->getRemoteRecAddr();
+//        cout<<"recvUDP addr:"<<inet_ntoa(sss->sin_addr)<<endl;
+//        //        GSNotificationPool::shareInstance()->postNotification("recvclient", NULL);
 //    }
+
+    if (udps->iniServer()) {
+//        pthread_t tid;
+//        pthread_create(&tid,NULL,RoomList::sendRoom,udps);
+        pthread_t tids;
+        pthread_create(&tids,NULL,RoomList::listenRoom,udps);
+    }
+//    createListView();
     printf("create.\n");
 }
 
 void RoomList::joinRoom(){
 //    createListView();
-    CCLog("joinRoom--");
-    if(mainID==pthread_self()){
-        CCLog("In Main Pthread");
-    }else{
-        CCLog("In Chirld Pthread");
-    }
-    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::recvClient), "recvclient", NULL);
-    tcps=new TcpServer(12345);
-    if (tcps->iniServer(10)) {
-        pthread_t tid;
-        pthread_create(&tid,NULL,RoomList::listenRoom,tcps);
-    }
+//    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::recvClient), "recvclient", NULL);
+//    tcps=new TcpServer(12345);
+//    if (tcps->iniServer(10)) {
+//        pthread_t tid;
+//        pthread_create(&tid,NULL,RoomList::listenRoom,tcps);
+//    }
+//    if (tcps->isConnect()) {
+//        pthread_t tid;
+//        pthread_create(&tid,NULL,RoomList::listenRoom,tcps);
+//    }
 }
 
-void* RoomList::listenRoom(void* obj){
-    TcpServer *temp=(TcpServer *)obj;
+void* RoomList::sendRoom(void* obj){
+    UdpServer *temp=(UdpServer *)obj;
     while (true) {
-        temp->isAccept();
-        GSNotificationPool::shareInstance()->postNotification("recvclient", NULL);
+        char s[]="aaaaaaa";
+        temp->sendMsg(s, strlen(s));
+        sleep(3);
     }
     return NULL;
 }
 
+void* RoomList::listenRoom(void* obj){
+//    TcpServer *temp=(TcpServer *)obj;
+//    char tt[]="testtest_testtest";
+//    temp->sendMsg(tt, strlen(tt));
+//    while (temp->isAccept()) {
+//        char tt[]="testtest_testtest";
+//        temp->sendMsg(tt, strlen(tt));
+//    }
+    UdpServer *temp=(UdpServer *)obj;
+//    while (true) {
+        int len=8;
+        char s[len];
+        string contents;
+        int rec;
+        while ((rec=temp->recvMsg(s,len))>0) {
+            cout<<"char count:"<<strlen(s)<<endl;
+            contents.append(s, strlen(s));
+            cout<<"count:"<<rec<<endl;
+            //        GSNotificationPool::shareInstance()->postNotification("recvclient", NULL);
+        }
+        cout<<"recvUDP:"<<contents<<endl;
+        sockaddr_in* sss=temp->getRemoteRecAddr();
+        cout<<"recvUDP addr:"<<inet_ntoa(sss->sin_addr)<<endl;
+//    }
+    return NULL;
+}
+
 void RoomList::recvClient(){
-    CCLog("recvClient--");
-    if(mainID==pthread_self()){
-        CCLog("In Main Pthread");
-    }else{
-        CCLog("In Chirld Pthread");
-    }
 }
 
 void RoomList::createListView(){
@@ -111,8 +140,8 @@ void RoomList::createListView(){
 }
 
 void RoomList::closeListView(){
-    pthread_mutex_destroy(gmut);
     delete tcps;
+    delete udps;
     this->removeChild(listView);
     createBtn->setTouchEnabled(true);
     joinBtn->setTouchEnabled(true);

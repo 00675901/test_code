@@ -18,9 +18,12 @@ private:
     int localSo;
     int remoteSo;
     sockaddr_in localAddr;
-    sockaddr_in remoteAddr;
+    sockaddr_in remoteBroAddr;
+    sockaddr_in remoteRecAddr;
 public:
     UdpServer(int listenPort,int remotePort);
+    bool iniServer();
+    sockaddr_in* getRemoteRecAddr();
     int sendMsg(char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
     void closeConnect();

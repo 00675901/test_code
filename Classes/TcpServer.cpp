@@ -73,6 +73,7 @@ int TcpServer::sendMsg(char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
 }
+
 void TcpServer::closeConnect(){
     close(remoteSo);
     close(localSo);
