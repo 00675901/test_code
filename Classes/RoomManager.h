@@ -15,37 +15,41 @@
 #include "cocos-ext.h"
 #include "TcpServer.h"
 #include "UdpServer.h"
-#include "TestSer.h"
 #include "pthread.h"
 #include "GSNotificationPool.h"
+
+#include "RoomView.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
 
-class RoomList : public CCLayer
+class RoomManager : public CCLayer
 {
-    vector<string> gtpool;
 private:
     CCLayerColor *listView;
     CCControlButton *createBtn;
     CCControlButton *joinBtn;
     TcpServer *tcps;
     UdpServer *udps;
+    
+    CCControlButton *closeButton;
+    RoomView *rv;
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
     static cocos2d::CCScene* scene();
     // implement the "static node()" method manually
-    CREATE_FUNC(RoomList);
+    CREATE_FUNC(RoomManager);
     void createRoom();
+    void closeRoomList();
+    
     void joinRoom();
     static void* sendRoom(void* obj);
     static void* listenRoom(void* obj);
     void recvClient();
     void createListView();
-    void closeListView();
 };
 
 #endif /* defined(__TestCocos2dx__RoomList__) */

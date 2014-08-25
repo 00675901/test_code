@@ -20,6 +20,11 @@ UdpServer::UdpServer(int listenPort,int remotePort){
     remoteBroAddr.sin_port=htons(remotePort);
 }
 
+UdpServer::~UdpServer(){
+    close(localSo);
+    close(remoteSo);
+}
+
 bool UdpServer::iniServer(){
     if((localSo=socket(AF_INET, SOCK_DGRAM, 0))<0){
         std::cout<<"socket udp fail"<<std::endl;
@@ -56,9 +61,4 @@ int UdpServer::recvMsg(char* buff,unsigned const int len){
 
 sockaddr_in* UdpServer::getRemoteRecAddr(){
     return &remoteRecAddr;
-}
-
-void UdpServer::closeConnect(){
-    close(localSo);
-    close(remoteSo);
 }

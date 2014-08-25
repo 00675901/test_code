@@ -22,11 +22,11 @@ private:
     sockaddr_in remoteRecAddr;
 public:
     UdpServer(int listenPort,int remotePort);
+    ~UdpServer();
     bool iniServer();
     sockaddr_in* getRemoteRecAddr();
     int sendMsg(char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
-    void closeConnect();
 };
 
 #endif /* defined(__cocos2dxTest__UdpServer__) */

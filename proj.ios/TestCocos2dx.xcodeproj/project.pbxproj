@@ -241,8 +241,8 @@
 		379BB9D417F03F3700829B88 /* SceneReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 379BB99317F03F3700829B88 /* SceneReader.cpp */; };
 		46513EB1187BFBA200B5ABE1 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */; };
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
+		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
-		B09D466119A3362E001F1C64 /* TestSer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B09D465F19A3362E001F1C64 /* TestSer.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712461292920000B8313A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB212928DE900B8313A /* libxml2.dylib */; };
@@ -250,7 +250,7 @@
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
 		C83B2B88199E39F500BD875B /* TcpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C83B2B84199E39F500BD875B /* TcpServer.cpp */; };
 		C83B2B89199E39F500BD875B /* UdpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C83B2B86199E39F500BD875B /* UdpServer.cpp */; };
-		C8B14B9A19A0EBA000CE5074 /* RoomList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B14B9819A0EBA000CE5074 /* RoomList.cpp */; };
+		C8B14B9A19A0EBA000CE5074 /* RoomManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */; };
 		D41A0AD1160F154A004552AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D41A0AD0160F154A004552AE /* Default-568h@2x.png */; };
 		D446FD6E16102124000ADA7B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D446FD6D16102124000ADA7B /* Default@2x.png */; };
 		D44C620C132DFF330009C878 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620B132DFF330009C878 /* OpenAL.framework */; };
@@ -765,10 +765,10 @@
 		46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UITouchGroup.cpp; sourceTree = "<group>"; };
 		46513EB0187BFBA200B5ABE1 /* UITouchGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITouchGroup.h; sourceTree = "<group>"; };
 		7855E0DF153FEF240059DD9A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = SOURCE_ROOT; };
+		B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomView.cpp; path = ../Classes/RoomView.cpp; sourceTree = "<group>"; };
+		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
-		B09D465F19A3362E001F1C64 /* TestSer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSer.cpp; path = ../Classes/TestSer.cpp; sourceTree = "<group>"; };
-		B09D466019A3362E001F1C64 /* TestSer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSer.h; path = ../Classes/TestSer.h; sourceTree = "<group>"; };
 		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
 		B0F477DA19A476A700074890 /* GUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUtils.h; path = ../Classes/GUtils.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -779,8 +779,8 @@
 		C83B2B85199E39F500BD875B /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TcpServer.h; path = ../Classes/TcpServer.h; sourceTree = "<group>"; };
 		C83B2B86199E39F500BD875B /* UdpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UdpServer.cpp; path = ../Classes/UdpServer.cpp; sourceTree = "<group>"; };
 		C83B2B87199E39F500BD875B /* UdpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UdpServer.h; path = ../Classes/UdpServer.h; sourceTree = "<group>"; };
-		C8B14B9819A0EBA000CE5074 /* RoomList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomList.cpp; path = ../Classes/RoomList.cpp; sourceTree = "<group>"; };
-		C8B14B9919A0EBA000CE5074 /* RoomList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomList.h; path = ../Classes/RoomList.h; sourceTree = "<group>"; };
+		C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomManager.cpp; path = ../Classes/RoomManager.cpp; sourceTree = "<group>"; };
+		C8B14B9919A0EBA000CE5074 /* RoomManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomManager.h; path = ../Classes/RoomManager.h; sourceTree = "<group>"; };
 		D41A0AD0160F154A004552AE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../proj.ios/Default-568h@2x.png"; sourceTree = "<group>"; };
 		D446FD6D16102124000ADA7B /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "../proj.ios/Default@2x.png"; sourceTree = "<group>"; };
 		D44C620B132DFF330009C878 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -1309,22 +1309,10 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
-				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
 				1AFAF8B516D35DE700DB1158 /* HelloWorldScene.cpp */,
 				1AFAF8B616D35DE700DB1158 /* HelloWorldScene.h */,
-				C8B14B9819A0EBA000CE5074 /* RoomList.cpp */,
-				C8B14B9919A0EBA000CE5074 /* RoomList.h */,
-				C83B2B84199E39F500BD875B /* TcpServer.cpp */,
-				C83B2B85199E39F500BD875B /* TcpServer.h */,
-				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
-				C83B2B87199E39F500BD875B /* UdpServer.h */,
-				B09D465F19A3362E001F1C64 /* TestSer.cpp */,
-				B09D466019A3362E001F1C64 /* TestSer.h */,
-				B0F477D919A476A700074890 /* GUtils.cpp */,
-				B0F477DA19A476A700074890 /* GUtils.h */,
-				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
-				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+				B0088B0F19AB324A00D8C4D3 /* sys */,
+				B0088B0E19AB323700D8C4D3 /* room */,
 			);
 			name = Classes;
 			path = ../classes;
@@ -1935,6 +1923,34 @@
 			path = ../Resources;
 			sourceTree = "<group>";
 		};
+		B0088B0E19AB323700D8C4D3 /* room */ = {
+			isa = PBXGroup;
+			children = (
+				C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */,
+				C8B14B9919A0EBA000CE5074 /* RoomManager.h */,
+				B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */,
+				B0088B0C19AB322C00D8C4D3 /* RoomView.h */,
+			);
+			name = room;
+			sourceTree = "<group>";
+		};
+		B0088B0F19AB324A00D8C4D3 /* sys */ = {
+			isa = PBXGroup;
+			children = (
+				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
+				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
+				C83B2B84199E39F500BD875B /* TcpServer.cpp */,
+				C83B2B85199E39F500BD875B /* TcpServer.h */,
+				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
+				C83B2B87199E39F500BD875B /* UdpServer.h */,
+				B0F477D919A476A700074890 /* GUtils.cpp */,
+				B0F477DA19A476A700074890 /* GUtils.h */,
+				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
+				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+			);
+			name = sys;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2027,6 +2043,7 @@
 			files = (
 				15A3D8FF1682F7D5002FB0C5 /* b2BroadPhase.cpp in Sources */,
 				15A3D9001682F7D5002FB0C5 /* b2CollideCircle.cpp in Sources */,
+				B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */,
 				C83B2B89199E39F500BD875B /* UdpServer.cpp in Sources */,
 				298B29C018D0668400C1920F /* LayoutReader.cpp in Sources */,
 				15A3D9011682F7D5002FB0C5 /* b2CollideEdge.cpp in Sources */,
@@ -2079,8 +2096,7 @@
 				15A3D92A1682F7D5002FB0C5 /* b2WheelJoint.cpp in Sources */,
 				15A3D9391682F7D5002FB0C5 /* b2Rope.cpp in Sources */,
 				15A3D9951682F7F9002FB0C5 /* chipmunk.c in Sources */,
-				C8B14B9A19A0EBA000CE5074 /* RoomList.cpp in Sources */,
-				B09D466119A3362E001F1C64 /* TestSer.cpp in Sources */,
+				C8B14B9A19A0EBA000CE5074 /* RoomManager.cpp in Sources */,
 				15A3D9971682F7F9002FB0C5 /* cpConstraint.c in Sources */,
 				15A3D9981682F7F9002FB0C5 /* cpDampedRotarySpring.c in Sources */,
 				15A3D9991682F7F9002FB0C5 /* cpDampedSpring.c in Sources */,
