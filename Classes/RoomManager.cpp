@@ -44,23 +44,13 @@ bool RoomManager::init(){
     joinBtn->setPosition(visibleSize.width/2, visibleSize.height/2-50);
     this->addChild(joinBtn);
     
-    closeButton = CCControlButton::create("Quit", "Marker Felt", 30);
-    closeButton->setTitleColorForState(ccBLACK, CCControlStateNormal);
-    closeButton->setTitleColorForState(ccRED, CCControlStateHighlighted);
-    closeButton->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomManager::closeRoomList), CCControlEventTouchUpInside);
-    closeButton->setAnchorPoint(ccp(1,1));
-    closeButton->setPosition(visibleSize.width-20, visibleSize.height-20);
-    closeButton->setVisible(false);
-    this->addChild(closeButton,1);
-    
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     return true;
 }
 
 void RoomManager::createRoom(){
-    
-    closeButton->setVisible(true);
-    rv=RoomView::create();
+
+    RoomView* rv=RoomView::create();
     this->addChild(rv,0);
 //    udps=new UdpServer(40001,40002);
 //    if (udps->iniServer()) {
@@ -71,11 +61,6 @@ void RoomManager::createRoom(){
 //    }
 //    createListView();
     printf("create.\n");
-}
-void RoomManager::closeRoomList(){
-    closeButton->setVisible(false);
-    this->removeChild(rv);
-    
 }
 
 void RoomManager::joinRoom(){

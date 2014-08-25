@@ -13,7 +13,13 @@ bool RoomView::init(){
     if (!CCLayerColor::initWithColor(ccc4(255, 255, 255, 255))){
         return false;
     }
-    CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this,-128,true);
+    CCControlButton* closeButton = CCControlButton::create("Quit", "Marker Felt", 30);
+    closeButton->setTitleColorForState(ccBLACK, CCControlStateNormal);
+    closeButton->setTitleColorForState(ccRED, CCControlStateHighlighted);
+    closeButton->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomView::closeView), CCControlEventTouchUpInside);
+    closeButton->setAnchorPoint(ccp(1,1));
+    closeButton->setPosition(this->getContentSize().width-20, this->getContentSize().height-20);
+    this->addChild(closeButton);
     cout<<"view inin"<<endl;
     return true;
 }
@@ -25,8 +31,8 @@ RoomView::~RoomView(){
     cout<<"view end"<<endl;
 }
 
-bool RoomView::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-    cout<<"view touch"<<endl;
-    return true;
+void RoomView::closeView(){
+    this->removeFromParent();
 }
+
 

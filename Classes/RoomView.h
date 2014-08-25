@@ -22,8 +22,8 @@ public:
     RoomView();
     ~RoomView();
     virtual bool init();
-    virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
     CREATE_FUNC(RoomView);
+    void closeView();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */
