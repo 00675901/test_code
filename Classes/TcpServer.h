@@ -24,12 +24,12 @@ private:
     sockaddr_in remoteAddr;
 public:
     TcpServer(int listenPort);
+    ~TcpServer();
     bool iniServer(int instenCount);
     bool isAccept();
     bool isConnect();
     int sendMsg(char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
-    void closeConnect();
 };
 #endif /* defined(__cocos2dxTest__TcpServer__) */
 

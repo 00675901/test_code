@@ -51,7 +51,7 @@ bool RoomManager::init(){
 void RoomManager::createRoom(){
 
     RoomView* rv=RoomView::create();
-    this->addChild(rv,0);
+    this->addChild(rv);
 //    udps=new UdpServer(40001,40002);
 //    if (udps->iniServer()) {
 //        pthread_t tid;
@@ -138,11 +138,7 @@ void RoomManager::createListView(){
     button->setAnchorPoint(ccp(1,1));
     button->setPosition(listView->getContentSize().width-20, listView->getContentSize().height-20);
     listView->addChild(button);
-    CCLabelTTF* pLabel = CCLabelTTF::create("waitting for player", "Marker Felt", 30);
-    pLabel->setColor(ccc3(0,0,0));
-    pLabel->setAnchorPoint(ccp(0.5, 1));
-    pLabel->setPosition(ccp(listView->getContentSize().width/2,listView->getContentSize().height-20));
-    listView->addChild(pLabel);
+    
     
 }
 

@@ -23,6 +23,7 @@ UdpServer::UdpServer(int listenPort,int remotePort){
 UdpServer::~UdpServer(){
     close(localSo);
     close(remoteSo);
+    std::cout<<"UDP Service Closed"<<std::endl;
 }
 
 bool UdpServer::iniServer(){

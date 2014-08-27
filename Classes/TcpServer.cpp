@@ -15,6 +15,12 @@ TcpServer::TcpServer(int listenPort){
     localAddr.sin_addr.s_addr=htonl(INADDR_ANY);
 }
 
+TcpServer::~TcpServer(){
+    close(remoteSo);
+    close(localSo);
+    std::cout<<"TCP Service Closed"<<std::endl;
+}
+
 bool TcpServer::iniServer(int instenCount){
     if((localSo=socket(AF_INET, SOCK_STREAM, 0))<0){
         std::cout<<"socket fail."<<std::endl;
@@ -72,9 +78,4 @@ int TcpServer::recvMsg(char* buffer,unsigned const int len){
 int TcpServer::sendMsg(char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
-}
-
-void TcpServer::closeConnect(){
-    close(remoteSo);
-    close(localSo);
 }
