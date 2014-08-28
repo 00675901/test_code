@@ -38,6 +38,7 @@ public:
     void roomServer();
     static void* sendRoomService(void* obj);
     static void* listenRoomService(void* obj);
+    void updateRoom();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */

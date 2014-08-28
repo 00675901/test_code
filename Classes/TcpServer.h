@@ -28,6 +28,7 @@ public:
     bool iniServer(int instenCount);
     bool isAccept();
     bool isConnect();
+    sockaddr_in* getRemoteRecAddr();
     int sendMsg(char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
 };

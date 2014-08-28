@@ -38,6 +38,7 @@ bool RoomView::init(){
     pLabel->setAnchorPoint(ccp(0.5, 1));
     pLabel->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-20));
     this->addChild(pLabel);
+    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
     roomServer();
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
@@ -55,11 +56,17 @@ void RoomView::roomServer(){
         pthread_create(&tidtcp,NULL,RoomView::listenRoomService,tcps);
     }
 }
+
+void RoomView::updateRoom(){
+    cout<<"update room"<<endl;
+}
+
 void* RoomView::listenRoomService(void* obj){
     TcpServer *temp=(TcpServer *)obj;
     while (temp->isAccept()) {
-        char tt[]="testtest_testtest";
+        char tt[]="welcome to room";
         temp->sendMsg(tt, strlen(tt));
+//        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
     }
     return NULL;
 }
@@ -75,11 +82,10 @@ void* RoomView::sendRoomService(void* obj){
 }
 
 void RoomView::closeView(){
+    CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoom");
     CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
     CCDirector::sharedDirector()->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
     pthread_cancel(tidudp);
     pthread_cancel(tidtcp);
     this->removeFromParent();
 }
-
-
