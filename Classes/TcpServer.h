@@ -19,18 +19,17 @@ using namespace std;
 class TcpServer{
 private:
     int localSo;
-    int remoteSo;
     sockaddr_in localAddr;
     sockaddr_in remoteAddr;
 public:
     TcpServer(int listenPort);
     ~TcpServer();
-    bool iniServer(int instenCount);
-    bool isAccept();
-    bool isConnect();
+    int iniServer(int instenCount);
+    int isAccept();
+    int isConnect(const char* addr,int rematePort);
     sockaddr_in* getRemoteRecAddr();
-    int sendMsg(char* msg,unsigned const int len);
-    int recvMsg(char* buff,unsigned const int len);
+    int sendMsg(int remoteSo,char* msg,unsigned const int len);
+    int recvMsg(int remoteSo,char* buff,unsigned const int len);
 };
 #endif /* defined(__cocos2dxTest__TcpServer__) */
 

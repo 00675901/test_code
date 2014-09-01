@@ -16,66 +16,68 @@ TcpServer::TcpServer(int listenPort){
 }
 
 TcpServer::~TcpServer(){
-    close(remoteSo);
     close(localSo);
     std::cout<<"TCP Service Closed"<<std::endl;
 }
 
-bool TcpServer::iniServer(int instenCount){
+int TcpServer::iniServer(int instenCount){
     if((localSo=socket(AF_INET, SOCK_STREAM, 0))<0){
         std::cout<<"socket fail."<<std::endl;
-        return false;
+        return -1;
     }else{
-        if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
-            std::cout<<"bind fail."<<std::endl;
-            return false;
+        int on=1;
+        if (setsockopt(localSo, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))<0) {
+            std::cout<<"set fail."<<std::endl;
+            return -1;
         }else{
-            std::cout<<"bind success."<<std::endl;
-            if (listen(localSo, instenCount)<0) {
-                std::cout<<"listen fail."<<std::endl;
-                return false;
+            if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
+                std::cout<<"bind fail."<<std::endl;
+                return -1;
             }else{
-                std::cout<<"Server init success."<<std::endl;
-                return true;
+                if (listen(localSo, instenCount)<0) {
+                    std::cout<<"listen fail."<<std::endl;
+                    return -1;
+                }else{
+                    std::cout<<"Server init success."<<std::endl;
+                    return localSo;
+                }
             }
         }
     }
 }
 
-bool TcpServer::isAccept(){
+int TcpServer::isAccept(){
     unsigned int remoteaddrlen=sizeof(remoteAddr);
+    int remoteSo;
     if ((remoteSo=accept(localSo, (sockaddr *)&remoteAddr, &remoteaddrlen))<0) {
         std::cout<<"accept fail."<<std::endl;
-        return false;
     }else{
         std::cout<<"Client(IP:"<<inet_ntoa(remoteAddr.sin_addr)<<") connected."<<std::endl;
-        return true;
     }
+    return remoteSo;
 }
 
-bool TcpServer::isConnect(){
+int TcpServer::isConnect(const char* addr,int rematePort){
     unsigned int remoteaddrlen=sizeof(remoteAddr);
     memset(&remoteAddr, 0, remoteaddrlen);
     remoteAddr.sin_family=AF_INET;
-    remoteAddr.sin_port=htons(54321);
-    remoteAddr.sin_addr.s_addr=inet_addr("192.168.1.100");
-    int sock=socket(AF_INET, SOCK_STREAM, 0);
-    if (connect(sock, (sockaddr *)&remoteAddr, remoteaddrlen)<0) {
+    remoteAddr.sin_port=htons(rematePort);
+    remoteAddr.sin_addr.s_addr=inet_addr(addr);
+    int remoteSo=socket(AF_INET, SOCK_STREAM, 0);
+    if (connect(remoteSo, (sockaddr *)&remoteAddr, remoteaddrlen)<0) {
         std::cout<<"connect fail."<<std::endl;
-        return false;
     }else{
-        remoteSo=sock;
         std::cout<<"connect success:"<<inet_ntoa(remoteAddr.sin_addr)<<std::endl;
-        return true;
     }
+    return remoteSo;
 }
 
-int TcpServer::recvMsg(char* buffer,unsigned const int len){
+int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
     int recvMsgSize=recv(remoteSo,buffer,len,0);
     return recvMsgSize;
 }
 
-int TcpServer::sendMsg(char* msg,unsigned const int len){
+int TcpServer::sendMsg(int remoteSo,char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
 }

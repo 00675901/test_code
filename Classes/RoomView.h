@@ -10,6 +10,7 @@
 #define __TestCocos2dx__RoomView__
 
 #include <iostream>
+#include <sys/select.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "TcpServer.h"
@@ -25,12 +26,16 @@ class RoomView : public CCLayerColor{
 private:
     pthread_t tidudp;
     pthread_t tidtcp;
+    pthread_mutex_t mut;
     TcpServer *tcps;
+    int tcpsSocket;
     UdpServer *udps;
+    set<int> clientFD;
+    fd_set cfds;
 public:
     RoomView();
     ~RoomView();
-    virtual bool init();
+    virtual bool   init();
     CREATE_FUNC(RoomView);
     void closeView();
     virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
@@ -39,6 +44,8 @@ public:
     static void* sendRoomService(void* obj);
     static void* listenRoomService(void* obj);
     void updateRoom();
+    
+    void testPthread();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */
