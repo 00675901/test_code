@@ -7,14 +7,20 @@
 //
 
 #include "RoomView.h"
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 RoomView::RoomView(){
-    FD_ZERO(&cfds);
+    FD_ZERO(&rfdset);
+    FD_ZERO(&wfdset);
+    FD_ZERO(&efdset);
     pthread_mutex_init(&mut, NULL);
     cout<<"view begin"<<endl;
 }
 RoomView::~RoomView(){
-    FD_ZERO(&cfds);
+    FD_ZERO(&rfdset);
+    FD_ZERO(&wfdset);
+    FD_ZERO(&efdset);
     pthread_mutex_destroy(&mut);
     delete udps;
     delete tcps;
@@ -74,43 +80,75 @@ void RoomView::updateRoom(){
 void* RoomView::listenRoomService(void* obj){
     RoomView *temp=(RoomView *)obj;
     TcpServer *tempTcps=temp->tcps;
-    fd_set *tempCfds=&(temp->cfds);
+    fd_set *tempRfdset=&(temp->rfdset);
+    fd_set *tempWfdset=&(temp->wfdset);
+    fd_set *tempEfdset=&(temp->efdset);
     set<int> *tempClientDF=&(temp->clientFD);
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
     while (true) {
-        FD_ZERO(tempCfds);
-        FD_SET(tempTcpsSocket, tempCfds);
-        maxFD=maxFD>(tempTcpsSocket)?maxFD+1:tempTcpsSocket+1;
-//        set<int>::iterator iter=tempClientDF->begin();
-//        while (iter!=tempClientDF->end()) {
-//            FD_SET(*iter, tempCfds);
+//        set<int>::iterator iter;
+//        if ((res=tempTcps->isAccept())>0) {
+//            tempClientDF->insert(res);
+//            GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+//            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+//                char tt[]="a player join the room!\n";
+//                send(*iter,tt,strlen(tt),0);
+//                tempTcps->sendMsg(*iter,tt,strlen(tt));
+//                tempTcps->sendMsg(res,tt,strlen(tt));
+//            }
 //        }
-//        if (!tempClientDF->empty()) {
-//            --iter;
-//            maxFD=maxFD>*iter?maxFD+1:(*iter)+1;
-//        }
-        int sel=select(maxFD, tempCfds, NULL, NULL, NULL);
-        if (sel<0) {
-            cout<<"select error"<<endl;
-            continue;
+        FD_ZERO(tempRfdset);
+        FD_ZERO(tempWfdset);
+        FD_ZERO(tempEfdset);
+        FD_SET(tempTcpsSocket, tempRfdset);
+        FD_SET(tempTcpsSocket, tempEfdset);
+        maxFD=maxFD>tempTcpsSocket?maxFD:tempTcpsSocket;
+        set<int>::iterator iter;
+        for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+            FD_SET(*iter, tempRfdset);
+            FD_SET(*iter, tempWfdset);
+            FD_SET(*iter, tempEfdset);
         }
-        if (FD_ISSET(tempTcpsSocket, tempCfds)) {
-            
-            cout<<"1"<<endl;
+        if (!tempClientDF->empty()) {
+            --iter;
+            maxFD=maxFD>*iter?maxFD:*iter;
+        }
+        int sel=select(maxFD+1, tempRfdset, tempWfdset, tempEfdset, NULL);
+        if (sel<0) {
+            if (EINTR==errno) {
+                continue;
+            }else{
+                printf("select faild:%m");
+            }
+        }
+        if (FD_ISSET(tempTcpsSocket, tempRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
-                char tt[]="welcome to room";
-                tempTcps->sendMsg(res,tt,strlen(tt));
                 tempClientDF->insert(res);
+                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+                    char tt[]="a player join the room!\n";
+                    tempTcps->sendMsg(*iter,tt,strlen(tt));
+                }
             }
         }else{
-            cout<<"2"<<endl;
+            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+                if (FD_ISSET(*iter, tempRfdset)){
+                    char tt[8];
+                    int lenr=tempTcps->recvMsg(*iter,tt,8);
+                    if (lenr<=0) {
+                        close(*iter);
+                        
+                        cout<<"a player leave the room"<<endl;
+                    }else{
+                        tempTcps->sendMsg(*iter,tt,8);
+                    }
+                }
+            }
         }
-        cout<<"3"<<endl;
         
 //        GSNotificationPool::shareInstance()->postNotification("testPthread", NULL);
-//        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
     }
     return NULL;
 }

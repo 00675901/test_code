@@ -17,6 +17,7 @@
 #include "UdpServer.h"
 #include "pthread.h"
 #include "GSNotificationPool.h"
+#include <errno.h>
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -31,7 +32,9 @@ private:
     int tcpsSocket;
     UdpServer *udps;
     set<int> clientFD;
-    fd_set cfds;
+    fd_set rfdset;
+    fd_set wfdset;
+    fd_set efdset;
 public:
     RoomView();
     ~RoomView();
