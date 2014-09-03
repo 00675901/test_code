@@ -10,7 +10,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-RoomView::RoomView(){
+RoomView::RoomView(int maxl){
+    maxLinsten=maxl;
     FD_ZERO(&rfdset);
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
@@ -32,6 +33,8 @@ bool RoomView::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
 }
 
 bool RoomView::init(){
+    cout<<"init begin:"<<maxLinsten<<endl;
+    
     // 1. super init first
     if (!CCLayerColor::initWithColor(ccc4(255, 255, 255, 255))){
         return false;
@@ -55,6 +58,7 @@ bool RoomView::init(){
     roomServer();
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"view inin"<<endl;
+    
     return true;
 }
 
@@ -68,7 +72,7 @@ void RoomView::roomServer(){
         pthread_create(&tidudp,NULL,RoomView::sendRoomService,udps);
     }
     tcps=new TcpServer(50001);
-    if ((tcpsSocket=tcps->iniServer(10))>0) {
+    if ((tcpsSocket=tcps->iniServer(maxLinsten))>0) {
         pthread_create(&tidtcp,NULL,RoomView::listenRoomService,this);
     }
 }
@@ -88,17 +92,6 @@ void* RoomView::listenRoomService(void* obj){
     int res;
     int maxFD=0;
     while (true) {
-//        set<int>::iterator iter;
-//        if ((res=tempTcps->isAccept())>0) {
-//            tempClientDF->insert(res);
-//            GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-//            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
-//                char tt[]="a player join the room!\n";
-//                send(*iter,tt,strlen(tt),0);
-//                tempTcps->sendMsg(*iter,tt,strlen(tt));
-//                tempTcps->sendMsg(res,tt,strlen(tt));
-//            }
-//        }
         FD_ZERO(tempRfdset);
         FD_ZERO(tempWfdset);
         FD_ZERO(tempEfdset);
@@ -133,18 +126,23 @@ void* RoomView::listenRoomService(void* obj){
                 }
             }
         }else{
-            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+            iter=tempClientDF->begin();
+            while (iter!=tempClientDF->end()) {
                 if (FD_ISSET(*iter, tempRfdset)){
                     char tt[8];
                     int lenr=tempTcps->recvMsg(*iter,tt,8);
                     if (lenr<=0) {
                         close(*iter);
-                        
+                        tempClientDF->erase(iter++);
                         cout<<"a player leave the room"<<endl;
                     }else{
                         tempTcps->sendMsg(*iter,tt,8);
                     }
                 }
+                ++iter;
+            }
+            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+                
             }
         }
         

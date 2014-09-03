@@ -50,7 +50,7 @@ bool RoomManager::init(){
 
 void RoomManager::createRoom(){
 
-    RoomView* rv=RoomView::create();
+    RoomView* rv=RoomView::create(9);
     this->addChild(rv);
 //    udps=new UdpServer(40001,40002);
 //    if (udps->iniServer()) {
