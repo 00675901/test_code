@@ -120,32 +120,41 @@ void* RoomView::listenRoomService(void* obj){
             if ((res=tempTcps->isAccept())>0) {
                 tempClientDF->insert(res);
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                char tt[]="a player join the room!\n";
                 for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
-                    char tt[]="a player join the room!\n";
                     tempTcps->sendMsg(*iter,tt,strlen(tt));
                 }
             }
-        }else{
-            iter=tempClientDF->begin();
-            while (iter!=tempClientDF->end()) {
-                if (FD_ISSET(*iter, tempRfdset)){
-                    char tt[8];
-                    int lenr=tempTcps->recvMsg(*iter,tt,8);
-                    if (lenr<=0) {
-                        close(*iter);
-                        tempClientDF->erase(iter++);
-                        cout<<"a player leave the room"<<endl;
-                    }else{
-                        tempTcps->sendMsg(*iter,tt,8);
-                    }
+        }
+        iter=tempClientDF->begin();
+        while (iter!=tempClientDF->end()) {
+            if (FD_ISSET(*iter, tempRfdset)){
+                char tt[8];
+                int lenr=tempTcps->recvMsg(*iter,tt,8);
+                if (lenr<=0) {
+//                    close(*iter);
+                    cout<<"a player leave the room1"<<endl;
+                    tempClientDF->erase(iter++);
+                    cout<<"a player leave the room2"<<endl;
+                }else{
+                    tempTcps->sendMsg(*iter,tt,8);
+                    iter++;
                 }
-                ++iter;
-            }
-            for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
-                
+            }else{
+                iter++;
             }
         }
-        
+//        for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+//            if (FD_ISSET(*iter, tempRfdset)){
+//                char tt[8];
+//                int lenr=tempTcps->recvMsg(*iter,tt,8);
+//                if (lenr<=0) {
+//                    close(*iter);
+//                    tempClientDF->erase(*iter);
+//                    cout<<"a player leave the room"<<endl;
+//                }
+//            }
+//        }
 //        GSNotificationPool::shareInstance()->postNotification("testPthread", NULL);
     }
     return NULL;
