@@ -60,6 +60,7 @@ public:
     static void* sendRoomService(void* obj);
     static void* listenRoomService(void* obj);
     void updateRoom();
+    void sendMsgToAll(char* msg);
     
     void testPthread();
 };

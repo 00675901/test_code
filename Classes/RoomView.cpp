@@ -133,9 +133,12 @@ void* RoomView::listenRoomService(void* obj){
                 int lenr=tempTcps->recvMsg(*iter,tt,8);
                 if (lenr<=0) {
 //                    close(*iter);
-                    cout<<"a player leave the room1"<<endl;
+                    char cc[]="leave";
+//                    cout<<"a player leave the room1"<<endl;
                     tempClientDF->erase(iter++);
-                    cout<<"a player leave the room2"<<endl;
+//                    cout<<"a player leave the room2"<<endl;
+                    
+                    temp->sendMsgToAll(cc);
                 }else{
                     tempTcps->sendMsg(*iter,tt,8);
                     iter++;
@@ -168,6 +171,16 @@ void* RoomView::sendRoomService(void* obj){
         sleep(3);
     }
     return NULL;
+}
+
+void RoomView::sendMsgToAll(char* msg){
+    int msgsize=strlen(msg);
+    cout<<"Msg Count:"<<msgsize<<endl;
+    set<int>::iterator iters=clientFD.begin();
+    while (iters!=clientFD.end()) {
+        tcps->sendMsg(*iters, msg, msgsize);
+        iters++;
+    }
 }
 
 void RoomView::closeView(){
