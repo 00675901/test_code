@@ -132,12 +132,10 @@ void* RoomView::listenRoomService(void* obj){
                 char tt[8];
                 int lenr=tempTcps->recvMsg(*iter,tt,8);
                 if (lenr<=0) {
-//                    close(*iter);
+                    close(*iter);
                     char cc[]="leave";
-//                    cout<<"a player leave the room1"<<endl;
+                    cout<<"a player leave the room"<<endl;
                     tempClientDF->erase(iter++);
-//                    cout<<"a player leave the room2"<<endl;
-                    
                     temp->sendMsgToAll(cc);
                 }else{
                     tempTcps->sendMsg(*iter,tt,8);
@@ -147,17 +145,6 @@ void* RoomView::listenRoomService(void* obj){
                 iter++;
             }
         }
-//        for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
-//            if (FD_ISSET(*iter, tempRfdset)){
-//                char tt[8];
-//                int lenr=tempTcps->recvMsg(*iter,tt,8);
-//                if (lenr<=0) {
-//                    close(*iter);
-//                    tempClientDF->erase(*iter);
-//                    cout<<"a player leave the room"<<endl;
-//                }
-//            }
-//        }
 //        GSNotificationPool::shareInstance()->postNotification("testPthread", NULL);
     }
     return NULL;
