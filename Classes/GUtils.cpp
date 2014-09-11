@@ -15,3 +15,9 @@ int GUtils::bytes2int(const char* bytes){
 void GUtils::int2bytes(int i,unsigned char* bytes){
     
 }
+
+string GUtils::itos(int i){
+    stringstream s;
+    s<<i;
+    return s.str();
+}

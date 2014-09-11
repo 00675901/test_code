@@ -27,7 +27,6 @@ public:
     int iniServer(int instenCount);
     int isAccept();
     int isConnect(const char* addr,int rematePort);
-    sockaddr_in* getRemoteRecAddr();
     int sendMsg(int remoteSo,char* msg,unsigned const int len);
     int recvMsg(int remoteSo,char* buff,unsigned const int len);
 };

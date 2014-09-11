@@ -1943,10 +1943,10 @@
 				C83B2B85199E39F500BD875B /* TcpServer.h */,
 				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
 				C83B2B87199E39F500BD875B /* UdpServer.h */,
-				B0F477D919A476A700074890 /* GUtils.cpp */,
-				B0F477DA19A476A700074890 /* GUtils.h */,
 				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
 				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+				B0F477D919A476A700074890 /* GUtils.cpp */,
+				B0F477DA19A476A700074890 /* GUtils.h */,
 			);
 			name = sys;
 			sourceTree = "<group>";

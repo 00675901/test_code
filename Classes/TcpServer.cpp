@@ -3,6 +3,8 @@
 //  cocos2dxTest
 //
 //  Created by othink on 14-8-14.
+//  Server:Socket->bind->listen->accept
+//  Client:Socket->connect
 //
 //
 
@@ -73,15 +75,11 @@ int TcpServer::isConnect(const char* addr,int rematePort){
 }
 
 int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
-    int recvMsgSize=recv(remoteSo,buffer,len,0);
-    return recvMsgSize;
+    int re=recv(remoteSo,buffer,len,0);
+    return re;
 }
 
 int TcpServer::sendMsg(int remoteSo,char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
-}
-
-sockaddr_in* TcpServer::getRemoteRecAddr(){
-    return &remoteAddr;
 }

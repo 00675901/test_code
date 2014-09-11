@@ -18,6 +18,7 @@
 #include "pthread.h"
 #include "GSNotificationPool.h"
 #include <errno.h>
+#include "GUtils.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -49,6 +50,8 @@ private:
     fd_set rfdset;
     fd_set wfdset;
     fd_set efdset;
+    
+    CCLayerColor *clientlist;
 public:
     RoomView(int maxl);
     ~RoomView();
@@ -62,7 +65,7 @@ public:
     void updateRoom();
     void sendMsgToAll(char* msg);
     
-    void testPthread();
+//    void testPthread();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */

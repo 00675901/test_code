@@ -7,8 +7,7 @@
 //
 
 #include "RoomView.h"
-#include <sys/socket.h>
-#include <arpa/inet.h>
+#include "stdlib.h"
 
 RoomView::RoomView(int maxl){
     maxLinsten=maxl;
@@ -51,9 +50,13 @@ bool RoomView::init(){
     pLabel->setAnchorPoint(ccp(0.5, 1));
     pLabel->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-20));
     this->addChild(pLabel);
+    clientlist=CCLayerColor::create(ccc4(0, 0, 0, 255), 200, this->getContentSize().height-60);
+    clientlist->setAnchorPoint(ccp(0, 0));
+    clientlist->setPosition(0, 0);
+    this->addChild(clientlist);
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
-    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::testPthread), "testPthread", NULL);
+//    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::testPthread), "testPthread", NULL);
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
     roomServer();
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
@@ -62,9 +65,9 @@ bool RoomView::init(){
     return true;
 }
 
-void RoomView::testPthread(){
-    cout<<"clientDF_Count:"<<this->clientFD.size()<<endl;
-}
+//void RoomView::testPthread(){
+//    cout<<"clientDF_Count:"<<this->clientFD.size()<<endl;
+//}
 
 void RoomView::roomServer(){
     udps=new UdpServer(50002,50003);
@@ -78,7 +81,23 @@ void RoomView::roomServer(){
 }
 
 void RoomView::updateRoom(){
-    cout<<"update room"<<endl;
+    clientlist->removeAllChildren();
+    cout<<"update room:"<<clientFD.size()<<endl;
+    set<int>::iterator iter=clientFD.begin();
+    int i=0;
+    while (iter!=clientFD.end()) {
+        string ti="player ";
+        ti.append(GUtils::itos(*iter));
+        cout<<ti<<endl;
+        CCControlButton *button = CCControlButton::create(ti, "Marker Felt", 30);
+        button->setTitleColorForState(ccWHITE, CCControlStateNormal);
+        button->setTitleColorForState(ccRED, CCControlStateHighlighted);
+        button->setAnchorPoint(ccp(0,1));
+        button->setPosition(0, clientlist->getContentSize().height-(i*40));
+        clientlist->addChild(button);
+        iter++;
+        i++;
+    }
 }
 
 void* RoomView::listenRoomService(void* obj){
@@ -87,7 +106,7 @@ void* RoomView::listenRoomService(void* obj){
     fd_set *tempRfdset=&(temp->rfdset);
     fd_set *tempWfdset=&(temp->wfdset);
     fd_set *tempEfdset=&(temp->efdset);
-    set<int> *tempClientDF=&(temp->clientFD);
+    set<int> *tempClientFD=&(temp->clientFD);
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
@@ -99,12 +118,12 @@ void* RoomView::listenRoomService(void* obj){
         FD_SET(tempTcpsSocket, tempEfdset);
         maxFD=maxFD>tempTcpsSocket?maxFD:tempTcpsSocket;
         set<int>::iterator iter;
-        for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+        for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
             FD_SET(*iter, tempRfdset);
             FD_SET(*iter, tempWfdset);
             FD_SET(*iter, tempEfdset);
         }
-        if (!tempClientDF->empty()) {
+        if (!tempClientFD->empty()) {
             --iter;
             maxFD=maxFD>*iter?maxFD:*iter;
         }
@@ -118,16 +137,16 @@ void* RoomView::listenRoomService(void* obj){
         }
         if (FD_ISSET(tempTcpsSocket, tempRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
-                tempClientDF->insert(res);
+                tempClientFD->insert(res);
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                 char tt[]="a player join the room!\n";
-                for (iter=tempClientDF->begin(); iter!=tempClientDF->end(); ++iter) {
+                for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
                     tempTcps->sendMsg(*iter,tt,strlen(tt));
                 }
             }
         }
-        iter=tempClientDF->begin();
-        while (iter!=tempClientDF->end()) {
+        iter=tempClientFD->begin();
+        while (iter!=tempClientFD->end()) {
             if (FD_ISSET(*iter, tempRfdset)){
                 char tt[8];
                 int lenr=tempTcps->recvMsg(*iter,tt,8);
@@ -135,8 +154,9 @@ void* RoomView::listenRoomService(void* obj){
                     close(*iter);
                     char cc[]="leave";
                     cout<<"a player leave the room"<<endl;
-                    tempClientDF->erase(iter++);
+                    tempClientFD->erase(iter++);
                     temp->sendMsgToAll(cc);
+                    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                 }else{
                     tempTcps->sendMsg(*iter,tt,8);
                     iter++;
@@ -155,7 +175,7 @@ void* RoomView::sendRoomService(void* obj){
     while (true) {
         char s[]="this is udp msg";
         temp->sendMsg(s, strlen(s));
-        sleep(3);
+        sleep(1);
     }
     return NULL;
 }
