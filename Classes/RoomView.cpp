@@ -50,7 +50,16 @@ bool RoomView::init(){
     pLabel->setAnchorPoint(ccp(0.5, 1));
     pLabel->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-20));
     this->addChild(pLabel);
-    clientlist=CCLayerColor::create(ccc4(0, 0, 0, 255), 200, this->getContentSize().height-60);
+    
+    
+    CCLabelTTF* pLabels = CCLabelTTF::create("abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Marker Felt", 30, CCSize(100, 300), kCCTextAlignmentLeft);
+    pLabels->setColor(ccc3(0,0,0));
+    pLabels->setAnchorPoint(ccp(0.5, 1));
+    pLabels->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-60));
+    this->addChild(pLabels);
+    
+    
+    clientlist=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-60);
     clientlist->setAnchorPoint(ccp(0, 0));
     clientlist->setPosition(0, 0);
     this->addChild(clientlist);
@@ -89,12 +98,10 @@ void RoomView::updateRoom(){
         string ti="player ";
         ti.append(GUtils::itos(*iter));
         cout<<ti<<endl;
-        CCControlButton *button = CCControlButton::create(ti, "Marker Felt", 30);
-        button->setTitleColorForState(ccWHITE, CCControlStateNormal);
-        button->setTitleColorForState(ccRED, CCControlStateHighlighted);
-        button->setAnchorPoint(ccp(0,1));
-        button->setPosition(0, clientlist->getContentSize().height-(i*40));
-        clientlist->addChild(button);
+        CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
+        ptext->setAnchorPoint(ccp(0.5,1));
+        ptext->setPosition(ccp(clientlist->getContentSize().width/2, clientlist->getContentSize().height-(i*40)));
+        clientlist->addChild(ptext);
         iter++;
         i++;
     }
