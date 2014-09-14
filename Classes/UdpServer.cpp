@@ -49,7 +49,7 @@ bool UdpServer::iniServer(){
     }
 }
 
-int UdpServer::sendMsg(char* msg,unsigned const int len){
+int UdpServer::sendMsg(const char* msg,unsigned const int len){
     int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
     return se;
 }

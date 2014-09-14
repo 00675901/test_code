@@ -58,13 +58,19 @@ bool RoomView::init(){
     pLabels->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-60));
     this->addChild(pLabels);
     
+    clientLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-60);
+    clientLayer->setAnchorPoint(ccp(0, 0));
+    clientLayer->setPosition(0, 0);
+    this->addChild(clientLayer);
     
-    clientlist=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-60);
-    clientlist->setAnchorPoint(ccp(0, 0));
-    clientlist->setPosition(0, 0);
-    this->addChild(clientlist);
+    msgLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width*4/5-10, this->getContentSize().height-60);
+    msgLayer->setAnchorPoint(ccp(0, 0));
+    msgLayer->setPosition(this->getContentSize().width/5+10, 0);
+    this->addChild(msgLayer);
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
+    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
+    
 //    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::testPthread), "testPthread", NULL);
     CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
     roomServer();
@@ -90,7 +96,7 @@ void RoomView::roomServer(){
 }
 
 void RoomView::updateRoom(){
-    clientlist->removeAllChildren();
+    clientLayer->removeAllChildren();
     cout<<"update room:"<<clientFD.size()<<endl;
     set<int>::iterator iter=clientFD.begin();
     int i=0;
@@ -100,8 +106,26 @@ void RoomView::updateRoom(){
         cout<<ti<<endl;
         CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
         ptext->setAnchorPoint(ccp(0.5,1));
-        ptext->setPosition(ccp(clientlist->getContentSize().width/2, clientlist->getContentSize().height-(i*40)));
-        clientlist->addChild(ptext);
+        ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height-(i*40)));
+        clientLayer->addChild(ptext);
+        iter++;
+        i++;
+    }
+}
+
+void RoomView::updateMsglist(){
+    msgLayer->removeAllChildren();
+    cout<<"msg count:"<<msglist.size()<<endl;
+    deque<string>::iterator iter=msglist.begin();
+    int i=0;
+    while (iter!=msglist.end()) {
+//        string ti="player ";
+//        ti.append(GUtils::itos(*iter));
+        cout<<iter->c_str()<<endl;
+        CCLabelTTF *ptext=CCLabelTTF::create(iter->c_str(), "Marker Felt", 30);
+        ptext->setAnchorPoint(ccp(0,1));
+        ptext->setPosition(ccp(5, msgLayer->getContentSize().height-(i*40)));
+        msgLayer->addChild(ptext);
         iter++;
         i++;
     }
@@ -114,6 +138,7 @@ void* RoomView::listenRoomService(void* obj){
     fd_set *tempWfdset=&(temp->wfdset);
     fd_set *tempEfdset=&(temp->efdset);
     set<int> *tempClientFD=&(temp->clientFD);
+    deque<string> *tempMsglist=&(temp->msglist);
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
@@ -146,9 +171,15 @@ void* RoomView::listenRoomService(void* obj){
             if ((res=tempTcps->isAccept())>0) {
                 tempClientFD->insert(res);
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                char tt[]="a player join the room!\n";
+                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+                string ts="a player join the room!\n";
+                tempMsglist->push_back(ts);
+                if (tempMsglist->size()>14) {
+                    tempMsglist->pop_front();
+                }
+                
                 for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
-                    tempTcps->sendMsg(*iter,tt,strlen(tt));
+                    tempTcps->sendMsg(*iter,ts.c_str(),strlen(ts.c_str()));
                 }
             }
         }
@@ -159,11 +190,16 @@ void* RoomView::listenRoomService(void* obj){
                 int lenr=tempTcps->recvMsg(*iter,tt,8);
                 if (lenr<=0) {
                     close(*iter);
-                    char cc[]="leave";
-                    cout<<"a player leave the room"<<endl;
+                    string ttt="a player leave the room";
+                    cout<<ttt<<endl;
                     tempClientFD->erase(iter++);
-                    temp->sendMsgToAll(cc);
+                    temp->sendMsgToAll(ttt.c_str());
+                    tempMsglist->push_back(ttt);
+                    if (tempMsglist->size()>14) {
+                        tempMsglist->pop_front();
+                    }
                     GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
                 }else{
                     tempTcps->sendMsg(*iter,tt,8);
                     iter++;
@@ -187,7 +223,7 @@ void* RoomView::sendRoomService(void* obj){
     return NULL;
 }
 
-void RoomView::sendMsgToAll(char* msg){
+void RoomView::sendMsgToAll(const char* msg){
     int msgsize=strlen(msg);
     cout<<"Msg Count:"<<msgsize<<endl;
     set<int>::iterator iters=clientFD.begin();

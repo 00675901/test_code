@@ -50,8 +50,9 @@ private:
     fd_set rfdset;
     fd_set wfdset;
     fd_set efdset;
-    
-    CCLayerColor *clientlist;
+    CCLayerColor *clientLayer;
+    CCLayerColor *msgLayer;
+    deque<string> msglist;
 public:
     RoomView(int maxl);
     ~RoomView();
@@ -63,7 +64,8 @@ public:
     static void* sendRoomService(void* obj);
     static void* listenRoomService(void* obj);
     void updateRoom();
-    void sendMsgToAll(char* msg);
+    void updateMsglist();
+    void sendMsgToAll(const char* msg);
     
 //    void testPthread();
 };

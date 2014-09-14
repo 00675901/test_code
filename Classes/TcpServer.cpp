@@ -79,7 +79,7 @@ int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
     return re;
 }
 
-int TcpServer::sendMsg(int remoteSo,char* msg,unsigned const int len){
+int TcpServer::sendMsg(int remoteSo,const char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
 }

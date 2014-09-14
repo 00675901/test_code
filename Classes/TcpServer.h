@@ -27,7 +27,7 @@ public:
     int iniServer(int instenCount);
     int isAccept();
     int isConnect(const char* addr,int rematePort);
-    int sendMsg(int remoteSo,char* msg,unsigned const int len);
+    int sendMsg(int remoteSo,const char* msg,unsigned const int len);
     int recvMsg(int remoteSo,char* buff,unsigned const int len);
 };
 #endif /* defined(__cocos2dxTest__TcpServer__) */
