@@ -30,6 +30,7 @@ public:
     static GSNotificationPool* shareInstance();
     void postNotifications();
     void postNotification(const char* name,CCObject *object);
+    void postNotification(const char* name,string object);
 };
 
 #endif /* defined(__TestCocos2dx__GSNotificationPool__) */

@@ -242,6 +242,8 @@
 		46513EB1187BFBA200B5ABE1 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */; };
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
 		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
+		B071C1E019D9340C00D15D2B /* GRSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GRSServer.cpp */; };
+		B071C1E319D9342000D15D2B /* GRCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GRCServer.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
@@ -767,6 +769,10 @@
 		7855E0DF153FEF240059DD9A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = SOURCE_ROOT; };
 		B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomView.cpp; path = ../Classes/RoomView.cpp; sourceTree = "<group>"; };
 		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
+		B071C1DE19D9340C00D15D2B /* GRSServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRSServer.cpp; path = ../Classes/GRSServer.cpp; sourceTree = "<group>"; };
+		B071C1DF19D9340C00D15D2B /* GRSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRSServer.h; path = ../Classes/GRSServer.h; sourceTree = "<group>"; };
+		B071C1E119D9342000D15D2B /* GRCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRCServer.cpp; path = ../Classes/GRCServer.cpp; sourceTree = "<group>"; };
+		B071C1E219D9342000D15D2B /* GRCServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRCServer.h; path = ../Classes/GRCServer.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
 		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
@@ -1930,6 +1936,10 @@
 				C8B14B9919A0EBA000CE5074 /* RoomManager.h */,
 				B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */,
 				B0088B0C19AB322C00D8C4D3 /* RoomView.h */,
+				B071C1DE19D9340C00D15D2B /* GRSServer.cpp */,
+				B071C1DF19D9340C00D15D2B /* GRSServer.h */,
+				B071C1E119D9342000D15D2B /* GRCServer.cpp */,
+				B071C1E219D9342000D15D2B /* GRCServer.h */,
 			);
 			name = room;
 			sourceTree = "<group>";
@@ -2042,6 +2052,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15A3D8FF1682F7D5002FB0C5 /* b2BroadPhase.cpp in Sources */,
+				B071C1E319D9342000D15D2B /* GRCServer.cpp in Sources */,
 				15A3D9001682F7D5002FB0C5 /* b2CollideCircle.cpp in Sources */,
 				B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */,
 				C83B2B89199E39F500BD875B /* UdpServer.cpp in Sources */,
@@ -2120,6 +2131,7 @@
 				15A3D9AA1682F7F9002FB0C5 /* cpShape.c in Sources */,
 				15A3D9AB1682F7F9002FB0C5 /* cpSpace.c in Sources */,
 				15A3D9AC1682F7F9002FB0C5 /* cpSpaceComponent.c in Sources */,
+				B071C1E019D9340C00D15D2B /* GRSServer.cpp in Sources */,
 				15A3D9AD1682F7F9002FB0C5 /* cpSpaceHash.c in Sources */,
 				15A3D9AE1682F7F9002FB0C5 /* cpSpaceQuery.c in Sources */,
 				15A3D9AF1682F7F9002FB0C5 /* cpSpaceStep.c in Sources */,

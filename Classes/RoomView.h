@@ -63,11 +63,9 @@ public:
     void roomServer();
     static void* sendRoomService(void* obj);
     static void* listenRoomService(void* obj);
-    void updateRoom();
-    void updateMsglist();
+    void updateRoom(CCObject *param);
+    void updateMsglist(CCObject *param);
     void sendMsgToAll(const char* msg);
-    
-//    void testPthread();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */
