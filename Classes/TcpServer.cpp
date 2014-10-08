@@ -15,6 +15,7 @@ TcpServer::TcpServer(int listenPort){
     localAddr.sin_family=AF_INET;
     localAddr.sin_port=htons(listenPort);
     localAddr.sin_addr.s_addr=htonl(INADDR_ANY);
+    std::cout<<"TCP Service Begin"<<std::endl;
 }
 
 TcpServer::~TcpServer(){

@@ -18,6 +18,7 @@ UdpServer::UdpServer(int listenPort,int remotePort){
     remoteBroAddr.sin_family=AF_INET;
     remoteBroAddr.sin_addr.s_addr=htonl(INADDR_BROADCAST);
     remoteBroAddr.sin_port=htons(remotePort);
+    std::cout<<"UDP Service Begin"<<std::endl;
 }
 
 UdpServer::~UdpServer(){
@@ -42,7 +43,7 @@ bool UdpServer::iniServer(){
                 std::cout<<"udp set fail"<<std::endl;
                 return false;
             }else{
-                std::cout<<"set:"<<sets<<std::endl;
+//                std::cout<<"set:"<<sets<<std::endl;
                 return true;
             }
         }

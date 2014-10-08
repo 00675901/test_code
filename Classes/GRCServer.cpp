@@ -7,3 +7,13 @@
 //
 
 #include "GRCServer.h"
+
+GRCServer::GRCServer(){
+    cout<<"Client Server service Begin"<<endl;
+}
+GRCServer::~GRCServer(){
+    cout<<"Client Server service End"<<endl;
+}
+bool GRCServer::init(){
+    return true;
+}

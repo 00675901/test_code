@@ -34,15 +34,6 @@ void GSNotificationPool::postNotifications(){
     pthread_mutex_unlock(&mutex);
 }
 
-void GSNotificationPool::postNotification(const char* name,string object){
-    pthread_mutex_lock(&mutex);
-    NotiParams tempa;
-    tempa.name=name;
-    (object=="")?tempa.obj=NULL:tempa.obj=(CCObject *)&object;
-    notifications.push_back(tempa);
-    pthread_mutex_unlock(&mutex);
-}
-
 void GSNotificationPool::postNotification(const char* name,CCObject *object){
     pthread_mutex_lock(&mutex);
     NotiParams tempa;
