@@ -42,12 +42,12 @@ int TcpServer::iniServer(int instenCount){
                         std::cout<<"listen fail."<<std::endl;
                         return -1;
                     }else{
-                        std::cout<<"Server init success."<<std::endl;
+                        std::cout<<"TCP Server Init Success."<<std::endl;
                         return localSo;
                     }
                 }
             }else{
-                std::cout<<"Client init success."<<std::endl;
+                std::cout<<"TCP Client Init Success."<<std::endl;
                 return localSo;
             }
         }
