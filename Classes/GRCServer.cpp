@@ -9,10 +9,10 @@
 #include "GRCServer.h"
 
 GRCServer::GRCServer(){
-    cout<<"Client Server service Begin"<<endl;
+    cout<<"Client Server service BEGIN"<<endl;
 }
 GRCServer::~GRCServer(){
-    cout<<"Client Server service End"<<endl;
+    cout<<"Client Server service END"<<endl;
 }
 bool GRCServer::init(){
     return true;

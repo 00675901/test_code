@@ -43,7 +43,7 @@ bool UdpServer::iniServer(){
                 std::cout<<"udp set fail"<<std::endl;
                 return false;
             }else{
-//                std::cout<<"set:"<<sets<<std::endl;
+                std::cout<<"UDP Init Success:"<<sets<<std::endl;
                 return true;
             }
         }

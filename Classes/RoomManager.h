@@ -17,8 +17,8 @@
 #include "UdpServer.h"
 #include "pthread.h"
 #include "GSNotificationPool.h"
-
 #include "RoomView.h"
+#include "RoomlistView.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -33,11 +33,10 @@ private:
     TcpServer *tcps;
     UdpServer *udps;
 public:
-    // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
+    static CCScene* scene();
+    RoomManager();
+    ~RoomManager();
     virtual bool init();
-    // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::CCScene* scene();
-    // implement the "static node()" method manually
     CREATE_FUNC(RoomManager);
     void createRoom();
     void joinRoom();

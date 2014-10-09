@@ -45,6 +45,7 @@ private:
     GRSServer* grs;
     GRCServer* gcs;
 public:
+    static CCScene* scene(int maxl);
     RoomView(int maxl);
     ~RoomView();
     bool init();
@@ -52,7 +53,7 @@ public:
     deque<string> msglist;
     RCREATE_FUNC(RoomView);
     void closeView();
-    virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent); 
+//    virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent); 
     void updateRoom();
     void updateMsglist();
 };

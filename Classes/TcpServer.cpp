@@ -33,17 +33,22 @@ int TcpServer::iniServer(int instenCount){
             std::cout<<"set fail."<<std::endl;
             return -1;
         }else{
-            if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
-                std::cout<<"bind fail."<<std::endl;
-                return -1;
-            }else{
-                if (listen(localSo, instenCount)<0) {
-                    std::cout<<"listen fail."<<std::endl;
+            if (instenCount>0) {
+                if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
+                    std::cout<<"bind fail."<<std::endl;
                     return -1;
                 }else{
-                    std::cout<<"Server init success."<<std::endl;
-                    return localSo;
+                    if (listen(localSo, instenCount)<0) {
+                        std::cout<<"listen fail."<<std::endl;
+                        return -1;
+                    }else{
+                        std::cout<<"Server init success."<<std::endl;
+                        return localSo;
+                    }
                 }
+            }else{
+                std::cout<<"Client init success."<<std::endl;
+                return localSo;
             }
         }
     }

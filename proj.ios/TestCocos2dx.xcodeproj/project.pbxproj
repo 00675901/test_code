@@ -242,6 +242,7 @@
 		46513EB1187BFBA200B5ABE1 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */; };
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
 		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
+		B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B059E3E219E62F58009AF4DE /* RoomlistView.cpp */; };
 		B071C1E019D9340C00D15D2B /* GRSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GRSServer.cpp */; };
 		B071C1E319D9342000D15D2B /* GRCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GRCServer.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
@@ -769,6 +770,8 @@
 		7855E0DF153FEF240059DD9A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = SOURCE_ROOT; };
 		B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomView.cpp; path = ../Classes/RoomView.cpp; sourceTree = "<group>"; };
 		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
+		B059E3E219E62F58009AF4DE /* RoomlistView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomlistView.cpp; path = ../Classes/RoomlistView.cpp; sourceTree = "<group>"; };
+		B059E3E319E62F58009AF4DE /* RoomlistView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomlistView.h; path = ../Classes/RoomlistView.h; sourceTree = "<group>"; };
 		B071C1DE19D9340C00D15D2B /* GRSServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRSServer.cpp; path = ../Classes/GRSServer.cpp; sourceTree = "<group>"; };
 		B071C1DF19D9340C00D15D2B /* GRSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRSServer.h; path = ../Classes/GRSServer.h; sourceTree = "<group>"; };
 		B071C1E119D9342000D15D2B /* GRCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRCServer.cpp; path = ../Classes/GRCServer.cpp; sourceTree = "<group>"; };
@@ -1940,6 +1943,8 @@
 				B071C1DF19D9340C00D15D2B /* GRSServer.h */,
 				B071C1E119D9342000D15D2B /* GRCServer.cpp */,
 				B071C1E219D9342000D15D2B /* GRCServer.h */,
+				B059E3E219E62F58009AF4DE /* RoomlistView.cpp */,
+				B059E3E319E62F58009AF4DE /* RoomlistView.h */,
 			);
 			name = room;
 			sourceTree = "<group>";
@@ -2256,6 +2261,7 @@
 				379BB9AC17F03F3700829B88 /* CCUtilMath.cpp in Sources */,
 				379BB9AD17F03F3700829B88 /* CCComAttribute.cpp in Sources */,
 				379BB9AE17F03F3700829B88 /* CCComAudio.cpp in Sources */,
+				B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */,
 				379BB9AF17F03F3700829B88 /* CCComController.cpp in Sources */,
 				379BB9B017F03F3700829B88 /* CCComRender.cpp in Sources */,
 				379BB9B117F03F3700829B88 /* CCInputDelegate.cpp in Sources */,

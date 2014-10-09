@@ -19,6 +19,13 @@ CCScene* RoomManager::scene(){
     return scene;
 }
 
+RoomManager::RoomManager(){
+    cout<<"RoomManager BEGIN"<<endl;
+}
+RoomManager::~RoomManager(){
+    cout<<"RoomManager END"<<endl;
+}
+
 // on "init" you need to initialize your instance
 bool RoomManager::init(){
     // 1. super init first
@@ -35,7 +42,6 @@ bool RoomManager::init(){
     createBtn->setAnchorPoint(ccp(0.5,0.5));
     createBtn->setPosition(visibleSize.width/2, visibleSize.height/2+50);
     this->addChild(createBtn);
-    
     joinBtn = CCControlButton::create("Join Game", "Marker Felt", 50);
     joinBtn->setTitleColorForState(ccWHITE, CCControlStateNormal);
     joinBtn->setTitleColorForState(ccRED, CCControlStateHighlighted);
@@ -50,8 +56,13 @@ bool RoomManager::init(){
 
 void RoomManager::createRoom(){
 
-    RoomView* rv=RoomView::create(10);
-    this->addChild(rv);
+//    RoomView* rv=RoomView::create(10);
+//    this->addChild(rv);
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    CCScene* pScene=RoomView::scene(10);
+    pDirector->pushScene(pScene);
+//    pDirector->replaceScene(pScene);
+//    pDirector->runWithScene(pScene);
 //    udps=new UdpServer(40001,40002);
 //    if (udps->iniServer()) {
 //        pthread_t tid;
@@ -64,11 +75,15 @@ void RoomManager::createRoom(){
 }
 
 void RoomManager::joinRoom(){
-    udps=new UdpServer(40001,40002);
-    if (udps->iniServer()) {
-        pthread_t tid;
-        pthread_create(&tid,NULL,RoomManager::sendRoom,udps);
-    }
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    CCScene* pScene=RoomlistView::scene();
+    pDirector->pushScene(pScene);
+    
+//    udps=new UdpServer(40001,40002);
+//    if (udps->iniServer()) {
+//        pthread_t tid;
+//        pthread_create(&tid,NULL,RoomManager::sendRoom,udps);
+//    }
 //    createListView();
 //    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomList::recvClient), "recvclient", NULL);
 //    tcps=new TcpServer(12345);

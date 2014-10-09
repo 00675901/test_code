@@ -9,10 +9,17 @@
 #include "RoomView.h"
 #include "stdlib.h"
 
+CCScene* RoomView::scene(int maxl){
+    CCScene *scene = CCScene::create();
+    RoomView *layer = RoomView::create(maxl);
+    scene->addChild(layer);
+    return scene;
+}
+
 RoomView::RoomView(int maxl){
     maxLinsten=maxl;
-    CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
-    cout<<"view begin"<<endl;
+//    CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
+    cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
     if (maxLinsten>0) {
@@ -20,12 +27,12 @@ RoomView::~RoomView(){
     }else{
         delete gcs;
     }
-    cout<<"view end"<<endl;
+    cout<<"RoomView END"<<endl;
 }
 
-bool RoomView::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-    return true;
-}
+//bool RoomView::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
+//    return true;
+//}
 
 bool RoomView::init(){
     // 1. super init first
@@ -46,11 +53,11 @@ bool RoomView::init(){
     this->addChild(pLabel);
     
     
-    CCLabelTTF* pLabels = CCLabelTTF::create("abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Marker Felt", 30, CCSize(100, 300), kCCTextAlignmentLeft);
-    pLabels->setColor(ccc3(0,0,0));
-    pLabels->setAnchorPoint(ccp(0.5, 1));
-    pLabels->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-60));
-    this->addChild(pLabels);
+//    CCLabelTTF* pLabels = CCLabelTTF::create("abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Marker Felt", 30, CCSize(100, 300), kCCTextAlignmentLeft);
+//    pLabels->setColor(ccc3(0,0,0));
+//    pLabels->setAnchorPoint(ccp(0.5, 1));
+//    pLabels->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-60));
+//    this->addChild(pLabels);
     
     clientLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-60);
     clientLayer->setAnchorPoint(ccp(0, 0));
@@ -112,9 +119,11 @@ void RoomView::updateMsglist(){
 void RoomView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoom");
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateMsg");
-    CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
-    CCDirector::sharedDirector()->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+//    CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
     clientFD.clear();
     msglist.clear();
-    this->removeFromParent();
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+    pDirector->popScene();
+//    this->removeFromParent();
 }

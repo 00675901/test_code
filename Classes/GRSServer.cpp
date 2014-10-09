@@ -16,7 +16,7 @@ GRSServer::GRSServer(int maxl,set<int>* cf,deque<string>* ml){
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
     pthread_mutex_init(&mut, NULL);
-    cout<<"Room Server service Begin"<<endl;
+    cout<<"Room Server service BEGIN"<<endl;
 }
 GRSServer::~GRSServer(){
     pthread_cancel(tidudp);
@@ -27,7 +27,7 @@ GRSServer::~GRSServer(){
     pthread_mutex_destroy(&mut);
     delete udps;
     delete tcps;
-    cout<<"Room Server service End"<<endl;
+    cout<<"Room Server service END"<<endl;
 }
 bool GRSServer::init(){
     udps=new UdpServer(50002,50003);
@@ -45,9 +45,20 @@ bool GRSServer::init(){
 void* GRSServer::sendRoomService(void* obj){
     UdpServer *temp=(UdpServer *)obj;
     while (true) {
-        char s[]="this is udp msg";
-        temp->sendMsg(s, strlen(s));
-        sleep(1);
+//        char s[]="this is udp msg";
+//        int ss=temp->sendMsg(s, strlen(s));
+//        cout<<"udp send:"<<ss<<endl;
+//        sleep(1);
+        cout<<"udp server test"<<endl;
+        int res;
+        char tbuffer[8];
+        if ((res=temp->recvMsg(tbuffer, 8))>0) {
+            string temps=tbuffer;
+            cout<<"net udp msg:"<<temps<<endl;
+            char s[]="this is udp msg";
+            int ss=temp->sendMsg(s, strlen(s));
+            cout<<"udp send:"<<ss<<endl;
+        }
     }
     return NULL;
 }
