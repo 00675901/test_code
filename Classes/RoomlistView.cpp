@@ -18,6 +18,7 @@ RoomlistView::RoomlistView(){
     cout<<"RoomlistView BEGIN"<<endl;
 }
 RoomlistView::~RoomlistView(){
+    delete grc;
     cout<<"RoomlistView END"<<endl;
 }
 bool RoomlistView::init(){
@@ -40,6 +41,12 @@ bool RoomlistView::init(){
     roomListLayer->setAnchorPoint(ccp(0, 0));
     roomListLayer->setPosition(0, 0);
     this->addChild(roomListLayer);
+    
+    grc=new GRCServer();
+    if (grc) {
+        grc->init();
+    }
+    
     cout<<"RoomlistView INIT"<<endl;
     return true;
 }

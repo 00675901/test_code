@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
+#include "GRCServer.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -20,6 +21,7 @@ using namespace std;
 class RoomlistView : public CCLayerColor{
 private:
     CCLayerColor* roomListLayer;
+    GRCServer* grc;
 public:
     static CCScene* scene();
     RoomlistView();
