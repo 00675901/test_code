@@ -22,11 +22,11 @@ RoomView::RoomView(int maxl){
     cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
-    if (maxLinsten>0) {
+//    if (maxLinsten>0) {
         delete grs;
-    }else{
-        delete gcs;
-    }
+//    }else{
+//        delete gcs;
+//    }
     cout<<"RoomView END"<<endl;
 }
 
@@ -71,17 +71,17 @@ bool RoomView::init(){
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
-    if (maxLinsten>0) {
+//    if (maxLinsten>0) {
         grs=new GRSServer(maxLinsten,&clientFD,&msglist);
         if (grs) {
             grs->init();
         }
-    }else{
-        gcs=new GRCServer();
-        if (gcs) {
-            gcs->init();
-        }
-    }
+//    }else{
+//        gcs=new GRCServer();
+//        if (gcs) {
+//            gcs->init();
+//        }
+//    }
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"view init:"<<maxLinsten<<endl;
     return true;

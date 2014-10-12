@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
+#include "GSNotificationPool.h"
 #include "GRCServer.h"
 
 USING_NS_CC_EXT;
@@ -23,12 +24,14 @@ private:
     CCLayerColor* roomListLayer;
     GRCServer* grc;
 public:
+    map<string,string> roomAddr;
     static CCScene* scene();
     RoomlistView();
     ~RoomlistView();
     CREATE_FUNC(RoomlistView);
     virtual bool init();
     void closeView();
+    void updateRoomlist();
 };
 
 #endif /* defined(__TestCocos2dx__RoomlistView__) */

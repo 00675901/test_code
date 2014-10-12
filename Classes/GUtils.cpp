@@ -21,3 +21,8 @@ string GUtils::itos(int i){
     s<<i;
     return s.str();
 }
+
+string GUtils::cptos(char* s){
+    string ss(s);
+    return ss;
+}

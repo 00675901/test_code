@@ -20,8 +20,7 @@ public:
     static int bytes2int(const char* bytes);
     static void int2bytes(int i,unsigned char* bytes);
     static string itos(int i);
-    
-
+    static string cptos(char* s);
 };
 
 #endif /* defined(__TestCocos2dx__GUtils__) */

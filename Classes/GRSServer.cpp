@@ -55,7 +55,7 @@ void* GRSServer::sendRoomService(void* obj){
         if ((res=temp->recvMsg(tbuffer, 8))>0) {
             string temps=tbuffer;
             cout<<"net udp msg:"<<temps<<endl;
-            char s[]="this is udp msg";
+            char s[]="Game Room";
             int ss=temp->sendMsg(s, strlen(s));
             cout<<"udp send:"<<ss<<endl;
         }

@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include "cocos2d.h"
+#include "GUtils.h"
+#include "GSNotificationPool.h"
 #include "UdpServer.h"
 #include "pthread.h"
 
@@ -18,11 +20,12 @@ using namespace std;
 
 class GRCServer{
 private:
+    map<string,string>* roomAddr;
     pthread_t sendudp;
     pthread_t recvudp;
     UdpServer *udps;
 public:
-    GRCServer();
+    GRCServer(map<string,string>* ra);
     ~GRCServer();
     bool init();
     static void* findRoom(void* obj);

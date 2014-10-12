@@ -8,7 +8,8 @@
 
 #include "GRCServer.h"
 
-GRCServer::GRCServer(){
+GRCServer::GRCServer(map<string,string>* ra){
+    roomAddr=ra;
     cout<<"Client Server service BEGIN"<<endl;
 }
 GRCServer::~GRCServer(){
@@ -21,7 +22,7 @@ bool GRCServer::init(){
     udps=new UdpServer(50003,50002);
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
-        pthread_create(&recvudp,NULL,GRCServer::recvRoom,udps);
+        pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
     }
     return true;
 }
@@ -30,20 +31,27 @@ void* GRCServer::findRoom(void* obj){
     UdpServer *temp=(UdpServer *)obj;
     while (true) {
         char s[]="1";
-        temp->sendMsg(s, strlen(s));
+        temp->sendMsg(s, 1);
         sleep(1);
     }
     return NULL;
 }
 
 void* GRCServer::recvRoom(void* obj){
-    UdpServer *temp=(UdpServer *)obj;
+    GRCServer* tempgr=(GRCServer*)obj;
+    UdpServer* tempudps=tempgr->udps;
+    map<string,string>* ras=tempgr->roomAddr;
     while (true) {
         int res;
         char tbuffer[1];
-        if ((res=temp->recvMsg(tbuffer, 1))>0) {
+        if ((res=tempudps->recvMsg(tbuffer, 1))>0) {
             string temps=tbuffer;
             cout<<"net udp msg:"<<temps<<endl;
+            string ss=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
+            cout<<"retome IP:"<<ss<<endl;
+            typedef pair<string, string> tempcon;
+            ras->insert(tempcon(ss,temps));
+            GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
         }
     }
     return NULL;

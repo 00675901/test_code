@@ -42,7 +42,9 @@ bool RoomlistView::init(){
     roomListLayer->setPosition(0, 0);
     this->addChild(roomListLayer);
     
-    grc=new GRCServer();
+    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
+    
+    grc=new GRCServer(&roomAddr);
     if (grc) {
         grc->init();
     }
@@ -52,5 +54,10 @@ bool RoomlistView::init(){
 }
 
 void RoomlistView::closeView(){
+    CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoomList");
     CCDirector::sharedDirector()->popScene();
+}
+
+void RoomlistView::updateRoomlist(){
+    cout<<"updata room list:"<<roomAddr.size()<<endl;
 }
