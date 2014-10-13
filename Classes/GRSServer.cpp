@@ -19,12 +19,12 @@ GRSServer::GRSServer(int maxl,set<int>* cf,deque<string>* ml){
     cout<<"Room Server service BEGIN"<<endl;
 }
 GRSServer::~GRSServer(){
-    pthread_cancel(tidudp);
     pthread_cancel(tidtcp);
+    pthread_cancel(tidudp);
+    pthread_mutex_destroy(&mut);
     FD_ZERO(&rfdset);
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
-    pthread_mutex_destroy(&mut);
     delete udps;
     delete tcps;
     cout<<"Room Server service END"<<endl;
@@ -43,12 +43,11 @@ bool GRSServer::init(){
 }
 
 void* GRSServer::sendRoomService(void* obj){
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     UdpServer *temp=(UdpServer *)obj;
     while (true) {
-//        char s[]="this is udp msg";
-//        int ss=temp->sendMsg(s, strlen(s));
-//        cout<<"udp send:"<<ss<<endl;
-//        sleep(1);
+        pthread_testcancel();
         cout<<"udp server test"<<endl;
         int res;
         char tbuffer[8];
@@ -64,6 +63,8 @@ void* GRSServer::sendRoomService(void* obj){
 }
 
 void* GRSServer::listenRoomService(void* obj){
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     GRSServer *temp=(GRSServer *)obj;
     TcpServer *tempTcps=temp->tcps;
     fd_set *tempRfdset=&(temp->rfdset);
@@ -75,6 +76,7 @@ void* GRSServer::listenRoomService(void* obj){
     int res;
     int maxFD=0;
     while (true) {
+        pthread_testcancel();
         FD_ZERO(tempRfdset);
         FD_ZERO(tempWfdset);
         FD_ZERO(tempEfdset);

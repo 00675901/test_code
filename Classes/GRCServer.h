@@ -24,6 +24,7 @@ private:
     pthread_t sendudp;
     pthread_t recvudp;
     UdpServer *udps;
+    typedef pair<string, string> mapcom;
 public:
     GRCServer(map<string,string>* ra);
     ~GRCServer();
