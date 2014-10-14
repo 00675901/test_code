@@ -44,7 +44,7 @@ bool RoomlistView::init(){
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
     
-    grc=new GRCServer(&roomAddr);
+    grc=new GRCServer(&roomFD,&roomName);
     if (grc) {
         grc->init();
     }
@@ -59,5 +59,6 @@ void RoomlistView::closeView(){
 }
 
 void RoomlistView::updateRoomlist(){
-    cout<<"updata room list:"<<roomAddr.size()<<endl;
+    cout<<"updata room FD:"<<roomFD.size()<<endl;
+    cout<<"updata room NAME:"<<roomName.size()<<endl;
 }

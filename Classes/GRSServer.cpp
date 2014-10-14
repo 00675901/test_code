@@ -25,6 +25,10 @@ GRSServer::~GRSServer(){
     FD_ZERO(&rfdset);
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
+    set<int>::iterator iter;
+    for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
+        close(*iter);
+    }
     delete udps;
     delete tcps;
     cout<<"Room Server service END"<<endl;
@@ -104,16 +108,16 @@ void* GRSServer::listenRoomService(void* obj){
         if (FD_ISSET(tempTcpsSocket, tempRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
                 tempClientFD->insert(res);
-                string ts="a player join the room!";
-                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                tempMsglist->push_back(ts);
-                if (tempMsglist->size()>14) {
-                    tempMsglist->pop_front();
-                }
-                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-                for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
-                    tempTcps->sendMsg(*iter,ts.c_str(),strlen(ts.c_str()));
-                }
+//                string ts="a player join the room!";
+//                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+//                tempMsglist->push_back(ts);
+//                if (tempMsglist->size()>14) {
+//                    tempMsglist->pop_front();
+//                }
+//                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+//                for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
+//                    tempTcps->sendMsg(*iter,ts.c_str(),strlen(ts.c_str()));
+//                }
             }
         }
         iter=tempClientFD->begin();
@@ -133,7 +137,15 @@ void* GRSServer::listenRoomService(void* obj){
                     GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                     GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
                 }else{
-                    tempTcps->sendMsg(*iter,tt,8);
+                    printf("tt=:%s\n",tt);
+                    if (strcmp("0", tt)>0) {
+                        printf("test_0");
+                    }else if (strcmp("1", tt)>0){
+                        printf("test_1");
+                    }else{
+                        printf("noMatch\n");
+                        tempTcps->sendMsg(*iter,tt,8);
+                    }
                     iter++;
                 }
             }else{
