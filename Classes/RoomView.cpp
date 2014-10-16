@@ -120,8 +120,8 @@ void RoomView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoom");
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateMsg");
 //    CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
-    clientFD.clear();
-    msglist.clear();
+//    clientFD.clear();
+//    msglist.clear();
     CCDirector* pDirector = CCDirector::sharedDirector();
     pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
     pDirector->popScene();

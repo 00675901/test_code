@@ -29,6 +29,9 @@ GRSServer::~GRSServer(){
     for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
         close(*iter);
     }
+    clientAddr.clear();
+    clientFD->clear();
+    msglist->clear();
     delete udps;
     delete tcps;
     cout<<"Room Server service END"<<endl;
@@ -36,7 +39,7 @@ GRSServer::~GRSServer(){
 bool GRSServer::init(){
     udps=new UdpServer(50002,50003);
     if (udps->iniServer()) {
-        pthread_create(&tidudp,NULL,GRSServer::sendRoomService,udps);
+        pthread_create(&tidudp,NULL,GRSServer::sendRoomService,this);
     }
     tcps=new TcpServer(50001);
     if ((tcpsSocket=tcps->iniServer(maxLinsten))>0) {
@@ -49,18 +52,24 @@ bool GRSServer::init(){
 void* GRSServer::sendRoomService(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    UdpServer *temp=(UdpServer *)obj;
+    GRSServer *tempgr=(GRSServer *)obj;
+    UdpServer *temp=tempgr->udps;
+    set<string>* ras=&(tempgr->clientAddr);
     while (true) {
         pthread_testcancel();
-        cout<<"udp server test"<<endl;
         int res;
         char tbuffer[8];
         if ((res=temp->recvMsg(tbuffer, 8))>0) {
+            string sa=GUtils::cptos(inet_ntoa(temp->getRemoteRecAddr()->sin_addr));
             string temps=tbuffer;
             cout<<"net udp msg:"<<temps<<endl;
-            char s[]="Game Room";
-            int ss=temp->sendMsg(s, strlen(s));
-            cout<<"udp send:"<<ss<<endl;
+            cout<<"client:"<<sa<<endl;
+            if (ras->count(sa)==0) {
+                ras->insert(sa);
+                char s[]="Game Room";
+                int ss=temp->sendMsg(s, strlen(s));
+                cout<<"udp send:"<<ss<<endl;
+            }
         }
     }
     return NULL;
@@ -79,6 +88,9 @@ void* GRSServer::listenRoomService(void* obj){
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
+//    struct timeval ov;
+//    ov.tv_sec=1;
+//    ov.tv_usec=0;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
@@ -97,7 +109,7 @@ void* GRSServer::listenRoomService(void* obj){
             --iter;
             maxFD=maxFD>*iter?maxFD:*iter;
         }
-        int sel=select(maxFD+1, tempRfdset, tempWfdset, tempEfdset, NULL);
+        int sel=select(maxFD+1, tempRfdset, NULL, NULL, NULL);
         if (sel<0) {
             if (EINTR==errno) {
                 continue;

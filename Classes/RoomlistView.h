@@ -25,7 +25,7 @@ private:
     GRCServer* grc;
 public:
     map<string,string> roomAddr;
-    deque<int> roomFD;
+    set<int> roomFD;
     deque<string> roomName;
     static CCScene* scene();
     RoomlistView();

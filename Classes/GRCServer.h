@@ -10,6 +10,8 @@
 #define __TestCocos2dx__GRCServer__
 
 #include <stdio.h>
+#include <sys/select.h>
+#include <errno.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "GUtils.h"
@@ -22,20 +24,24 @@ using namespace std;
 
 class GRCServer{
 private:
+    pthread_mutex_t mut;
     pthread_t sendudp;
     pthread_t recvudp;
+    pthread_t listentcp;
     UdpServer *udps;
     TcpServer *tcps;
-    deque<int> *roomFD;
+    set<int> *roomFD;
+    set<string> roomAddr;
     deque<string> *roomName;
     typedef pair<string, string> mapcom;
-    set<string> roomAddr;
+    fd_set rfdset;
 public:
-    GRCServer(deque<int>* rfd,deque<string>* rn);
+    GRCServer(set<int>* rfd,deque<string>* rn);
     ~GRCServer();
     bool init();
     static void* findRoom(void* obj);
     static void* recvRoom(void* obj);
+    static void* listenRoomStatus(void* obj);
 };
 
 #endif /* defined(__TestCocos2dx__GRCServer__) */

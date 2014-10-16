@@ -59,6 +59,9 @@ void RoomlistView::closeView(){
 }
 
 void RoomlistView::updateRoomlist(){
-    cout<<"updata room FD:"<<roomFD.size()<<endl;
-    cout<<"updata room NAME:"<<roomName.size()<<endl;
+    set<int>::iterator iter;
+    for (iter=roomFD.begin(); iter!=roomFD.end(); ++iter) {
+//        cout<<"Room Info List:"<<*iter<<" - "<<roomFD[i]<<endl;
+        cout<<"Room Info List:"<<*iter<<endl;
+    }
 }

@@ -35,6 +35,7 @@ private:
     int tcpsSocket;
     UdpServer *udps;
     set<int> *clientFD;
+    set<string> clientAddr;
     deque<string> *msglist;
     fd_set rfdset;
     fd_set wfdset;

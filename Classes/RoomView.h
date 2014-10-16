@@ -10,7 +10,6 @@
 #define __TestCocos2dx__RoomView__
 
 #include <iostream>
-#include <sys/select.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "GSNotificationPool.h"
