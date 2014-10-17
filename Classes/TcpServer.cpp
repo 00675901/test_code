@@ -89,3 +89,7 @@ int TcpServer::sendMsg(int remoteSo,const char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
 }
+
+sockaddr_in* TcpServer::getRemoteRecAddr(){
+    return &remoteAddr;
+}

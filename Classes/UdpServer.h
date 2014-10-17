@@ -20,13 +20,15 @@ private:
     sockaddr_in localAddr;
     sockaddr_in remoteBroAddr;
     sockaddr_in remoteRecAddr;
+    bool isBroad;
 public:
     UdpServer(int listenPort,int remotePort);
     ~UdpServer();
     bool iniServer();
-    sockaddr_in* getRemoteRecAddr();
     int sendMsg(const char* msg,unsigned const int len);
+//    int sendMsg(const char* addr,const char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
+    sockaddr_in* getRemoteRecAddr();
 };
 
 #endif /* defined(__cocos2dxTest__UdpServer__) */

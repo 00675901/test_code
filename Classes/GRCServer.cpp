@@ -31,10 +31,10 @@ GRCServer::~GRCServer(){
     cout<<"Client Server service END"<<endl;
 }
 bool GRCServer::init(){
-    udps=new UdpServer(50003,50002);
+    udps=new UdpServer(50002,50002);
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
-        pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
+//        pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
     }
     tcps=new TcpServer(50001);
     if (tcps->iniServer(-1)) {
@@ -50,7 +50,8 @@ void* GRCServer::findRoom(void* obj){
     while (true) {
         pthread_testcancel();
         char s[]="1";
-        temp->sendMsg(s, 1);
+        int re=temp->sendMsg(s, 1);
+        printf("tttt:%d\n",re);
         sleep(1);
     }
     return NULL;
