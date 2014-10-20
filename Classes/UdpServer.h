@@ -16,17 +16,16 @@
 class UdpServer{
 private:
     int localSo;
-    int remoteSo;
     sockaddr_in localAddr;
     sockaddr_in remoteBroAddr;
     sockaddr_in remoteRecAddr;
     bool isBroad;
 public:
-    UdpServer(int listenPort,int remotePort);
+    UdpServer(int listenPort,int remotePort,bool isBro);
     ~UdpServer();
     bool iniServer();
     int sendMsg(const char* msg,unsigned const int len);
-//    int sendMsg(const char* addr,const char* msg,unsigned const int len);
+    int sendMsg(const char* addr,const char* msg,unsigned const int len);
     int recvMsg(char* buff,unsigned const int len);
     sockaddr_in* getRemoteRecAddr();
 };

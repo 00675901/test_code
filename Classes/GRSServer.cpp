@@ -37,7 +37,7 @@ GRSServer::~GRSServer(){
     cout<<"Room Server service END"<<endl;
 }
 bool GRSServer::init(){
-    udps=new UdpServer(50002,50002);
+    udps=new UdpServer(50002,50003,false);
     if (udps->iniServer()) {
         pthread_create(&tidudp,NULL,GRSServer::sendRoomService,this);
     }
@@ -59,16 +59,17 @@ void* GRSServer::sendRoomService(void* obj){
         pthread_testcancel();
         int res;
         char tbuffer[8];
-        printf("fefefefefefefefef");
         if ((res=temp->recvMsg(tbuffer, 8))>0) {
-            string sa=GUtils::cptos(inet_ntoa(temp->getRemoteRecAddr()->sin_addr));
+//            string sa=GUtils::cptos(inet_ntoa(temp->getRemoteRecAddr()->sin_addr));
+            const char* sa=inet_ntoa(temp->getRemoteRecAddr()->sin_addr);
             string temps=tbuffer;
             cout<<"net udp msg:"<<temps<<endl;
             cout<<"client:"<<sa<<endl;
 //            if (ras->count(sa)==0) {
 //                ras->insert(sa);
                 char s[]="Game Room";
-                int ss=temp->sendMsg(s, strlen(s));
+                int ss=temp->sendMsg(sa,s,strlen(s));
+//            int ss=temp->sendMsg(s,strlen(s));
                 cout<<"udp send:"<<ss<<endl;
 //            }
         }

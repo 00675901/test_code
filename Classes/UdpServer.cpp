@@ -7,7 +7,7 @@
 //
 
 #include "UdpServer.h"
-UdpServer::UdpServer(int listenPort,int remotePort){
+UdpServer::UdpServer(int listenPort,int remotePort,bool isBro){
     //本机地址
     memset(&localAddr, 0, sizeof(localAddr));
     localAddr.sin_family=AF_INET;
@@ -16,13 +16,12 @@ UdpServer::UdpServer(int listenPort,int remotePort){
     //广播地址
     memset(&remoteBroAddr, 0, sizeof(remoteBroAddr));
     remoteBroAddr.sin_family=AF_INET;
-    remoteBroAddr.sin_addr.s_addr=htonl(INADDR_BROADCAST);
     remoteBroAddr.sin_port=htons(remotePort);
+    isBroad=isBro;
     std::cout<<"UDP Service Begin"<<std::endl;
 }
 UdpServer::~UdpServer(){
     close(localSo);
-    close(remoteSo);
     std::cout<<"UDP Service Closed"<<std::endl;
 }
 bool UdpServer::iniServer(){
@@ -34,36 +33,42 @@ bool UdpServer::iniServer(){
             std::cout<<"bind upd fail."<<std::endl;
             return false;
         }else{
-            //设置该套接字为广播类型并且设置远程地址为广播地址
-            const int bOpt = 1;
-            int sets;
-            if ((sets=setsockopt(localSo, SOL_SOCKET, SO_BROADCAST, (char*)&bOpt, sizeof(bOpt)))<0) {
-                std::cout<<"udp set fail"<<std::endl;
-                return false;
-            }else{
-                std::cout<<"UDP Broadcast Init Success:"<<sets<<std::endl;
-                return true;
+            if (isBroad) {
+                //设置该套接字为广播类型并且设置远程地址为广播地址
+                remoteBroAddr.sin_addr.s_addr=htonl(INADDR_BROADCAST);
+                const int bOpt = 1;
+                int sets;
+                if ((sets=setsockopt(localSo, SOL_SOCKET, SO_BROADCAST, (char*)&bOpt, sizeof(bOpt)))<0) {
+                    std::cout<<"udp set fail"<<std::endl;
+                    return false;
+                }else{
+                    std::cout<<"UDP Broadcast Init Success:"<<sets<<std::endl;
+                    return true;
+                }
             }
+            std::cout<<"UDP Init Success:"<<std::endl;
+            return true;
         }
     }
 }
 
 int UdpServer::sendMsg(const char* msg,unsigned const int len){
-    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
-//    if (isBroad) {
-//        se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
-//    }else{
-//        se=-1;
-//    }
+//    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+    int se;
+    if (isBroad) {
+        se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+    }else{
+        se=-1;
+    }
     return se;
 }
-//int UdpServer::sendMsg(const char* addr,const char* msg,unsigned const int len){
-//    if (!isBroad) {
-//        remoteBroAddr.sin_addr.s_addr=inet_addr(addr);
-//    }
-//    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
-//    return se;
-//}
+int UdpServer::sendMsg(const char* addr,const char* msg,unsigned const int len){
+    if (!isBroad) {
+        remoteBroAddr.sin_addr.s_addr=inet_addr(addr);
+    }
+    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+    return se;
+}
 
 int UdpServer::recvMsg(char* buff,unsigned const int len){
     int relen=sizeof(remoteRecAddr);

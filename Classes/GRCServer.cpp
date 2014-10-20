@@ -31,10 +31,10 @@ GRCServer::~GRCServer(){
     cout<<"Client Server service END"<<endl;
 }
 bool GRCServer::init(){
-    udps=new UdpServer(50002,50002);
+    udps=new UdpServer(50003,50002,true);
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
-//        pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
+        pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
     }
     tcps=new TcpServer(50001);
     if (tcps->iniServer(-1)) {
@@ -73,16 +73,16 @@ void* GRCServer::recvRoom(void* obj){
         if ((res=tempudps->recvMsg(tbuffer, 9))>0) {
             string temps=tbuffer;
 //            cout<<"roomFD:"<<temproomFD->size()<<endl;
-//            cout<<"net udp msg:"<<temps<<endl;
-            string ss=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
+            cout<<"net udp msg:"<<temps<<endl;
+//            string ss=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
 //            cout<<"retome IP:"<<ss<<endl;
-            int roomi=temptcps->isConnect(ss.c_str(),50001);
-            if (roomi>0) {
-                pthread_mutex_lock(tempmut);
-                temproomFD->insert(roomi);
-                pthread_mutex_unlock(tempmut);
-                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-            }
+//            int roomi=temptcps->isConnect(ss.c_str(),50001);
+//            if (roomi>0) {
+//                pthread_mutex_lock(tempmut);
+//                temproomFD->insert(roomi);
+//                pthread_mutex_unlock(tempmut);
+//                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+//            }
 //            ras->insert(mapcom(ss,temps));
 //            GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
         }
