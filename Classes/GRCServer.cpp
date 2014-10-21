@@ -60,23 +60,55 @@ void* GRCServer::findRoom(void* obj){
 void* GRCServer::recvRoom(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    pthread_testcancel();
     GRCServer* tempgr=(GRCServer*)obj;
     UdpServer* tempudps=tempgr->udps;
+    int tttt=tempudps->localSo;
     TcpServer* temptcps=tempgr->tcps;
     pthread_mutex_t* tempmut=&(tempgr->mut);
+    fd_set *tempRfdset=&(tempgr->rfdset);
     set<int>* temproomFD=tempgr->roomFD;
     set<string>* ras=&(tempgr->roomAddr);
+    struct timeval ov;
+    ov.tv_sec=3;
+    ov.tv_usec=0;
     while (true) {
         pthread_testcancel();
-        int res;
-        char tbuffer[9];
-        if ((res=tempudps->recvMsg(tbuffer, 9))>0) {
-            string temps=tbuffer;
+        FD_ZERO(tempRfdset);
+        FD_SET(tttt, tempRfdset);
+        printf("select time---------------1\n");
+        int sel=select(tttt+1, tempRfdset, NULL, NULL, &ov);
+        printf("select time---------------2\n");
+        if (sel<0) {
+            if (EINTR==errno) {
+                continue;
+            }else{
+                printf("select faild:%m");
+            }
+        }
+        if (FD_ISSET(tttt, tempRfdset)){
+            char tbuffer[9];
+            int lenr=tempudps->recvMsg(tbuffer, 9);
+            if (lenr>0) {
+                printf("dadadadadadadadad\n");
+            }
+        }else{
+            sleep(5);
+            char s[]="9999";
+            tempudps->sendMsg(s, 4);
+            printf("clear data\n");
+        }
+    }
+        
+        
+//        if ((res=tempudps->recvMsg(tbuffer, 9))>0) {
+//            string temps=tbuffer;
 //            cout<<"roomFD:"<<temproomFD->size()<<endl;
-            cout<<"net udp msg:"<<temps<<endl;
+//            cout<<"net udp msg:"<<temps<<endl;
 //            string ss=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
 //            cout<<"retome IP:"<<ss<<endl;
 //            int roomi=temptcps->isConnect(ss.c_str(),50001);
+//            printf("test------:%d",roomi);
 //            if (roomi>0) {
 //                pthread_mutex_lock(tempmut);
 //                temproomFD->insert(roomi);
@@ -85,8 +117,7 @@ void* GRCServer::recvRoom(void* obj){
 //            }
 //            ras->insert(mapcom(ss,temps));
 //            GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-        }
-    }
+//        }
     return NULL;
 }
 
@@ -115,9 +146,7 @@ void* GRCServer::listenRoomStatus(void* obj){
             --iter;
             maxFD=maxFD>*iter?maxFD:*iter;
         }
-        printf("selet test_________________1\n");
         int sel=select(maxFD+1, tempRfdset, NULL, NULL, &ov);
-        printf("selet test_________________2\n");
         if (sel<0) {
             if (EINTR==errno) {
                 continue;
@@ -127,21 +156,16 @@ void* GRCServer::listenRoomStatus(void* obj){
         }
         iter=tempfd->begin();
         while (iter!=tempfd->end()) {
-            printf("selet test_________________3\n");
             if (FD_ISSET(*iter, tempRfdset)){
-                printf("selet test_________________4\n");
                 char tt[8];
                 int lenr=tempTcps->recvMsg(*iter,tt,8);
                 if (lenr<=0) {
-                    printf("selet test_________________4-1\n");
                     pthread_mutex_lock(tempmut);
                     close(*iter);
                     tempfd->erase(iter++);
                     pthread_mutex_unlock(tempmut);
                     GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
                 }else{
-                    printf("selet test_________________4-2\n");
-                    printf("tt=:%s\n",tt);
                     if (strcmp("0", tt)>0) {
                         printf("test_0");
                     }else if (strcmp("1", tt)>0){
@@ -152,7 +176,6 @@ void* GRCServer::listenRoomStatus(void* obj){
                     iter++;
                 }
             }else{
-                printf("selet test_________________5\n");
                 iter++;
             }
         }

@@ -15,12 +15,12 @@
 
 class UdpServer{
 private:
-    int localSo;
     sockaddr_in localAddr;
     sockaddr_in remoteBroAddr;
     sockaddr_in remoteRecAddr;
     bool isBroad;
 public:
+    int localSo;
     UdpServer(int listenPort,int remotePort,bool isBro);
     ~UdpServer();
     bool iniServer();
