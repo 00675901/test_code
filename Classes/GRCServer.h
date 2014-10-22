@@ -31,9 +31,9 @@ private:
     UdpServer *udps;
     TcpServer *tcps;
     set<int> *roomFD;
-    set<string> roomAddr;
     deque<string> *roomName;
-    typedef pair<string, string> mapcom;
+    set<string> roomAddr;
+    map<const char*, int> roomlistInfo;
     fd_set rfdset;
 public:
     GRCServer(set<int>* rfd,deque<string>* rn);

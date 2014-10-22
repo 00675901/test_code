@@ -59,9 +59,5 @@ void RoomlistView::closeView(){
 }
 
 void RoomlistView::updateRoomlist(){
-    set<int>::iterator iter;
-    for (iter=roomFD.begin(); iter!=roomFD.end(); ++iter) {
-//        cout<<"Room Info List:"<<*iter<<" - "<<roomFD[i]<<endl;
-        cout<<"Room Info List:"<<*iter<<endl;
-    }
+    printf("update room list----------\n");
 }

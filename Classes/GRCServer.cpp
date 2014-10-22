@@ -50,8 +50,8 @@ void* GRCServer::findRoom(void* obj){
     while (true) {
         pthread_testcancel();
         char s[]="1";
-        int re=temp->sendMsg(s, 1);
-        printf("tttt:%d\n",re);
+        temp->sendMsg(s, 1);
+//        printf("tttt:%d\n",re);
         sleep(1);
     }
     return NULL;
@@ -63,22 +63,19 @@ void* GRCServer::recvRoom(void* obj){
     pthread_testcancel();
     GRCServer* tempgr=(GRCServer*)obj;
     UdpServer* tempudps=tempgr->udps;
-    int tttt=tempudps->localSo;
-    TcpServer* temptcps=tempgr->tcps;
+    int tls=tempudps->localSo;
     pthread_mutex_t* tempmut=&(tempgr->mut);
     fd_set *tempRfdset=&(tempgr->rfdset);
-    set<int>* temproomFD=tempgr->roomFD;
-    set<string>* ras=&(tempgr->roomAddr);
+    map<const char*, int>* temproomlist=&(tempgr->roomlistInfo);
     struct timeval ov;
     ov.tv_sec=3;
     ov.tv_usec=0;
+    map<const char*, int>::iterator itm;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
-        FD_SET(tttt, tempRfdset);
-        printf("select time---------------1\n");
-        int sel=select(tttt+1, tempRfdset, NULL, NULL, &ov);
-        printf("select time---------------2\n");
+        FD_SET(tls, tempRfdset);
+        int sel=select(tls+1, tempRfdset, NULL, NULL, &ov);
         if (sel<0) {
             if (EINTR==errno) {
                 continue;
@@ -86,38 +83,38 @@ void* GRCServer::recvRoom(void* obj){
                 printf("select faild:%m");
             }
         }
-        if (FD_ISSET(tttt, tempRfdset)){
+        if (FD_ISSET(tls, tempRfdset)){
             char tbuffer[9];
             int lenr=tempudps->recvMsg(tbuffer, 9);
             if (lenr>0) {
-                printf("dadadadadadadadad\n");
+                const char* rip=inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr);
+                int testCount=3;
+                typedef pair<const char*, int> tp;
+                itm=temproomlist->find(rip);
+                if (itm==temproomlist->end()) {
+                    pthread_mutex_lock(tempmut);
+                    temproomlist->insert(tp(rip,testCount));
+                    pthread_mutex_unlock(tempmut);
+//                    GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+                }//else{
+//                    itm->second=testCount;
+//                }
+                printf("%p:%lu\n",temproomlist,temproomlist->size());
             }
-        }else{
-            sleep(5);
-            char s[]="9999";
-            tempudps->sendMsg(s, 4);
-            printf("clear data\n");
         }
-    }
-        
-        
-//        if ((res=tempudps->recvMsg(tbuffer, 9))>0) {
-//            string temps=tbuffer;
-//            cout<<"roomFD:"<<temproomFD->size()<<endl;
-//            cout<<"net udp msg:"<<temps<<endl;
-//            string ss=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
-//            cout<<"retome IP:"<<ss<<endl;
-//            int roomi=temptcps->isConnect(ss.c_str(),50001);
-//            printf("test------:%d",roomi);
-//            if (roomi>0) {
-//                pthread_mutex_lock(tempmut);
-//                temproomFD->insert(roomi);
-//                pthread_mutex_unlock(tempmut);
+//        itm=temproomlist->begin();
+//        while (itm!=temproomlist->end()) {
+//            (itm->second)--;
+//            printf("room:%s----(%d)\n",itm->first,itm->second);
+//            if (0==itm->second) {
+//                printf("room:%s closed\n",itm->first);
+//                temproomlist->erase(itm++);
 //                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+//            }else{
+//                itm++;
 //            }
-//            ras->insert(mapcom(ss,temps));
-//            GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
 //        }
+    }
     return NULL;
 }
 
