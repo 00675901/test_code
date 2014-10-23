@@ -19,7 +19,7 @@ GRCServer::GRCServer(set<int>* rfd,deque<string>* rn){
 GRCServer::~GRCServer(){
     pthread_cancel(sendudp);
     pthread_cancel(recvudp);
-    pthread_cancel(listentcp);
+    pthread_cancel(listenRS);
     pthread_mutex_destroy(&mut);
     FD_ZERO(&rfdset);
     set<int>::iterator iter;
@@ -35,10 +35,12 @@ bool GRCServer::init(){
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
         pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
+        pthread_create(&listenRS,NULL,GRCServer::listenRoomStatus,this);
     }
+    
     tcps=new TcpServer(50001);
     if (tcps->iniServer(-1)) {
-        pthread_create(&listentcp,NULL,GRCServer::listenRoomStatus,this);
+        
     }
     return true;
 }
@@ -46,12 +48,11 @@ bool GRCServer::init(){
 void* GRCServer::findRoom(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    UdpServer *temp=(UdpServer *)obj;
+    UdpServer* tempudp=(UdpServer *)obj;
     while (true) {
         pthread_testcancel();
         char s[]="1";
-        temp->sendMsg(s, 1);
-//        printf("tttt:%d\n",re);
+        tempudp->sendMsg(s, 1);
         sleep(1);
     }
     return NULL;
@@ -66,16 +67,17 @@ void* GRCServer::recvRoom(void* obj){
     int tls=tempudps->localSo;
     pthread_mutex_t* tempmut=&(tempgr->mut);
     fd_set *tempRfdset=&(tempgr->rfdset);
-    map<const char*, int>* temproomlist=&(tempgr->roomlistInfo);
+    map<string, int>* temproomlist=&(tempgr->roomlistInfo);
     struct timeval ov;
     ov.tv_sec=3;
     ov.tv_usec=0;
-    map<const char*, int>::iterator itm;
+    map<string, int>::iterator itm;
+    typedef pair<string, int> tp;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
         FD_SET(tls, tempRfdset);
-        int sel=select(tls+1, tempRfdset, NULL, NULL, &ov);
+        int sel=select(tls+1, tempRfdset, NULL, NULL, NULL);
         if (sel<0) {
             if (EINTR==errno) {
                 continue;
@@ -87,33 +89,19 @@ void* GRCServer::recvRoom(void* obj){
             char tbuffer[9];
             int lenr=tempudps->recvMsg(tbuffer, 9);
             if (lenr>0) {
-                const char* rip=inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr);
-                int testCount=3;
-                typedef pair<const char*, int> tp;
+                string rip=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
+                int testCount=6;
+                pthread_mutex_lock(tempmut);
                 itm=temproomlist->find(rip);
                 if (itm==temproomlist->end()) {
-                    pthread_mutex_lock(tempmut);
                     temproomlist->insert(tp(rip,testCount));
-                    pthread_mutex_unlock(tempmut);
-//                    GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-                }//else{
-//                    itm->second=testCount;
-//                }
-                printf("%p:%lu\n",temproomlist,temproomlist->size());
+                    GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+                }else{
+                    itm->second=testCount;
+                }
+                pthread_mutex_unlock(tempmut);
             }
         }
-//        itm=temproomlist->begin();
-//        while (itm!=temproomlist->end()) {
-//            (itm->second)--;
-//            printf("room:%s----(%d)\n",itm->first,itm->second);
-//            if (0==itm->second) {
-//                printf("room:%s closed\n",itm->first);
-//                temproomlist->erase(itm++);
-//                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-//            }else{
-//                itm++;
-//            }
-//        }
     }
     return NULL;
 }
@@ -122,60 +110,27 @@ void* GRCServer::listenRoomStatus(void* obj){
     printf("listen Begin\n");
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    GRCServer* tempgr=(GRCServer*)obj;
-    set<int>* tempfd=tempgr->roomFD;
-    fd_set *tempRfdset=&(tempgr->rfdset);
-    TcpServer *tempTcps=tempgr->tcps;
-    pthread_mutex_t* tempmut=&(tempgr->mut);
-    int maxFD=0;
-    struct timeval ov;
-    ov.tv_sec=1;
-    ov.tv_usec=0;
+    GRCServer* temp=(GRCServer *)obj;
+    pthread_mutex_t* tempmut=&(temp->mut);
+    map<string, int>* temproomlist=&(temp->roomlistInfo);
+    map<string, int>::iterator itm;
     while (true) {
         pthread_testcancel();
-        FD_ZERO(tempRfdset);
-        set<int>::iterator iter;
-        for (iter=tempfd->begin(); iter!=tempfd->end(); ++iter) {
-            printf("setFD:%d",*iter);
-            FD_SET(*iter, tempRfdset);
-        }
-        if (!tempfd->empty()) {
-            --iter;
-            maxFD=maxFD>*iter?maxFD:*iter;
-        }
-        int sel=select(maxFD+1, tempRfdset, NULL, NULL, &ov);
-        if (sel<0) {
-            if (EINTR==errno) {
-                continue;
+        pthread_mutex_lock(tempmut);
+        itm=temproomlist->begin();
+        while (itm!=temproomlist->end()) {
+            (itm->second)--;
+            cout<<"room:"<<itm->first<<"-------"<<itm->second<<endl;
+            if (0==itm->second) {
+                cout<<"room:"<<itm->first<<" closed"<<endl;
+                temproomlist->erase(itm++);
+                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
             }else{
-                printf("select faild:%m");
+                itm++;
             }
         }
-        iter=tempfd->begin();
-        while (iter!=tempfd->end()) {
-            if (FD_ISSET(*iter, tempRfdset)){
-                char tt[8];
-                int lenr=tempTcps->recvMsg(*iter,tt,8);
-                if (lenr<=0) {
-                    pthread_mutex_lock(tempmut);
-                    close(*iter);
-                    tempfd->erase(iter++);
-                    pthread_mutex_unlock(tempmut);
-                    GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-                }else{
-                    if (strcmp("0", tt)>0) {
-                        printf("test_0");
-                    }else if (strcmp("1", tt)>0){
-                        printf("test_1");
-                    }else{
-                        printf("noMatch\n");
-                    }
-                    iter++;
-                }
-            }else{
-                iter++;
-            }
-        }
+        pthread_mutex_unlock(tempmut);
+        sleep(1);
     }
     return NULL;
 }

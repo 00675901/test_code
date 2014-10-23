@@ -41,23 +41,23 @@ bool RoomlistView::init(){
     roomListLayer->setAnchorPoint(ccp(0, 0));
     roomListLayer->setPosition(0, 0);
     this->addChild(roomListLayer);
-    
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
-    
     grc=new GRCServer(&roomFD,&roomName);
     if (grc) {
         grc->init();
     }
-    
+    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"RoomlistView INIT"<<endl;
     return true;
 }
 
 void RoomlistView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoomList");
-    CCDirector::sharedDirector()->popScene();
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+    pDirector->popScene();
 }
 
 void RoomlistView::updateRoomlist(){
-    printf("update room list----------\n");
+    printf("------------------update room list----------\n");
 }

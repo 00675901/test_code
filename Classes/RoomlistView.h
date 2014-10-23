@@ -36,4 +36,5 @@ public:
     void updateRoomlist();
 };
 
+
 #endif /* defined(__TestCocos2dx__RoomlistView__) */

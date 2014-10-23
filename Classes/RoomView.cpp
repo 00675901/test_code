@@ -18,21 +18,12 @@ CCScene* RoomView::scene(int maxl){
 
 RoomView::RoomView(int maxl){
     maxLinsten=maxl;
-//    CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 1, true);
     cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
-//    if (maxLinsten>0) {
-        delete grs;
-//    }else{
-//        delete gcs;
-//    }
+    delete grs;
     cout<<"RoomView END"<<endl;
 }
-
-//bool RoomView::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent){
-//    return true;
-//}
 
 bool RoomView::init(){
     // 1. super init first
@@ -71,17 +62,10 @@ bool RoomView::init(){
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
-//    if (maxLinsten>0) {
-        grs=new GRSServer(maxLinsten,&clientFD,&msglist);
-        if (grs) {
-            grs->init();
-        }
-//    }else{
-//        gcs=new GRCServer();
-//        if (gcs) {
-//            gcs->init();
-//        }
-//    }
+    grs=new GRSServer(maxLinsten,&clientFD,&msglist);
+    if (grs) {
+        grs->init();
+    }
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"view init:"<<maxLinsten<<endl;
     return true;
@@ -119,11 +103,7 @@ void RoomView::updateMsglist(){
 void RoomView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoom");
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateMsg");
-//    CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
-//    clientFD.clear();
-//    msglist.clear();
     CCDirector* pDirector = CCDirector::sharedDirector();
     pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
     pDirector->popScene();
-//    this->removeFromParent();
 }

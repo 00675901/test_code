@@ -27,13 +27,13 @@ private:
     pthread_mutex_t mut;
     pthread_t sendudp;
     pthread_t recvudp;
-    pthread_t listentcp;
+    pthread_t listenRS;
     UdpServer *udps;
     TcpServer *tcps;
     set<int> *roomFD;
     deque<string> *roomName;
-    set<string> roomAddr;
-    map<const char*, int> roomlistInfo;
+    set<const char*> roomAddr;
+    map<string, int> roomlistInfo;
     fd_set rfdset;
 public:
     GRCServer(set<int>* rfd,deque<string>* rn);

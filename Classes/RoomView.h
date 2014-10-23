@@ -52,7 +52,6 @@ public:
     deque<string> msglist;
     RCREATE_FUNC(RoomView);
     void closeView();
-//    virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent); 
     void updateRoom();
     void updateMsglist();
 };
