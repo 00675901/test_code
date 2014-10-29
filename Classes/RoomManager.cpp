@@ -53,9 +53,8 @@ bool RoomManager::init(){
 
 void RoomManager::createRoom(){
     CCDirector* pDirector = CCDirector::sharedDirector();
-    CCScene* pScene=RoomView::scene(10);
+    CCScene* pScene=RoomView::scene(10,0);
     pDirector->pushScene(pScene);
-    printf("create.\n");
 }
 
 void RoomManager::joinRoom(){

@@ -14,6 +14,7 @@
 #include "cocos-ext.h"
 #include "GSNotificationPool.h"
 #include "GRCServer.h"
+#include "RoomView.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -24,9 +25,8 @@ private:
     CCLayerColor* roomListLayer;
     GRCServer* grc;
 public:
-    map<string,string> roomAddr;
+    map<int,string> roomlist;
     set<int> roomFD;
-    deque<string> roomName;
     static CCScene* scene();
     RoomlistView();
     ~RoomlistView();
@@ -34,6 +34,7 @@ public:
     virtual bool init();
     void closeView();
     void updateRoomlist();
+    void enterRoom(CCControlButton *sender);
 };
 
 

@@ -80,6 +80,21 @@ int TcpServer::isConnect(const char* addr,int rematePort){
     return remoteSo;
 }
 
+int TcpServer::isConnect(int addr,int rematePort){
+    unsigned int remoteaddrlen=sizeof(remoteAddr);
+    memset(&remoteAddr, 0, remoteaddrlen);
+    remoteAddr.sin_family=AF_INET;
+    remoteAddr.sin_port=htons(rematePort);
+    remoteAddr.sin_addr.s_addr=addr;
+    int remoteSo=socket(AF_INET, SOCK_STREAM, 0);
+    if (connect(remoteSo, (sockaddr *)&remoteAddr, remoteaddrlen)<0) {
+        std::cout<<"connect fail."<<std::endl;
+    }else{
+        std::cout<<"connect success:"<<inet_ntoa(remoteAddr.sin_addr)<<std::endl;
+    }
+    return remoteSo;
+}
+
 int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
     int re=recv(remoteSo,buffer,len,0);
     return re;

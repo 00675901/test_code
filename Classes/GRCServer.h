@@ -30,18 +30,19 @@ private:
     pthread_t listenRS;
     UdpServer *udps;
     TcpServer *tcps;
-    set<int> *roomFD;
-    deque<string> *roomName;
-    set<const char*> roomAddr;
-    map<string, int> roomlistInfo;
+    map<int, string> *roomlistInfo;
+    map<int, int> roomStatus;
     fd_set rfdset;
+    int serverFD;
 public:
-    GRCServer(set<int>* rfd,deque<string>* rn);
+    GRCServer(map<int, string>* rli);
     ~GRCServer();
     bool init();
     static void* findRoom(void* obj);
     static void* recvRoom(void* obj);
     static void* listenRoomStatus(void* obj);
+    
+    int connectRoom(int addr);
 };
 
 #endif /* defined(__TestCocos2dx__GRCServer__) */

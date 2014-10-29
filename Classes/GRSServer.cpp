@@ -53,6 +53,9 @@ void* GRSServer::sendRoomService(void* obj){
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     GRSServer *tempgr=(GRSServer *)obj;
     UdpServer *temp=tempgr->udps;
+    int tls=temp->localSo;
+    string tis="Game Room ";;
+    tis.append(GUtils::itos(tls));
     while (true) {
         pthread_testcancel();
         int res;
@@ -62,7 +65,7 @@ void* GRSServer::sendRoomService(void* obj){
             string temps=tbuffer;
             cout<<"net udp msg:"<<temps<<endl;
             cout<<"client:"<<sa<<endl;
-            char s[]="Game Room";
+            const char* s=tis.c_str();
             int ss=temp->sendMsg(sa,s,strlen(s));
             cout<<"udp send:"<<ss<<endl;
         }
@@ -162,7 +165,6 @@ void* GRSServer::listenRoomService(void* obj){
 
 void GRSServer::sendMsgToAll(const char* msg){
     int msgsize=strlen(msg);
-//    cout<<"Msg length:"<<msgsize<<endl;
     set<int>::iterator iters=clientFD->begin();
     while (iters!=clientFD->end()) {
         tcps->sendMsg(*iters, msg, msgsize);

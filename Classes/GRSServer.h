@@ -1,9 +1,7 @@
 //
 //  GRSServer.h
 //  TestCocos2dx
-//
 //  Created by othink on 14-9-29.
-//
 //
 
 #ifndef __TestCocos2dx__GRSServer__

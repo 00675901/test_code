@@ -8,10 +8,8 @@
 
 #include "GRCServer.h"
 
-GRCServer::GRCServer(set<int>* rfd,deque<string>* rn){
-//    roomAddr=ra;
-    roomFD=rfd;
-    roomName=rn;
+GRCServer::GRCServer(map<int, string>* rli){
+    roomlistInfo=rli;
     FD_ZERO(&rfdset);
     pthread_mutex_init(&mut, NULL);
     cout<<"Client Server service BEGIN"<<endl;
@@ -22,10 +20,6 @@ GRCServer::~GRCServer(){
     pthread_cancel(listenRS);
     pthread_mutex_destroy(&mut);
     FD_ZERO(&rfdset);
-    set<int>::iterator iter;
-    for (iter=roomFD->begin(); iter!=roomFD->end(); ++iter) {
-        close(*iter);
-    }
     delete udps;
     delete tcps;
     cout<<"Client Server service END"<<endl;
@@ -67,12 +61,14 @@ void* GRCServer::recvRoom(void* obj){
     int tls=tempudps->localSo;
     pthread_mutex_t* tempmut=&(tempgr->mut);
     fd_set *tempRfdset=&(tempgr->rfdset);
-    map<string, int>* temproomlist=&(tempgr->roomlistInfo);
+    map<int, int>* temproomlist=&(tempgr->roomStatus);
+    map<int, string>* temproomlistInfo=tempgr->roomlistInfo;
     struct timeval ov;
     ov.tv_sec=3;
     ov.tv_usec=0;
-    map<string, int>::iterator itm;
-    typedef pair<string, int> tp;
+    map<int, int>::iterator itm;
+    typedef pair<int, int> tp;
+    typedef pair<int, string> ts;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
@@ -86,15 +82,17 @@ void* GRCServer::recvRoom(void* obj){
             }
         }
         if (FD_ISSET(tls, tempRfdset)){
-            char tbuffer[9];
-            int lenr=tempudps->recvMsg(tbuffer, 9);
+            char tbuffer[16];
+            int lenr=tempudps->recvMsg(tbuffer, 16);
             if (lenr>0) {
-                string rip=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
+                string temprip=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
+                int rip=tempudps->getRemoteRecAddr()->sin_addr.s_addr;
                 int testCount=6;
                 pthread_mutex_lock(tempmut);
                 itm=temproomlist->find(rip);
                 if (itm==temproomlist->end()) {
                     temproomlist->insert(tp(rip,testCount));
+                    temproomlistInfo->insert(ts(rip,tbuffer));
                     GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
                 }else{
                     itm->second=testCount;
@@ -112,19 +110,23 @@ void* GRCServer::listenRoomStatus(void* obj){
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     GRCServer* temp=(GRCServer *)obj;
     pthread_mutex_t* tempmut=&(temp->mut);
-    map<string, int>* temproomlist=&(temp->roomlistInfo);
-    map<string, int>::iterator itm;
+    map<int, int>* temproomlist=&(temp->roomStatus);
+    map<int, string>* temproomlistInfo=temp->roomlistInfo;
+    map<int, int>::iterator itm;
+    map<int, string>::iterator itminfo;
     while (true) {
         pthread_testcancel();
         pthread_mutex_lock(tempmut);
         itm=temproomlist->begin();
         while (itm!=temproomlist->end()) {
             (itm->second)--;
-            cout<<"room:"<<itm->first<<"-------"<<itm->second<<endl;
+//            cout<<"room:"<<itm->first<<"-------"<<itm->second<<endl;
             if (0==itm->second) {
                 cout<<"room:"<<itm->first<<" closed"<<endl;
-                temproomlist->erase(itm++);
+                itminfo=temproomlistInfo->find(itm->first);
+                temproomlistInfo->erase(itminfo);
                 GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+                temproomlist->erase(itm++);
             }else{
                 itm++;
             }
@@ -133,4 +135,9 @@ void* GRCServer::listenRoomStatus(void* obj){
         sleep(1);
     }
     return NULL;
+}
+
+int GRCServer::connectRoom(int addr){
+    serverFD=tcps->isConnect(addr, 50001);
+    return serverFD;
 }

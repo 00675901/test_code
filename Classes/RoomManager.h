@@ -1,7 +1,6 @@
 //
 //  RoomList.h
 //  TestCocos2dx
-//
 //  Created by GgYyer on 14-8-17.
 //
 //
