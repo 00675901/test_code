@@ -34,14 +34,19 @@ private:
     map<int, int> roomStatus;
     fd_set rfdset;
     int serverFD;
+    GRCServer(void);
+    ~GRCServer(void);
 public:
-    GRCServer(map<int, string>* rli);
-    ~GRCServer();
-    bool init();
+    static GRCServer* shareInstance();
+    //service
+    void startFindRoomService(map<int, string>* rli);
+    void stopFindRoomService();
     static void* findRoom(void* obj);
     static void* recvRoom(void* obj);
     static void* listenRoomStatus(void* obj);
-    
+    //service function
+    void startConnectService();
+    void stopConnectService();
     int connectRoom(int addr);
 };
 

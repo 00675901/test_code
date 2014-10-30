@@ -9,21 +9,24 @@
 #include "RoomView.h"
 #include "stdlib.h"
 
-CCScene* RoomView::scene(int maxl,int serverSta){
+CCScene* RoomView::scene(int maxl){
     CCScene *scene = CCScene::create();
-    RoomView *layer = RoomView::create(maxl,serverSta);
+    RoomView *layer = RoomView::create(maxl);
     scene->addChild(layer);
     return scene;
 }
 
-RoomView::RoomView(int maxl,int serverSta){
+RoomView::RoomView(int maxl){
     maxLinsten=maxl;
-    serverStatus=serverSta;
     cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
-    if (serverStatus==0) {
-        delete grs;
+    if (maxLinsten>0) {
+        grs=GRSServer::shareInstance();
+        if (grs) {
+            grs->stopListenRoomService();
+            grs->stopSendRoomService();
+        }
     }
     cout<<"RoomView END"<<endl;
 }
@@ -58,15 +61,18 @@ bool RoomView::init(){
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
-    
-    if (serverStatus==0) {
-        grs=new GRSServer(maxLinsten,&clientFD,&msglist);
+    if (maxLinsten>0) {
+        grs=GRSServer::shareInstance();
         if (grs) {
-            grs->init();
+            grs->startSendRoomService();
+            grs->startListenRoomService(maxLinsten,&clientFD,&msglist);
         }
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
-        
+//        gcs=GRCServer::shareInstance();
+//        if (gcs) {
+//            
+//        }
     }
     cout<<"view init:"<<maxLinsten<<endl;
     return true;
@@ -80,7 +86,6 @@ void RoomView::updateRoom(){
     while (iter!=clientFD.end()) {
         string ti="player ";
         ti.append(GUtils::itos(*iter));
-//        cout<<ti<<endl;
         CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
         ptext->setAnchorPoint(ccp(0.5,1));
         ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height-(i*40)));
@@ -105,8 +110,13 @@ void RoomView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoom");
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateMsg");
     CCDirector* pDirector = CCDirector::sharedDirector();
-    if (serverStatus==0) {
-        pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+    if (maxLinsten>0) {
+       pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+    }else{
+        gcs=GRCServer::shareInstance();
+        if (gcs) {
+            gcs->stopConnectService();
+        }
     }
     pDirector->popScene();
 }

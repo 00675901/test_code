@@ -8,46 +8,39 @@
 
 #include "GRSServer.h"
 
-GRSServer::GRSServer(int maxl,set<int>* cf,deque<string>* ml){
-    maxLinsten=maxl;
-    clientFD=cf;
-    msglist=ml;
+static GRSServer *gsnInstance;
+GRSServer* GRSServer::shareInstance(){
+    if (!gsnInstance) {
+        gsnInstance=new GRSServer();
+    }
+    return gsnInstance;
+}
+
+GRSServer::GRSServer(void){
     FD_ZERO(&rfdset);
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
     pthread_mutex_init(&mut, NULL);
     cout<<"Room Server service BEGIN"<<endl;
 }
-GRSServer::~GRSServer(){
-    pthread_cancel(tidtcp);
-    pthread_cancel(tidudp);
+GRSServer::~GRSServer(void){
     pthread_mutex_destroy(&mut);
     FD_ZERO(&rfdset);
     FD_ZERO(&wfdset);
     FD_ZERO(&efdset);
-    set<int>::iterator iter;
-    for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
-        close(*iter);
-    }
-    clientFD->clear();
-    msglist->clear();
-    delete udps;
-    delete tcps;
     cout<<"Room Server service END"<<endl;
 }
-bool GRSServer::init(){
+
+void GRSServer::startSendRoomService(){
     udps=new UdpServer(50002,50003,false);
     if (udps->iniServer()) {
         pthread_create(&tidudp,NULL,GRSServer::sendRoomService,this);
     }
-    tcps=new TcpServer(50001);
-    if ((tcpsSocket=tcps->iniServer(maxLinsten))>0) {
-        pthread_create(&tidtcp,NULL,GRSServer::listenRoomService,this);
-    }
-    cout<<"Room Server service Init:"<<maxLinsten<<endl;
-    return true;
 }
-
+void GRSServer::stopSendRoomService(){
+    pthread_cancel(tidudp);
+    delete udps;
+}
 void* GRSServer::sendRoomService(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -73,6 +66,25 @@ void* GRSServer::sendRoomService(void* obj){
     return NULL;
 }
 
+void GRSServer::startListenRoomService(int maxl,set<int>* cf,deque<string>* ml){
+    maxLinsten=maxl;
+    clientFD=cf;
+    msglist=ml;
+    tcps=new TcpServer(50001);
+    if ((tcpsSocket=tcps->iniServer(maxLinsten))>0) {
+        pthread_create(&tidtcp,NULL,GRSServer::listenRoomService,this);
+    }
+}
+void GRSServer::stopListenRoomService(){
+    pthread_cancel(tidtcp);
+    set<int>::iterator iter;
+    for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
+        close(*iter);
+    }
+    clientFD->clear();
+    msglist->clear();
+    delete tcps;
+}
 void* GRSServer::listenRoomService(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
