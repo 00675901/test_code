@@ -37,12 +37,19 @@ private:
     fd_set rfdset;
     fd_set wfdset;
     fd_set efdset;
+    GRSServer(void);
+    ~GRSServer(void);
 public:
-    GRSServer(int maxl,set<int>* cf,deque<string>* ml);
-    ~GRSServer();
-    bool init();
-    static void* listenRoomService(void* obj);
+    static GRSServer* shareInstance();
+    //service
+    void startSendRoomService();
+    void stopSendRoomService();
     static void* sendRoomService(void* obj);
+    //service
+    void startListenRoomService(int maxl,set<int>* cf,deque<string>* ml);
+    void stopListenRoomService();
+    static void* listenRoomService(void* obj);
+    
     void sendMsgToAll(const char* msg);
 };
 

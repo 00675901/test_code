@@ -8,37 +8,40 @@
 
 #include "GRCServer.h"
 
-GRCServer::GRCServer(map<int, string>* rli){
-    roomlistInfo=rli;
+static GRCServer *gsnInstance;
+GRCServer* GRCServer::shareInstance(){
+    if (!gsnInstance) {
+        gsnInstance=new GRCServer();
+    }
+    return gsnInstance;
+}
+GRCServer::GRCServer(void){
     FD_ZERO(&rfdset);
     pthread_mutex_init(&mut, NULL);
     cout<<"Client Server service BEGIN"<<endl;
 }
-GRCServer::~GRCServer(){
-    pthread_cancel(sendudp);
-    pthread_cancel(recvudp);
-    pthread_cancel(listenRS);
+GRCServer::~GRCServer(void){
     pthread_mutex_destroy(&mut);
     FD_ZERO(&rfdset);
-    delete udps;
-    delete tcps;
     cout<<"Client Server service END"<<endl;
 }
-bool GRCServer::init(){
+
+void GRCServer::startFindRoomService(map<int, string>* rli){
+    roomlistInfo=rli;
     udps=new UdpServer(50003,50002,true);
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
         pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
         pthread_create(&listenRS,NULL,GRCServer::listenRoomStatus,this);
     }
-    
-    tcps=new TcpServer(50001);
-    if (tcps->iniServer(-1)) {
-        
-    }
-    return true;
 }
-
+void GRCServer::stopFindRoomService(){
+    pthread_cancel(sendudp);
+    pthread_cancel(recvudp);
+    pthread_cancel(listenRS);
+    roomStatus.clear();
+    delete udps;
+}
 void* GRCServer::findRoom(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -51,7 +54,6 @@ void* GRCServer::findRoom(void* obj){
     }
     return NULL;
 }
-
 void* GRCServer::recvRoom(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -103,7 +105,6 @@ void* GRCServer::recvRoom(void* obj){
     }
     return NULL;
 }
-
 void* GRCServer::listenRoomStatus(void* obj){
     printf("listen Begin\n");
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -137,6 +138,15 @@ void* GRCServer::listenRoomStatus(void* obj){
     return NULL;
 }
 
+void GRCServer::startConnectService(){
+    serverFD=-1;
+    tcps=new TcpServer(50001);
+    tcps->iniServer(-1);
+}
+void GRCServer::stopConnectService(){
+    close(serverFD);
+    delete tcps;
+}
 int GRCServer::connectRoom(int addr){
     serverFD=tcps->isConnect(addr, 50001);
     return serverFD;

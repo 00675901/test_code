@@ -18,7 +18,11 @@ RoomlistView::RoomlistView(){
     cout<<"RoomlistView BEGIN"<<endl;
 }
 RoomlistView::~RoomlistView(){
-    delete grc;
+    grc=GRCServer::shareInstance();
+    if (grc) {
+        grc->stopFindRoomService();
+    }
+    roomlist.clear();
     cout<<"RoomlistView END"<<endl;
 }
 bool RoomlistView::init(){
@@ -42,9 +46,9 @@ bool RoomlistView::init(){
     roomListLayer->setPosition(0, 0);
     this->addChild(roomListLayer);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
-    grc=new GRCServer(&roomlist);
+    grc=GRCServer::shareInstance();
     if (grc) {
-        grc->init();
+        grc->startFindRoomService(&roomlist);
     }
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"RoomlistView INIT"<<endl;
@@ -79,9 +83,10 @@ void RoomlistView::updateRoomlist(){
 
 void RoomlistView::enterRoom(CCControlButton *sender){
     printf("tag:%d\n",sender->getTag());
+    grc->startConnectService();
     if (grc->connectRoom(sender->getTag())>0) {
         CCDirector* pDirector = CCDirector::sharedDirector();
-        CCScene* pScene=RoomView::scene(-1,1);
+        CCScene* pScene=RoomView::scene(0);
         pDirector->pushScene(pScene);
     }else{
         printf("room network error!!!");

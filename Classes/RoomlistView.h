@@ -26,7 +26,6 @@ private:
     GRCServer* grc;
 public:
     map<int,string> roomlist;
-    set<int> roomFD;
     static CCScene* scene();
     RoomlistView();
     ~RoomlistView();
