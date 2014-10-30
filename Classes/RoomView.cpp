@@ -49,7 +49,12 @@ bool RoomView::init(){
     pLabel->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-20));
     this->addChild(pLabel);
     
-    clientLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-60);
+    CCLayerColor* clientLayerME=CCLayerColor::create(ccc4(200,100,100, 255), this->getContentSize().width/5, 30);
+    clientLayerME->setAnchorPoint(ccp(0, 1));
+    clientLayerME->setPosition(0, this->getContentSize().height-100);
+    this->addChild(clientLayerME,3);
+    
+    clientLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width/5, this->getContentSize().height-100);
     clientLayer->setAnchorPoint(ccp(0, 0));
     clientLayer->setPosition(0, 0);
     this->addChild(clientLayer);
@@ -82,7 +87,7 @@ void RoomView::updateRoom(){
     cout<<"client count:"<<clientFD.size()<<endl;
     clientLayer->removeAllChildren();
     set<int>::iterator iter=clientFD.begin();
-    int i=0;
+    int i=1;
     while (iter!=clientFD.end()) {
         string ti="player ";
         ti.append(GUtils::itos(*iter));

@@ -156,15 +156,7 @@ void* GRSServer::listenRoomService(void* obj){
                     GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                     GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
                 }else{
-                    printf("tt=:%s\n",tt);
-                    if (strcmp("0", tt)>0) {
-                        printf("test_0");
-                    }else if (strcmp("1", tt)>0){
-                        printf("test_1");
-                    }else{
-                        printf("noMatch\n");
-                        tempTcps->sendMsg(*iter,tt,8);
-                    }
+                    tempTcps->sendMsg(*iter,tt,8);
                     iter++;
                 }
             }else{

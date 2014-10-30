@@ -38,7 +38,7 @@ static __TYPE__* create(int maxl) { \
 class RoomView : public CCLayerColor{
 private:
     int maxLinsten;
-    int tcpsSocket;
+    int localTcpFD;
     CCLayerColor* clientLayer;
     CCLayerColor* msgLayer;
     GRSServer* grs;

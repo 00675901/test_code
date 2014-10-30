@@ -65,7 +65,7 @@ void RoomlistView::closeView(){
 void RoomlistView::updateRoomlist(){
     roomListLayer->removeAllChildren();
     map<int, string>::iterator iter=roomlist.begin();
-    int i=0;
+    int i=1;
     while (iter!=roomlist.end()) {
         printf("\nIP:%d,name:%s\n\n",iter->first,iter->second.c_str());
         CCControlButton *pbtn=CCControlButton::create(iter->second.c_str(), "Marker Felt", 50);
