@@ -58,32 +58,32 @@ void RoomlistView::closeView(){
     pDirector->popScene();
 }
 
-void RoomlistView::updateRoomlist(){
-    roomListLayer->removeAllChildren();
-    map<int, string>::iterator iter=roomlist.begin();
-    int i=0;
-    while (iter!=roomlist.end()) {
-        printf("\nIP:%d,name:%s\n\n",iter->first,iter->second.c_str());
-        CCControlButton *pbtn=CCControlButton::create(iter->second.c_str(), "Marker Felt", 50);
-        pbtn->setAnchorPoint(ccp(0.5,1));
-        pbtn->setPosition(ccp(roomListLayer->getContentSize().width/2, roomListLayer->getContentSize().height-(i*80)));
-        pbtn->setTitleColorForState(ccWHITE, CCControlStateNormal);
-        pbtn->setTitleColorForState(ccRED, CCControlStateHighlighted);
-        pbtn->setTag(iter->first);
-        pbtn->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomlistView::enterRoom), CCControlEventTouchUpInside);
-        roomListLayer->addChild(pbtn);
-        i++;
-        iter++;
-    }
-}
+//void RoomlistView::updateRoomlist(){
+//    roomListLayer->removeAllChildren();
+//    map<int, string>::iterator iter=roomlist.begin();
+//    int i=0;
+//    while (iter!=roomlist.end()) {
+//        printf("\nIP:%d,name:%s\n\n",iter->first,iter->second.c_str());
+//        CCControlButton *pbtn=CCControlButton::create(iter->second.c_str(), "Marker Felt", 50);
+//        pbtn->setAnchorPoint(ccp(0.5,1));
+//        pbtn->setPosition(ccp(roomListLayer->getContentSize().width/2, roomListLayer->getContentSize().height-(i*80)));
+//        pbtn->setTitleColorForState(ccWHITE, CCControlStateNormal);
+//        pbtn->setTitleColorForState(ccRED, CCControlStateHighlighted);
+//        pbtn->setTag(iter->first);
+//        pbtn->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomlistView::enterRoom), CCControlEventTouchUpInside);
+//        roomListLayer->addChild(pbtn);
+//        i++;
+//        iter++;
+//    }
+//}
 
-void RoomlistView::enterRoom(CCControlButton *sender){
-    printf("tag:%d\n",sender->getTag());
-    if (grc->connectRoom(sender->getTag())>0) {
-        CCDirector* pDirector = CCDirector::sharedDirector();
-        CCScene* pScene=RoomView::scene(-1,1);
-        pDirector->pushScene(pScene);
-    }else{
-        printf("room network error!!!");
-    }
-}
+//void RoomlistView::enterRoom(CCControlButton *sender){
+//    printf("tag:%d\n",sender->getTag());
+//    if (grc->connectRoom(sender->getTag())>0) {
+//        CCDirector* pDirector = CCDirector::sharedDirector();
+//        CCScene* pScene=RoomView::scene(-1,1);
+//        pDirector->pushScene(pScene);
+//    }else{
+//        printf("room network error!!!");
+//    }
+//}
