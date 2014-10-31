@@ -21,6 +21,7 @@ public:
     static void int2bytes(int i,unsigned char* bytes);
     static string itos(int i);
     static string cptos(char* s);
+    static const char* itoc(int i);
 };
 
 #endif /* defined(__TestCocos2dx__GUtils__) */

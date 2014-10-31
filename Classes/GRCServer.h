@@ -28,12 +28,17 @@ private:
     pthread_t sendudp;
     pthread_t recvudp;
     pthread_t listenRS;
+    pthread_t listenRoc;
     UdpServer *udps;
     TcpServer *tcps;
     map<int, string> *roomlistInfo;
     map<int, int> roomStatus;
     fd_set rfdset;
+    fd_set trfdset;
+    int localFD;
     int serverFD;
+    deque<string> *msglist;
+    map<int,int> *romateFD;
     GRCServer(void);
     ~GRCServer(void);
 public:
@@ -45,9 +50,10 @@ public:
     static void* recvRoom(void* obj);
     static void* listenRoomStatus(void* obj);
     //service function
-    void startConnectService();
+    bool initConnectService(int addr);
+    void startConnectService(map<int,int>* cf,deque<string> *ml);
     void stopConnectService();
-    int connectRoom(int addr);
+    static void* listenRoomService(void* obj);
 };
 
 #endif /* defined(__TestCocos2dx__GRCServer__) */

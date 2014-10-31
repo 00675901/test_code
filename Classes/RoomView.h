@@ -23,8 +23,8 @@ USING_NS_CC;
 using namespace std;
 
 #define RCREATE_FUNC(__TYPE__) \
-static __TYPE__* create(int maxl) { \
-    __TYPE__ *pRet = new __TYPE__(maxl); \
+static __TYPE__* create(int maxl,bool isServer) { \
+    __TYPE__ *pRet = new __TYPE__(maxl,isServer); \
     if (pRet && pRet->init()){ \
         pRet->autorelease(); \
         return pRet; \
@@ -37,6 +37,7 @@ static __TYPE__* create(int maxl) { \
 
 class RoomView : public CCLayerColor{
 private:
+    bool isSer;
     int maxLinsten;
     int localTcpFD;
     CCLayerColor* clientLayer;
@@ -44,11 +45,11 @@ private:
     GRSServer* grs;
     GRCServer* gcs;
 public:
-    static CCScene* scene(int maxl);
-    RoomView(int maxl);
+    static CCScene* scene(int maxl,bool isServer);
+    RoomView(int maxl,bool isServer);
     ~RoomView();
     bool init();
-    set<int> clientFD;
+    map<int,int> clientFD;
     deque<string> msglist;
     RCREATE_FUNC(RoomView);
     void closeView();

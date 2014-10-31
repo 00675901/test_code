@@ -56,17 +56,18 @@ void* GRSServer::sendRoomService(void* obj){
         if ((res=temp->recvMsg(tbuffer, 8))>0) {
             const char* sa=inet_ntoa(temp->getRemoteRecAddr()->sin_addr);
             string temps=tbuffer;
-            cout<<"net udp msg:"<<temps<<endl;
-            cout<<"client:"<<sa<<endl;
+//            cout<<"net udp msg:"<<temps<<endl;
+//            cout<<"client:"<<sa<<endl;
             const char* s=tis.c_str();
-            int ss=temp->sendMsg(sa,s,strlen(s));
-            cout<<"udp send:"<<ss<<endl;
+//            int ss=
+            temp->sendMsg(sa,s,strlen(s));
+//            cout<<"udp send:"<<ss<<endl;
         }
     }
     return NULL;
 }
 
-void GRSServer::startListenRoomService(int maxl,set<int>* cf,deque<string>* ml){
+void GRSServer::startListenRoomService(int maxl,map<int,int>* cf,deque<string>* ml){
     maxLinsten=maxl;
     clientFD=cf;
     msglist=ml;
@@ -77,9 +78,9 @@ void GRSServer::startListenRoomService(int maxl,set<int>* cf,deque<string>* ml){
 }
 void GRSServer::stopListenRoomService(){
     pthread_cancel(tidtcp);
-    set<int>::iterator iter;
+    map<int,int>::iterator iter;
     for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
-        close(*iter);
+        close(iter->first);
     }
     clientFD->clear();
     msglist->clear();
@@ -93,11 +94,12 @@ void* GRSServer::listenRoomService(void* obj){
     fd_set *tempRfdset=&(temp->rfdset);
     fd_set *tempWfdset=&(temp->wfdset);
     fd_set *tempEfdset=&(temp->efdset);
-    set<int> *tempClientFD=temp->clientFD;
+    map<int,int> *tempClientFD=temp->clientFD;
     deque<string> *tempMsglist=temp->msglist;
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
+    typedef pair<int, int> tp;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
@@ -106,15 +108,15 @@ void* GRSServer::listenRoomService(void* obj){
         FD_SET(tempTcpsSocket, tempRfdset);
         FD_SET(tempTcpsSocket, tempEfdset);
         maxFD=maxFD>tempTcpsSocket?maxFD:tempTcpsSocket;
-        set<int>::iterator iter;
+        map<int,int>::iterator iter;
         for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
-            FD_SET(*iter, tempRfdset);
-            FD_SET(*iter, tempWfdset);
-            FD_SET(*iter, tempEfdset);
+            FD_SET(iter->first, tempRfdset);
+            FD_SET(iter->first, tempWfdset);
+            FD_SET(iter->first, tempEfdset);
         }
         if (!tempClientFD->empty()) {
             --iter;
-            maxFD=maxFD>*iter?maxFD:*iter;
+            maxFD=maxFD>(iter->first)?maxFD:(iter->first);
         }
         int sel=select(maxFD+1, tempRfdset, NULL, NULL, NULL);
         if (sel<0) {
@@ -126,7 +128,21 @@ void* GRSServer::listenRoomService(void* obj){
         }
         if (FD_ISSET(tempTcpsSocket, tempRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
-                tempClientFD->insert(res);
+                int reAddr=tempTcps->getRemoteRecAddr()->sin_addr.s_addr;
+                const char* sss=GUtils::itoc(tempTcpsSocket);
+                int test1=tempTcps->sendMsg(res, sss, strlen(sss));
+                printf("server send:%d\n",test1);
+                
+                const char* ss=GUtils::itoc(iter->first);
+                int msgsize=strlen(ss);
+                printf("Sendmsg:%s----(%d)\n",ss,msgsize);                
+                map<int,int>::iterator iters=tempClientFD->begin();
+                while (iters!=tempClientFD->end()) {
+                    int test=tempTcps->sendMsg(res, ss, msgsize);
+                    printf("server send:%d\n",test);
+                    iters++;
+                }
+                tempClientFD->insert(tp(res,reAddr));
                 string ts="a player join the room!";
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                 tempMsglist->push_back(ts);
@@ -134,18 +150,19 @@ void* GRSServer::listenRoomService(void* obj){
                     tempMsglist->pop_front();
                 }
                 GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-                for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
-                    tempTcps->sendMsg(*iter,ts.c_str(),strlen(ts.c_str()));
-                }
+//                for (iter=tempClientFD->begin(); iter!=tempClientFD->end(); ++iter) {
+//                    int ttest=tempTcps->sendMsg(*iter,ts.c_str(),strlen(ts.c_str()));
+//                    printf("server send___2:%d\n",ttest);
+//                }
             }
         }
         iter=tempClientFD->begin();
         while (iter!=tempClientFD->end()) {
-            if (FD_ISSET(*iter, tempRfdset)){
+            if (FD_ISSET(iter->first, tempRfdset)){
                 char tt[8];
-                int lenr=tempTcps->recvMsg(*iter,tt,8);
+                int lenr=tempTcps->recvMsg(iter->first,tt,8);
                 if (lenr<=0) {
-                    close(*iter);
+                    close(iter->first);
                     string ts="a player leave the room!";
                     tempClientFD->erase(iter++);
                     temp->sendMsgToAll(ts.c_str());
@@ -156,7 +173,7 @@ void* GRSServer::listenRoomService(void* obj){
                     GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                     GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
                 }else{
-                    tempTcps->sendMsg(*iter,tt,8);
+                    tempTcps->sendMsg(iter->first,tt,8);
                     iter++;
                 }
             }else{
@@ -169,9 +186,9 @@ void* GRSServer::listenRoomService(void* obj){
 
 void GRSServer::sendMsgToAll(const char* msg){
     int msgsize=strlen(msg);
-    set<int>::iterator iters=clientFD->begin();
+    map<int,int>::iterator iters=clientFD->begin();
     while (iters!=clientFD->end()) {
-        tcps->sendMsg(*iters, msg, msgsize);
+        tcps->sendMsg(iters->first, msg, msgsize);
         iters++;
     }
 }

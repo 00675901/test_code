@@ -83,12 +83,9 @@ void RoomlistView::updateRoomlist(){
 
 void RoomlistView::enterRoom(CCControlButton *sender){
     printf("tag:%d\n",sender->getTag());
-    grc->startConnectService();
-    if (grc->connectRoom(sender->getTag())>0) {
+    if(grc->initConnectService(sender->getTag())){
         CCDirector* pDirector = CCDirector::sharedDirector();
-        CCScene* pScene=RoomView::scene(0);
+        CCScene* pScene=RoomView::scene(10,false);
         pDirector->pushScene(pScene);
-    }else{
-        printf("room network error!!!");
     }
 }

@@ -32,7 +32,7 @@ private:
     int maxLinsten;
     int tcpsSocket;
     UdpServer *udps;
-    set<int> *clientFD;
+    map<int,int> *clientFD;
     deque<string> *msglist;
     fd_set rfdset;
     fd_set wfdset;
@@ -46,7 +46,7 @@ public:
     void stopSendRoomService();
     static void* sendRoomService(void* obj);
     //service
-    void startListenRoomService(int maxl,set<int>* cf,deque<string>* ml);
+    void startListenRoomService(int maxl,map<int,int>* cf,deque<string>* ml);
     void stopListenRoomService();
     static void* listenRoomService(void* obj);
     
