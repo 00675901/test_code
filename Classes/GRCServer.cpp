@@ -30,7 +30,7 @@ GRCServer::~GRCServer(void){
 
 void GRCServer::startFindRoomService(map<int, string>* rli){
     roomlistInfo=rli;
-    udps=new UdpServer(50003,50002,true);
+    udps=new UdpServer(52157,52156,true);
     if (udps->iniServer()) {
         pthread_create(&sendudp,NULL,GRCServer::findRoom,udps);
         pthread_create(&recvudp,NULL,GRCServer::recvRoom,this);
@@ -139,9 +139,9 @@ void* GRCServer::listenRoomStatus(void* obj){
 }
 
 bool GRCServer::initConnectService(int addr){
-    tcps=new TcpServer(50001);
+    tcps=new TcpServer(52125);
     if ((localFD=tcps->iniServer(10))>0) {
-        serverFD=tcps->isConnect(addr, 50001);
+        serverFD=tcps->isConnect(addr, 52125);
         if (serverFD>0) {
             return true;
         }

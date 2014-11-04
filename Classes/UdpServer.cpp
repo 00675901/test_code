@@ -26,11 +26,11 @@ UdpServer::~UdpServer(){
 }
 bool UdpServer::iniServer(){
     if((localSo=socket(AF_INET, SOCK_DGRAM, 0))<0){
-        std::cout<<"socket udp fail"<<std::endl;
+        perror("socket udp fail:");
         return false;
     }else{
         if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
-            std::cout<<"bind upd fail."<<std::endl;
+            perror("bind udp fail:");
             return false;
         }else{
             if (isBroad) {
@@ -39,7 +39,7 @@ bool UdpServer::iniServer(){
                 const int bOpt = 1;
                 int sets;
                 if ((sets=setsockopt(localSo, SOL_SOCKET, SO_BROADCAST, (char*)&bOpt, sizeof(bOpt)))<0) {
-                    std::cout<<"udp set fail"<<std::endl;
+                    perror("udp set fail:");
                     return false;
                 }else{
                     std::cout<<"UDP Broadcast Init Success:"<<sets<<std::endl;
