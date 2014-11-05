@@ -32,3 +32,11 @@ const char* GUtils::itoc(int i){
     ss<<i;
     return ss.str().c_str();
 }
+
+int GUtils::ctoi(const char* c){
+    int r;
+    stringstream ss;
+    ss<<c;
+    ss>>r;
+    return r;
+}

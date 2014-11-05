@@ -22,6 +22,7 @@ public:
     static string itos(int i);
     static string cptos(char* s);
     static const char* itoc(int i);
+    static int ctoi(const char* c);
 };
 
 #endif /* defined(__TestCocos2dx__GUtils__) */

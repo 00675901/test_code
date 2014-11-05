@@ -154,6 +154,15 @@ void GRCServer::startConnectService(map<int,int>* cf,deque<string> *ml){
     romateFD=cf;
     typedef pair<int, int> tp;
     romateFD->insert(tp(serverFD,1));
+    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+    
+    string ts="a player join the room!";
+    msglist->push_back(ts);
+    if (msglist->size()>14) {
+        msglist->pop_front();
+    }
+    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+    
     pthread_create(&listenRoc,NULL,GRCServer::listenRoomService,this);
 }
 
@@ -182,6 +191,9 @@ void* GRCServer::listenRoomService(void* obj){
 //    struct timeval ov;
 //    ov.tv_sec=1;
 //    ov.tv_usec=0;
+    typedef pair<int, int> tp;
+    string ts1="a player join the room!";
+    string ts2="a player leave the room!";
     while (true) {
         pthread_testcancel();
         FD_ZERO(temptRfdset);
@@ -203,12 +215,17 @@ void* GRCServer::listenRoomService(void* obj){
                 printf("select faild:%m");
             }
         }
-//        if (FD_ISSET(tempLocalFD, temptRfdset)) {
-//            if ((res=tempTcps->isAccept())>0) {
-//                tempRemotaFD->insert(res);
-//                printf("remota Msg connect!!!!!\n");
-//            }
-//        }
+        if (FD_ISSET(tempLocalFD, temptRfdset)) {
+            if ((res=tempTcps->isAccept())>0) {
+                tempRemotaFD->insert(tp(res,1));
+                tempMsglist->push_back(ts1);
+                if (tempMsglist->size()>14) {
+                    tempMsglist->pop_front();
+                }
+                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+            }
+        }
         iter=tempRemotaFD->begin();
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
@@ -217,21 +234,25 @@ void* GRCServer::listenRoomService(void* obj){
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
-                    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-                }else{
-                    string ts="player ";
-                    ts.append(tt);
-                    ts.append(" join the room!");
-                    tempMsglist->push_back(ts);
+                    tempMsglist->push_back(ts2);
                     if (tempMsglist->size()>14) {
                         tempMsglist->pop_front();
                     }
-                    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-                    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                    printf("remota Msg:%s\n",tt);
+                }else{
+                    int reip=GUtils::ctoi(tt);
+                    printf("remota Msg:%s(--%d--)\n",tt,reip);
+                    int tempremo=tempTcps->isConnect(reip, 52125);
+                    if (tempremo>0) {
+                        tempRemotaFD->insert(tp(tempremo,1));
+                    }
+                    tempMsglist->push_back(ts1);
+                    if (tempMsglist->size()>14) {
+                        tempMsglist->pop_front();
+                    }
                     iter++;
                 }
+                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
             }else{
                 iter++;
             }

@@ -102,9 +102,29 @@ int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
     return re;
 }
 
+int TcpServer::recvMsg(int remoteSo,char* buffer){
+    char bufhead[4];
+    int ret=recv(remoteSo, bufhead, 4, MSG_WAITALL);
+    int dl=0;
+    if (ret==4) {
+        dl=GUtils::ctoi(bufhead);
+    }
+    if (dl>0) {
+        ret=recv(remoteSo, buffer, dl, MSG_WAITALL);
+    }
+    printf("test:%s\n",buffer);
+    return ret;
+}
+
 int TcpServer::sendMsg(int remoteSo,const char* msg,unsigned const int len){
     int re=send(remoteSo, msg, len, 0);
     return re;
+}
+
+int sendMsg(int remoteSo,const char* msg){
+    
+    
+    return 0;
 }
 
 sockaddr_in* TcpServer::getRemoteRecAddr(){
