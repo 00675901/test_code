@@ -27,12 +27,6 @@ string GUtils::cptos(char* s){
     return ss;
 }
 
-const char* GUtils::itoc(int i){
-    stringstream ss;
-    ss<<i;
-    return ss.str().c_str();
-}
-
 int GUtils::ctoi(const char* c){
     int r;
     stringstream ss;

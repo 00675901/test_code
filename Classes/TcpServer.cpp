@@ -97,10 +97,10 @@ int TcpServer::isConnect(int addr,int rematePort){
     return remoteSo;
 }
 
-int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
-    int re=recv(remoteSo,buffer,len,0);
-    return re;
-}
+//int TcpServer::recvMsg(int remoteSo,char* buffer,unsigned const int len){
+//    int re=recv(remoteSo,buffer,len,0);
+//    return re;
+//}
 
 int TcpServer::recvMsg(int remoteSo,char* buffer){
     char bufhead[4];
@@ -109,22 +109,33 @@ int TcpServer::recvMsg(int remoteSo,char* buffer){
     if (ret==4) {
         dl=GUtils::ctoi(bufhead);
     }
+    printf("head:%s=====%d\n",bufhead,dl);
     if (dl>0) {
         ret=recv(remoteSo, buffer, dl, MSG_WAITALL);
     }
-    printf("test:%s\n",buffer);
+    printf("recv content:%s\n",buffer);
+    printf("recv content size:====%d\n",ret);
     return ret;
 }
 
-int TcpServer::sendMsg(int remoteSo,const char* msg,unsigned const int len){
-    int re=send(remoteSo, msg, len, 0);
-    return re;
-}
+//int TcpServer::sendMsg(int remoteSo,char* msg,unsigned const int len){
+//    int re=send(remoteSo, msg, len, 0);
+//    return re;
+//}
 
-int sendMsg(int remoteSo,const char* msg){
-    
-    
-    return 0;
+int TcpServer::sendMsg(int remoteSo,char* msg){
+    const int len=strlen(msg);
+    printf("length:%d-----%04d\n",len,len);
+    char sh[4];
+    sprintf(sh,"%04d",len);
+    printf("send head:%s\n",sh);
+    int isl=len+4;
+    char sendchar[isl];
+    sprintf(sendchar,"%s%s",sh,msg);
+    printf("send content:%s  size:%d\n",sendchar,isl);
+    int re=send(remoteSo,sendchar,isl,MSG_WAITALL);
+    printf("send result:%d\n",re);
+    return re;
 }
 
 sockaddr_in* TcpServer::getRemoteRecAddr(){

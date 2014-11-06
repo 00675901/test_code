@@ -50,7 +50,7 @@ public:
     void stopListenRoomService();
     static void* listenRoomService(void* obj);
     
-    void sendMsgToAll(const char* msg);
+    void sendMsgToAll(char* msg);
 };
 
 #endif /* defined(__TestCocos2dx__GRSServer__) */

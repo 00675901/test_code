@@ -229,8 +229,10 @@ void* GRCServer::listenRoomService(void* obj){
         iter=tempRemotaFD->begin();
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
-                char tt[100];
-                int lenr=tempTcps->recvMsg(iter->first,tt,100);
+                char tt[]="";
+                int lenr=tempTcps->recvMsg(iter->first,tt);
+                printf("test recv:%s\n",tt);
+                
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
@@ -239,16 +241,16 @@ void* GRCServer::listenRoomService(void* obj){
                         tempMsglist->pop_front();
                     }
                 }else{
-                    int reip=GUtils::ctoi(tt);
-                    printf("remota Msg:%s(--%d--)\n",tt,reip);
-                    int tempremo=tempTcps->isConnect(reip, 52125);
-                    if (tempremo>0) {
-                        tempRemotaFD->insert(tp(tempremo,1));
-                    }
-                    tempMsglist->push_back(ts1);
-                    if (tempMsglist->size()>14) {
-                        tempMsglist->pop_front();
-                    }
+//                    int reip=GUtils::ctoi(tt);
+//                    printf("remota Msg:%s(--%d--)\n",tt,reip);
+//                    int tempremo=tempTcps->isConnect(reip, 52125);
+//                    if (tempremo>0) {
+//                        tempRemotaFD->insert(tp(tempremo,1));
+//                    }
+//                    tempMsglist->push_back(ts1);
+//                    if (tempMsglist->size()>14) {
+//                        tempMsglist->pop_front();
+//                    }
                     iter++;
                 }
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);

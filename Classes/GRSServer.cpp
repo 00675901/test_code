@@ -125,15 +125,15 @@ void* GRSServer::listenRoomService(void* obj){
         if (FD_ISSET(tempTcpsSocket, tempRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
                 int reAddr=tempTcps->getRemoteRecAddr()->sin_addr.s_addr;
+                tempClientFD->insert(tp(res,reAddr));
                 map<int,int>::iterator iters=tempClientFD->begin();
                 while (iters!=tempClientFD->end()) {
-                    const char* ss=GUtils::itoc(iter->second);
-                    int msgsize=strlen(ss);
-                    int test=tempTcps->sendMsg(res, ss, msgsize);
-                    printf("server send:%d\n",test);
+                    char ss[]="";
+                    sprintf(ss,"%d",iter->second);
+                    tempTcps->sendMsg(res,ss);
                     iters++;
                 }
-                tempClientFD->insert(tp(res,reAddr));
+                
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                 
                 string ts="a player join the room!";
@@ -147,8 +147,8 @@ void* GRSServer::listenRoomService(void* obj){
         iter=tempClientFD->begin();
         while (iter!=tempClientFD->end()) {
             if (FD_ISSET(iter->first, tempRfdset)){
-                char tt[8];
-                int lenr=tempTcps->recvMsg(iter->first,tt,8);
+                char tt;
+                int lenr=tempTcps->recvMsg(iter->first,&tt);
                 if (lenr<=0) {
                     close(iter->first);
                     string ts="a player leave the room!";
@@ -172,11 +172,11 @@ void* GRSServer::listenRoomService(void* obj){
     return NULL;
 }
 
-void GRSServer::sendMsgToAll(const char* msg){
-    int msgsize=strlen(msg);
+void GRSServer::sendMsgToAll(char* msg){
+//    int msgsize=strlen(msg);
     map<int,int>::iterator iters=clientFD->begin();
     while (iters!=clientFD->end()) {
-        tcps->sendMsg(iters->first, msg, msgsize);
+        tcps->sendMsg(iters->first, msg);
         iters++;
     }
 }
