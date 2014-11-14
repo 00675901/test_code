@@ -13,6 +13,7 @@
 #include <errno.h>
 #include "cocos2d.h"
 #include "cocos-ext.h"
+#include "GRServer.h"
 #include "TcpServer.h"
 #include "UdpServer.h"
 #include "pthread.h"
@@ -23,7 +24,7 @@ USING_NS_CC;
 
 using namespace std;
 
-class GRSServer{
+class GRSServer:public GRServer{
 private:
     pthread_t tidudp;
     pthread_t tidtcp;
@@ -32,11 +33,9 @@ private:
     int maxLinsten;
     int tcpsSocket;
     UdpServer *udps;
-    map<int,int> *clientFD;
+    map<int,unsigned int> *clientFD;
     deque<string> *msglist;
     fd_set rfdset;
-    fd_set wfdset;
-    fd_set efdset;
     GRSServer(void);
     ~GRSServer(void);
 public:
@@ -46,7 +45,7 @@ public:
     void stopSendRoomService();
     static void* sendRoomService(void* obj);
     //service
-    void startListenRoomService(int maxl,map<int,int>* cf,deque<string>* ml);
+    void startListenRoomService(int maxl,map<int,unsigned int>* cf,deque<string>* ml);
     void stopListenRoomService();
     static void* listenRoomService(void* obj);
     

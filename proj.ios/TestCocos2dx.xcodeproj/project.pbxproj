@@ -246,6 +246,7 @@
 		B071C1E019D9340C00D15D2B /* GRSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GRSServer.cpp */; };
 		B071C1E319D9342000D15D2B /* GRCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GRCServer.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
+		B0C63DA01A10946F00A7DF61 /* GRServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C63D9E1A10946F00A7DF61 /* GRServer.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712461292920000B8313A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB212928DE900B8313A /* libxml2.dylib */; };
@@ -778,6 +779,8 @@
 		B071C1E219D9342000D15D2B /* GRCServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRCServer.h; path = ../Classes/GRCServer.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
+		B0C63D9E1A10946F00A7DF61 /* GRServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRServer.cpp; path = ../Classes/GRServer.cpp; sourceTree = "<group>"; };
+		B0C63D9F1A10946F00A7DF61 /* GRServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRServer.h; path = ../Classes/GRServer.h; sourceTree = "<group>"; };
 		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
 		B0F477DA19A476A700074890 /* GUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUtils.h; path = ../Classes/GUtils.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -1954,6 +1957,8 @@
 				C83B2B85199E39F500BD875B /* TcpServer.h */,
 				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
 				C83B2B87199E39F500BD875B /* UdpServer.h */,
+				B0C63D9E1A10946F00A7DF61 /* GRServer.cpp */,
+				B0C63D9F1A10946F00A7DF61 /* GRServer.h */,
 				B071C1DE19D9340C00D15D2B /* GRSServer.cpp */,
 				B071C1DF19D9340C00D15D2B /* GRSServer.h */,
 				B071C1E119D9342000D15D2B /* GRCServer.cpp */,
@@ -2260,6 +2265,7 @@
 				379BB9AB17F03F3700829B88 /* CCTweenFunction.cpp in Sources */,
 				379BB9AC17F03F3700829B88 /* CCUtilMath.cpp in Sources */,
 				379BB9AD17F03F3700829B88 /* CCComAttribute.cpp in Sources */,
+				B0C63DA01A10946F00A7DF61 /* GRServer.cpp in Sources */,
 				379BB9AE17F03F3700829B88 /* CCComAudio.cpp in Sources */,
 				B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */,
 				379BB9AF17F03F3700829B88 /* CCComController.cpp in Sources */,

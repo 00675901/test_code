@@ -149,7 +149,7 @@ bool GRCServer::initConnectService(int addr){
     return false;
 }
 
-void GRCServer::startConnectService(map<int,int>* cf,deque<string> *ml){
+void GRCServer::startConnectService(map<int,unsigned int>* cf,deque<string> *ml){
     msglist=ml;
     romateFD=cf;
     typedef pair<int, int> tp;
@@ -168,7 +168,7 @@ void GRCServer::startConnectService(map<int,int>* cf,deque<string> *ml){
 
 void GRCServer::stopConnectService(){
     pthread_cancel(listenRoc);
-    map<int,int>::iterator iter;
+    map<int,unsigned int>::iterator iter;
     for (iter=romateFD->begin(); iter!=romateFD->end(); ++iter) {
         close(iter->first);
     }
@@ -184,14 +184,14 @@ void* GRCServer::listenRoomService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localFD;
     fd_set *temptRfdset=&(temp->trfdset);
-    map<int,int> *tempRemotaFD=temp->romateFD;
+    map<int,unsigned int> *tempRemotaFD=temp->romateFD;
     deque<string> *tempMsglist=temp->msglist;
     int res;
     int maxFD=0;
 //    struct timeval ov;
 //    ov.tv_sec=1;
 //    ov.tv_usec=0;
-    typedef pair<int, int> tp;
+    typedef pair<int,unsigned int> tp;
     string ts1="a player join the room!";
     string ts2="a player leave the room!";
     while (true) {
@@ -199,7 +199,7 @@ void* GRCServer::listenRoomService(void* obj){
         FD_ZERO(temptRfdset);
         FD_SET(tempLocalFD, temptRfdset);
         maxFD=maxFD>tempLocalFD?maxFD:tempLocalFD;
-        map<int,int>::iterator iter;
+        map<int,unsigned int>::iterator iter;
         for (iter=tempRemotaFD->begin(); iter!=tempRemotaFD->end(); ++iter) {
             FD_SET(iter->first, temptRfdset);
         }
@@ -217,6 +217,10 @@ void* GRCServer::listenRoomService(void* obj){
         }
         if (FD_ISSET(tempLocalFD, temptRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
+                GCData tgcd;
+                tgcd.opcode=GCOPC_SCNAME;
+                tgcd.data="testNAME";
+                temp->sendData(res,&tgcd);
                 tempRemotaFD->insert(tp(res,1));
                 tempMsglist->push_back(ts1);
                 if (tempMsglist->size()>14) {
@@ -224,15 +228,15 @@ void* GRCServer::listenRoomService(void* obj){
                 }
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                 GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+            }else{
+                printf("asdfasadf:%d\n",res);
             }
         }
         iter=tempRemotaFD->begin();
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
-                char tt[]="";
-                int lenr=tempTcps->recvMsg(iter->first,tt);
-                printf("test recv:%s\n",tt);
-                
+                GCData tgcd;
+                int lenr=temp->recvData(iter->first,&tgcd);
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
@@ -241,16 +245,26 @@ void* GRCServer::listenRoomService(void* obj){
                         tempMsglist->pop_front();
                     }
                 }else{
-//                    int reip=GUtils::ctoi(tt);
-//                    printf("remota Msg:%s(--%d--)\n",tt,reip);
-//                    int tempremo=tempTcps->isConnect(reip, 52125);
-//                    if (tempremo>0) {
-//                        tempRemotaFD->insert(tp(tempremo,1));
-//                    }
-//                    tempMsglist->push_back(ts1);
-//                    if (tempMsglist->size()>14) {
-//                        tempMsglist->pop_front();
-//                    }
+                    string topc=tgcd.opcode;
+                    string tdat=tgcd.data;
+                    if (topc.compare(GCOPC_SIP)==0) {
+                        int reip=GUtils::ctoi(tdat.c_str());
+                        printf("remota Msg:%s(--%d--)\n",tdat.c_str(),reip);
+                        int tempremo=tempTcps->isConnect(reip, 52125);
+                        if (tempremo>0) {
+                            tempRemotaFD->insert(tp(tempremo,1));
+                        }
+                        tempMsglist->push_back(ts1);
+                        if (tempMsglist->size()>14) {
+                            tempMsglist->pop_front();
+                        }
+                    }else if (topc.compare(GCOPC_SSNAME)==0){
+                        printf("recv content opcode:%s\n",tgcd.opcode.c_str());
+                        printf("recv content data:%s\n",tgcd.data.c_str());
+                    }else if (topc.compare(GCOPC_SCNAME)==0){
+                        printf("recv content opcode:%s\n",tgcd.opcode.c_str());
+                        printf("recv content data:%s\n",tgcd.data.c_str());
+                    }
                     iter++;
                 }
                 GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);

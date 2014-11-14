@@ -18,11 +18,12 @@
 #include "GSNotificationPool.h"
 #include "UdpServer.h"
 #include "TcpServer.h"
+#include "GRServer.h"
 #include "pthread.h"
 
 using namespace std;
 
-class GRCServer{
+class GRCServer:public GRServer{
 private:
     pthread_mutex_t mut;
     pthread_t sendudp;
@@ -31,14 +32,14 @@ private:
     pthread_t listenRoc;
     UdpServer *udps;
     TcpServer *tcps;
-    map<int, string> *roomlistInfo;
-    map<int, int> roomStatus;
+    map<int,string> *roomlistInfo;
+    map<int,int> roomStatus;
     fd_set rfdset;
     fd_set trfdset;
     int localFD;
     int serverFD;
     deque<string> *msglist;
-    map<int,int> *romateFD;
+    map<int,unsigned int> *romateFD;
     GRCServer(void);
     ~GRCServer(void);
 public:
@@ -51,7 +52,7 @@ public:
     static void* listenRoomStatus(void* obj);
     //service function
     bool initConnectService(int addr);
-    void startConnectService(map<int,int>* cf,deque<string> *ml);
+    void startConnectService(map<int,unsigned int>* cf,deque<string> *ml);
     void stopConnectService();
     static void* listenRoomService(void* obj);
 };

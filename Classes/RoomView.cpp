@@ -87,7 +87,7 @@ bool RoomView::init(){
 void RoomView::updateRoom(){
     cout<<"client count:"<<clientFD.size()<<endl;
     clientLayer->removeAllChildren();
-    map<int,int>::iterator iter=clientFD.begin();
+    map<int,unsigned int>::iterator iter=clientFD.begin();
     int i=1;
     while (iter!=clientFD.end()) {
         string ti="player ";

@@ -49,7 +49,7 @@ public:
     RoomView(int maxl,bool isServer);
     ~RoomView();
     bool init();
-    map<int,int> clientFD;
+    map<int,unsigned int> clientFD;
     deque<string> msglist;
     RCREATE_FUNC(RoomView);
     void closeView();
