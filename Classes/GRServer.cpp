@@ -28,9 +28,7 @@ int GRServer::sendData(int fd,GCData* pack){
         char sendchar[isl];
         sprintf(sendchar,"%s%s%s",sh,pack->opcode.c_str(),pack->data.c_str());
         int re=send(fd,sendchar,isl,MSG_WAITALL);
-        
         printf("sendCC:%s\nsend:%s\nopc:%s\nsize:%d\n",sh,pack->data.c_str(),pack->opcode.c_str(),re);
-        
         return re;
     }else{
         printf("sendData error:opcode Error\n");

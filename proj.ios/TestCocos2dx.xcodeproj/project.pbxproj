@@ -245,6 +245,7 @@
 		B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B059E3E219E62F58009AF4DE /* RoomlistView.cpp */; };
 		B071C1E019D9340C00D15D2B /* GRSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GRSServer.cpp */; };
 		B071C1E319D9342000D15D2B /* GRCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GRCServer.cpp */; };
+		B07412131A3034E200F1189B /* CCTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07412111A3034E200F1189B /* CCTextField.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
 		B0C63DA01A10946F00A7DF61 /* GRServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C63D9E1A10946F00A7DF61 /* GRServer.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
@@ -777,6 +778,8 @@
 		B071C1DF19D9340C00D15D2B /* GRSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRSServer.h; path = ../Classes/GRSServer.h; sourceTree = "<group>"; };
 		B071C1E119D9342000D15D2B /* GRCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRCServer.cpp; path = ../Classes/GRCServer.cpp; sourceTree = "<group>"; };
 		B071C1E219D9342000D15D2B /* GRCServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRCServer.h; path = ../Classes/GRCServer.h; sourceTree = "<group>"; };
+		B07412111A3034E200F1189B /* CCTextField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTextField.cpp; sourceTree = "<group>"; };
+		B07412121A3034E200F1189B /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
 		B0C63D9E1A10946F00A7DF61 /* GRServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRServer.cpp; path = ../Classes/GRServer.cpp; sourceTree = "<group>"; };
@@ -1321,6 +1324,7 @@
 		15AA9C4015B7EC450033D6C2 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B07412101A3034E200F1189B /* lib */,
 				1AFAF8B516D35DE700DB1158 /* HelloWorldScene.cpp */,
 				1AFAF8B616D35DE700DB1158 /* HelloWorldScene.h */,
 				B0088B0F19AB324A00D8C4D3 /* sys */,
@@ -1971,6 +1975,16 @@
 			name = sys;
 			sourceTree = "<group>";
 		};
+		B07412101A3034E200F1189B /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B07412111A3034E200F1189B /* CCTextField.cpp */,
+				B07412121A3034E200F1189B /* CCTextField.h */,
+			);
+			name = lib;
+			path = ../Classes/lib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1998,7 +2012,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TestCocos2dx" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2190,6 +2204,7 @@
 				15A3DA501682F826002FB0C5 /* CCControlStepper.cpp in Sources */,
 				15A3DA511682F826002FB0C5 /* CCControlSwitch.cpp in Sources */,
 				298B29C718D0668400C1920F /* WidgetReader.cpp in Sources */,
+				B07412131A3034E200F1189B /* CCTextField.cpp in Sources */,
 				15A3DA521682F826002FB0C5 /* CCControlUtils.cpp in Sources */,
 				375BD4C41868411B0024609E /* TriggerBase.cpp in Sources */,
 				298B29BB18D0668400C1920F /* CheckBoxReader.cpp in Sources */,
@@ -2312,7 +2327,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = NO;
@@ -2363,7 +2377,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = YES;
@@ -2410,13 +2423,14 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7 i386";
 			};
@@ -2425,13 +2439,14 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "armv6 armv7 i386";
 			};

@@ -8,13 +8,14 @@
 
 #include "RoomlistView.h"
 
-CCScene* RoomlistView::scene(){
+CCScene* RoomlistView::scene(const char* username){
     CCScene *scene = CCScene::create();
-    RoomlistView *layer = RoomlistView::create();
+    RoomlistView *layer = RoomlistView::create(username);
     scene->addChild(layer);
     return scene;
 }
-RoomlistView::RoomlistView(){
+RoomlistView::RoomlistView(const char* username){
+    uname=username;
     cout<<"RoomlistView BEGIN"<<endl;
 }
 RoomlistView::~RoomlistView(){
@@ -85,7 +86,7 @@ void RoomlistView::enterRoom(CCControlButton *sender){
     printf("tag:%d\n",sender->getTag());
     if(grc->initConnectService(sender->getTag())){
         CCDirector* pDirector = CCDirector::sharedDirector();
-        CCScene* pScene=RoomView::scene(10,false);
+        CCScene* pScene=RoomView::scene(10,false,uname);
         pDirector->pushScene(pScene);
     }
 }

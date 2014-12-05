@@ -43,7 +43,7 @@ void* GRSServer::sendRoomService(void* obj){
     GRSServer *tempgr=(GRSServer *)obj;
     UdpServer *temp=tempgr->udps;
     int tls=temp->localSo;
-    string tis="Game Room ";;
+    string tis="中文测试 ";
     tis.append(GUtils::itos(tls));
     while (true) {
         pthread_testcancel();

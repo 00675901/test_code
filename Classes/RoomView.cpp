@@ -9,16 +9,17 @@
 #include "RoomView.h"
 #include "stdlib.h"
 
-CCScene* RoomView::scene(int maxl,bool isServer){
+CCScene* RoomView::scene(int maxl,bool isServer,const char* uname){
     CCScene *scene = CCScene::create();
-    RoomView *layer = RoomView::create(maxl,isServer);
+    RoomView *layer = RoomView::create(maxl,isServer,uname);
     scene->addChild(layer);
     return scene;
 }
 
-RoomView::RoomView(int maxl,bool isServer){
+RoomView::RoomView(int maxl,bool isServer,const char* username){
     maxLinsten=maxl;
     isSer=isServer;
+    uname=username;
     cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
@@ -54,8 +55,7 @@ bool RoomView::init(){
     clientLayer->setAnchorPoint(ccp(0, 0));
     clientLayer->setPosition(0, 0);
     this->addChild(clientLayer);
-    
-    CCLabelTTF *ptext=CCLabelTTF::create("YOU", "Marker Felt", 30);
+    CCLabelTTF *ptext=CCLabelTTF::create(uname, "Marker Felt", 30);
     ptext->setAnchorPoint(ccp(0.5,1));
     ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height));
     this->addChild(ptext);

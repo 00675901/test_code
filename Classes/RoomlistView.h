@@ -20,16 +20,30 @@ USING_NS_CC_EXT;
 USING_NS_CC;
 using namespace std;
 
+#define RLCREATE_FUNC(__TYPE__) \
+static __TYPE__* create(const char* username) { \
+    __TYPE__ *pRet = new __TYPE__(username); \
+    if (pRet && pRet->init()){ \
+        pRet->autorelease(); \
+        return pRet; \
+    }else{ \
+        delete pRet; \
+        pRet = NULL; \
+        return NULL; \
+    } \
+}
+
 class RoomlistView : public CCLayerColor{
 private:
     CCLayerColor* roomListLayer;
     GRCServer* grc;
+    const char* uname;
 public:
     map<int,string> roomlist;
-    static CCScene* scene();
-    RoomlistView();
+    static CCScene* scene(const char* username);
+    RoomlistView(const char* username);
     ~RoomlistView();
-    CREATE_FUNC(RoomlistView);
+    RLCREATE_FUNC(RoomlistView);
     virtual bool init();
     void closeView();
     void updateRoomlist();

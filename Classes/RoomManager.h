@@ -14,9 +14,13 @@
 #include "cocos-ext.h"
 #include "RoomView.h"
 #include "RoomlistView.h"
+#include "CCTextField.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
+
+#define USER_NAME_FIELD_DEFAULT "User Name"
+
 using namespace std;
 
 class RoomManager : public CCLayer
@@ -25,6 +29,7 @@ private:
     CCLayerColor *listView;
     CCControlButton *createBtn;
     CCControlButton *joinBtn;
+    CCTextField *userNameField;
 public:
     static CCScene* scene();
     RoomManager();

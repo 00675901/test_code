@@ -48,17 +48,35 @@ bool RoomManager::init(){
     joinBtn->setAnchorPoint(ccp(0.5,0.5));
     joinBtn->setPosition(visibleSize.width/2, visibleSize.height/2-50);
     this->addChild(joinBtn);
+    
+    userNameField=CCTextField::textFieldWithPlaceHolder(USER_NAME_FIELD_DEFAULT,"", 50.0f);
+    userNameField->setDimensions(CCSizeMake(400, 50));
+    userNameField->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-100));
+    userNameField->setAnchorPoint(ccp(0.5,1));
+    this->addChild(userNameField);
+    
     return true;
 }
 
 void RoomManager::createRoom(){
-    CCDirector* pDirector = CCDirector::sharedDirector();
-    CCScene* pScene=RoomView::scene(10,true);
-    pDirector->pushScene(pScene);
+    const char* username=userNameField->getString();
+    cout<<"username:"<<username<<endl;    
+    if(strlen(username)!=0){
+        CCDirector* pDirector = CCDirector::sharedDirector();
+        CCScene* pScene=RoomView::scene(10,true,username);
+        pDirector->pushScene(pScene);
+    }else{
+        printf("Input your user name please!\n");
+    }
 }
 
 void RoomManager::joinRoom(){
-    CCDirector* pDirector = CCDirector::sharedDirector();
-    CCScene* pScene=RoomlistView::scene();
-    pDirector->pushScene(pScene);
+    const char* username=userNameField->getString();
+    if(strlen(username)!=0){
+        CCDirector* pDirector = CCDirector::sharedDirector();
+        CCScene* pScene=RoomlistView::scene(username);
+        pDirector->pushScene(pScene);
+    }else{
+        printf("Input your user name please!\n");
+    }
 }
