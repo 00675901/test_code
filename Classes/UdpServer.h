@@ -24,10 +24,10 @@ public:
     UdpServer(int listenPort,int remotePort,bool isBro);
     ~UdpServer();
     bool iniServer();
-    int sendMsg(const char* msg,unsigned const int len);
-    int sendMsg(const char* addr,const char* msg,unsigned const int len);
+    int sendMsg(const char* msg);
+    int sendMsg(const char* addr,const char* msg);
     int recvMsg(char* buff,unsigned const int len);
-    sockaddr_in* getRemoteRecAddr();
+    int recvMsg(char* buff,unsigned const int len,sockaddr_in* remoteRecAD);
 };
 
 #endif /* defined(__cocos2dxTest__UdpServer__) */

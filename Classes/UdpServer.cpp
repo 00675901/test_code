@@ -52,20 +52,22 @@ bool UdpServer::iniServer(){
     }
 }
 
-int UdpServer::sendMsg(const char* msg,unsigned const int len){
-//    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+int UdpServer::sendMsg(const char* msg){
     int se;
     if (isBroad) {
+        int len=strlen(msg);
         se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
     }else{
         se=-1;
     }
     return se;
 }
-int UdpServer::sendMsg(const char* addr,const char* msg,unsigned const int len){
+
+int UdpServer::sendMsg(const char* addr,const char* msg){
     if (!isBroad) {
         remoteBroAddr.sin_addr.s_addr=inet_addr(addr);
     }
+    int len=strlen(msg);
     int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
     return se;
 }
@@ -76,6 +78,8 @@ int UdpServer::recvMsg(char* buff,unsigned const int len){
     return recvMsgSize;
 }
 
-sockaddr_in* UdpServer::getRemoteRecAddr(){
-    return &remoteRecAddr;
+int UdpServer::recvMsg(char* buff,unsigned const int len,sockaddr_in* remoteRecAD){
+    int relen=sizeof(*remoteRecAD);
+    int recvMsgSize=recvfrom(localSo,buff,len,0,(sockaddr *)remoteRecAD,(socklen_t*)&relen);
+    return recvMsgSize;
 }

@@ -14,8 +14,6 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "GRServer.h"
-#include "TcpServer.h"
-#include "UdpServer.h"
 #include "pthread.h"
 #include "GSNotificationPool.h"
 #include "GUtils.h"

@@ -84,10 +84,11 @@ void* GRCServer::recvRoom(void* obj){
         }
         if (FD_ISSET(tls, tempRfdset)){
             char tbuffer[16];
-            int lenr=tempudps->recvMsg(tbuffer, 16);
+            sockaddr_in remoteRecAddr;
+            int lenr=tempudps->recvMsg(tbuffer,16,&remoteRecAddr);
             if (lenr>0) {
-                string temprip=GUtils::cptos(inet_ntoa(tempudps->getRemoteRecAddr()->sin_addr));
-                int rip=tempudps->getRemoteRecAddr()->sin_addr.s_addr;
+                string temprip=GUtils::cptos(inet_ntoa(remoteRecAddr.sin_addr));
+                int rip=remoteRecAddr.sin_addr.s_addr;
                 int testCount=6;
                 pthread_mutex_lock(tempmut);
                 itm=temproomlist->find(rip);
@@ -217,10 +218,10 @@ void* GRCServer::listenRoomService(void* obj){
         }
         if (FD_ISSET(tempLocalFD, temptRfdset)) {
             if ((res=tempTcps->isAccept())>0) {
-                GCData tgcd;
+                TcpServer::GCData tgcd;
                 tgcd.opcode=GCOPC_SCNAME;
                 tgcd.data="testNAME";
-                temp->sendData(res,&tgcd);
+                tempTcps->sendData(res,&tgcd);
                 tempRemotaFD->insert(tp(res,1));
                 tempMsglist->push_back(ts1);
                 if (tempMsglist->size()>14) {
@@ -235,8 +236,8 @@ void* GRCServer::listenRoomService(void* obj){
         iter=tempRemotaFD->begin();
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
-                GCData tgcd;
-                int lenr=temp->recvData(iter->first,&tgcd);
+                TcpServer::GCData tgcd;
+                int lenr=tempTcps->recvData(iter->first,&tgcd);
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);

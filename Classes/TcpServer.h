@@ -22,17 +22,21 @@ private:
     sockaddr_in localAddr;
     sockaddr_in remoteAddr;
 public:
+    typedef struct{
+        string opcode;
+        string data;
+    }GCData;
     TcpServer(int listenPort);
     ~TcpServer();
     int iniServer(int instenCount);
     int isAccept();
+    int isAccept(sockaddr_in* remoteAD);
     int isConnect(const char* addr,int rematePort);
     int isConnect(int addr,int rematePort);
-//    int sendMsg(int remoteSo,char* msg,unsigned const int len);
-    int sendMsg(int remoteSo,char* msg);
-//    int recvMsg(int remoteSo,char* buff,unsigned const int len);
-    int recvMsg(int remoteSo,char* buffer);
-    sockaddr_in* getRemoteRecAddr();
+    int sendData(int remoteSo,char* msg);
+    int recvData(int remoteSo,char* buffer);
+    int sendData(int fd,GCData* pack);
+    int recvData(int fd,GCData* pack);
 };
 #endif /* defined(__cocos2dxTest__TcpServer__) */
 
