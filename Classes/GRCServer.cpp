@@ -51,7 +51,7 @@ void* GRCServer::findRoom(void* obj){
     while (true) {
         pthread_testcancel();
         char s[]="1";
-        tempudp->sendMsg(s, 1);
+        tempudp->sendMsg(s);
         sleep(1);
     }
     return NULL;
@@ -83,9 +83,9 @@ void* GRCServer::recvRoom(void* obj){
             }
         }
         if (FD_ISSET(tls, tempRfdset)){
-            char tbuffer[16];
+            char tbuffer[1024];
             sockaddr_in remoteRecAddr;
-            int lenr=tempudps->recvMsg(tbuffer,16,&remoteRecAddr);
+            int lenr=tempudps->recvMsg(tbuffer,1024,&remoteRecAddr);
             if (lenr>0) {
                 string temprip=GUtils::cptos(inet_ntoa(remoteRecAddr.sin_addr));
                 int rip=remoteRecAddr.sin_addr.s_addr;
@@ -150,30 +150,21 @@ bool GRCServer::initConnectService(int addr){
     return false;
 }
 
-void GRCServer::startConnectService(map<int,unsigned int>* cf,deque<string> *ml){
-    msglist=ml;
-    romateFD=cf;
+void GRCServer::startConnectService(const char* uname){
+    localName=uname;
     typedef pair<int, int> tp;
-    romateFD->insert(tp(serverFD,1));
-    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
     
-    string ts="a player join the room!";
-    msglist->push_back(ts);
-    if (msglist->size()>14) {
-        msglist->pop_front();
-    }
-    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+    TcpServer::GCData tgcd;
+    tgcd.opcode=GCOPC_SCNAME;
+    tgcd.data=localName;
+    tcps->sendData(serverFD,&tgcd);
     
+    romateFDIP.insert(tp(serverFD,1));
     pthread_create(&listenRoc,NULL,GRCServer::listenRoomService,this);
 }
 
 void GRCServer::stopConnectService(){
     pthread_cancel(listenRoc);
-    map<int,unsigned int>::iterator iter;
-    for (iter=romateFD->begin(); iter!=romateFD->end(); ++iter) {
-        close(iter->first);
-    }
-    romateFD->clear();
     close(localFD);
     delete tcps;
 }
@@ -185,14 +176,17 @@ void* GRCServer::listenRoomService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localFD;
     fd_set *temptRfdset=&(temp->trfdset);
-    map<int,unsigned int> *tempRemotaFD=temp->romateFD;
-    deque<string> *tempMsglist=temp->msglist;
+    map<int,unsigned int> *tempRemotaFD=&(temp->romateFDIP);
+    map<int,string> *tempRemotaName=&(temp->romateFDName);
+    deque<string> *tempMsglist=&(temp->loglist);
+    string tempLocalName=temp->localName;
     int res;
     int maxFD=0;
 //    struct timeval ov;
 //    ov.tv_sec=1;
 //    ov.tv_usec=0;
     typedef pair<int,unsigned int> tp;
+    typedef pair<int,string> ta;
     string ts1="a player join the room!";
     string ts2="a player leave the room!";
     while (true) {
@@ -220,7 +214,7 @@ void* GRCServer::listenRoomService(void* obj){
             if ((res=tempTcps->isAccept())>0) {
                 TcpServer::GCData tgcd;
                 tgcd.opcode=GCOPC_SCNAME;
-                tgcd.data="testNAME";
+                tgcd.data=tempLocalName;
                 tempTcps->sendData(res,&tgcd);
                 tempRemotaFD->insert(tp(res,1));
                 tempMsglist->push_back(ts1);
@@ -240,6 +234,11 @@ void* GRCServer::listenRoomService(void* obj){
                 int lenr=tempTcps->recvData(iter->first,&tgcd);
                 if (lenr<=0) {
                     close(iter->first);
+                    
+                    map<int,string>::iterator tempiter=tempRemotaName->find(iter->first);
+                    if (tempiter!=tempRemotaName->end()) {
+                        tempRemotaName->erase(tempiter);
+                    }
                     tempRemotaFD->erase(iter++);
                     tempMsglist->push_back(ts2);
                     if (tempMsglist->size()>14) {
@@ -260,6 +259,14 @@ void* GRCServer::listenRoomService(void* obj){
                             tempMsglist->pop_front();
                         }
                     }else if (topc.compare(GCOPC_SSNAME)==0){
+                        tempRemotaName->insert(ta(iter->first,tdat));
+                        
+                        string ts="a player join the room!";
+                        tempMsglist->push_back(ts);
+                        if (tempMsglist->size()>14) {
+                            tempMsglist->pop_front();
+                        }
+                        
                         printf("recv content opcode:%s\n",tgcd.opcode.c_str());
                         printf("recv content data:%s\n",tgcd.data.c_str());
                     }else if (topc.compare(GCOPC_SCNAME)==0){

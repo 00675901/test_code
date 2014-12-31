@@ -24,7 +24,6 @@ RoomView::RoomView(int maxl,bool isServer,const char* username){
 }
 RoomView::~RoomView(){
     if (isSer) {
-        grs=GRSServer::shareInstance();
         if (grs) {
             grs->stopListenRoomService();
             grs->stopSendRoomService();
@@ -71,13 +70,13 @@ bool RoomView::init(){
         grs=GRSServer::shareInstance();
         if (grs) {
             grs->startSendRoomService();
-            grs->startListenRoomService(maxLinsten,&clientFD,&msglist);
+            grs->startListenRoomService(maxLinsten,uname);
         }
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
         gcs=GRCServer::shareInstance();
         if (gcs) {
-            gcs->startConnectService(&clientFD,&msglist);
+            gcs->startConnectService(uname);
         }
     }
     cout<<"view init:"<<maxLinsten<<endl;
@@ -85,13 +84,18 @@ bool RoomView::init(){
 }
 
 void RoomView::updateRoom(){
+    map<int,string> clientFD;
+    if (isSer) {
+        clientFD=grs->getRomateFDName();
+    }else{
+        clientFD=gcs->getRomateFDName();
+    }
     cout<<"client count:"<<clientFD.size()<<endl;
     clientLayer->removeAllChildren();
-    map<int,unsigned int>::iterator iter=clientFD.begin();
+    map<int,string>::iterator iter=clientFD.begin();
     int i=1;
     while (iter!=clientFD.end()) {
-        string ti="player ";
-        ti.append(GUtils::itos(iter->first));
+        string ti=iter->second;
         CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
         ptext->setAnchorPoint(ccp(0.5,1));
         ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height-(i*40)));
@@ -102,6 +106,12 @@ void RoomView::updateRoom(){
 }
 
 void RoomView::updateMsglist(){
+    deque<string> msglist;
+    if (isSer) {
+        msglist=grs->getLoglist();
+    }else{
+        msglist=gcs->getLoglist();
+    }
     cout<<"msg count:"<<msglist.size()<<endl;
     msgLayer->removeAllChildren();
     for (int i=0; i<msglist.size(); i++) {

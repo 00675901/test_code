@@ -11,8 +11,6 @@
 
 #include <sys/select.h>
 #include <errno.h>
-#include "cocos2d.h"
-#include "cocos-ext.h"
 #include "GRServer.h"
 #include "pthread.h"
 #include "GSNotificationPool.h"
@@ -31,8 +29,6 @@ private:
     int maxLinsten;
     int tcpsSocket;
     UdpServer *udps;
-    map<int,unsigned int> *clientFD;
-    deque<string> *msglist;
     fd_set rfdset;
     GRSServer(void);
     ~GRSServer(void);
@@ -43,7 +39,7 @@ public:
     void stopSendRoomService();
     static void* sendRoomService(void* obj);
     //service
-    void startListenRoomService(int maxl,map<int,unsigned int>* cf,deque<string>* ml);
+    void startListenRoomService(int maxl,const char* uname);
     void stopListenRoomService();
     static void* listenRoomService(void* obj);
     

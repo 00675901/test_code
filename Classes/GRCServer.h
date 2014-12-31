@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <sys/select.h>
 #include <errno.h>
-#include "cocos2d.h"
-#include "cocos-ext.h"
 #include "GUtils.h"
 #include "GSNotificationPool.h"
 #include "GRServer.h"
@@ -50,7 +48,7 @@ public:
     static void* listenRoomStatus(void* obj);
     //service function
     bool initConnectService(int addr);
-    void startConnectService(map<int,unsigned int>* cf,deque<string> *ml);
+    void startConnectService(const char* uname);
     void stopConnectService();
     static void* listenRoomService(void* obj);
 };

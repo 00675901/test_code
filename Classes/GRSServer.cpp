@@ -42,9 +42,8 @@ void* GRSServer::sendRoomService(void* obj){
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     GRSServer *tempgr=(GRSServer *)obj;
     UdpServer *temp=tempgr->udps;
-    int tls=temp->localSo;
-    string tis="中文测试 ";
-    tis.append(GUtils::itos(tls));
+    string tis=tempgr->localName;
+    tis.append("的房间");
     while (true) {
         pthread_testcancel();
         int res;
@@ -54,16 +53,15 @@ void* GRSServer::sendRoomService(void* obj){
             const char* sa=inet_ntoa(remoteRecAddr.sin_addr);
             string temps=tbuffer;
             const char* s=tis.c_str();
-            temp->sendMsg(sa,s,strlen(s));
+            temp->sendMsg(sa,s);
         }
     }
     return NULL;
 }
 
-void GRSServer::startListenRoomService(int maxl,map<int,unsigned int>* cf,deque<string>* ml){
+void GRSServer::startListenRoomService(int maxl,const char* uname){
     maxLinsten=maxl;
-    clientFD=cf;
-    msglist=ml;
+    localName=uname;
     tcps=new TcpServer(52125);
     if ((tcpsSocket=tcps->iniServer(maxLinsten))>0) {
         pthread_create(&tidtcp,NULL,GRSServer::listenRoomService,this);
@@ -72,11 +70,6 @@ void GRSServer::startListenRoomService(int maxl,map<int,unsigned int>* cf,deque<
 void GRSServer::stopListenRoomService(){
     pthread_cancel(tidtcp);
     map<int,unsigned int>::iterator iter;
-    for (iter=clientFD->begin(); iter!=clientFD->end(); ++iter) {
-        close(iter->first);
-    }
-    clientFD->clear();
-    msglist->clear();
     delete tcps;
 }
 void* GRSServer::listenRoomService(void* obj){
@@ -85,12 +78,15 @@ void* GRSServer::listenRoomService(void* obj){
     GRSServer *temp=(GRSServer *)obj;
     TcpServer *tempTcps=temp->tcps;
     fd_set *tempRfdset=&(temp->rfdset);
-    map<int,unsigned int> *tempClientFD=temp->clientFD;
-    deque<string> *tempMsglist=temp->msglist;
+    map<int,unsigned int> *tempClientFD=&(temp->romateFDIP);
+    map<int,string> *tempClientName=&(temp->romateFDName);
+    deque<string> *tempMsglist=&(temp->loglist);
+    string templocalName=temp->localName;
     int tempTcpsSocket=temp->tcpsSocket;
     int res;
     int maxFD=0;
     typedef pair<int,unsigned int> tp;
+    typedef pair<int,string> ta;
     while (true) {
         pthread_testcancel();
         FD_ZERO(tempRfdset);
@@ -130,17 +126,8 @@ void* GRSServer::listenRoomService(void* obj){
                 tempClientFD->insert(tp(res,reAddr));
                 TcpServer::GCData tgcds;
                 tgcds.opcode=GCOPC_SSNAME;
-                tgcds.data="TEST_SERVER";
+                tgcds.data=templocalName;
                 tempTcps->sendData(res, &tgcds);
-                
-                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                
-                string ts="a player join the room!";
-                tempMsglist->push_back(ts);
-                if (tempMsglist->size()>14) {
-                    tempMsglist->pop_front();
-                }
-                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
             }
         }
         iter=tempClientFD->begin();
@@ -151,6 +138,12 @@ void* GRSServer::listenRoomService(void* obj){
                 if (lenr<=0) {
                     close(iter->first);
                     string ts="a player leave the room!";
+                    
+                    map<int,string>::iterator tempiter=tempClientName->find(iter->first);
+                    if (tempiter!=tempClientName->end()) {
+                        tempClientName->erase(tempiter);
+                    }
+                    
                     tempClientFD->erase(iter++);
                     tempMsglist->push_back(ts);
                     if (tempMsglist->size()>14) {
@@ -159,6 +152,16 @@ void* GRSServer::listenRoomService(void* obj){
                     GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
                     GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
                 }else{
+                    if (tgcd.opcode==GCOPC_SCNAME) {
+                        tempClientName->insert(ta(iter->first,tgcd.data));
+                        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                        string ts="a player join the room!";
+                        tempMsglist->push_back(ts);
+                        if (tempMsglist->size()>14) {
+                            tempMsglist->pop_front();
+                        }
+                        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+                    }
                     iter++;
                 }
             }else{
@@ -171,8 +174,8 @@ void* GRSServer::listenRoomService(void* obj){
 
 void GRSServer::sendMsgToAll(char* msg){
 //    int msgsize=strlen(msg);
-    map<int,unsigned int>::iterator iters=clientFD->begin();
-    while (iters!=clientFD->end()) {
+    map<int,unsigned int>::iterator iters=romateFDIP.begin();
+    while (iters!=romateFDIP.end()) {
 //        tcps->sendMsg(iters->first, msg);
         iters++;
     }

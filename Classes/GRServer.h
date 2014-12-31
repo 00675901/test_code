@@ -11,6 +11,7 @@
 
 #include <stdio.h> 
 #include "cocos2d.h"
+#include "cocos-ext.h"
 #include "TcpServer.h"
 #include "UdpServer.h"
 
@@ -20,8 +21,20 @@ USING_NS_CC;
 #define GCOPC_SSNAME ((char *)"sn01")
 #define GCOPC_SCNAME ((char *)"sn02")
 
-class GRServer{
+class GRServer{ 
 public:
+    unsigned int localIP;
+    const char* localName;
+    map<int,unsigned int> romateFDIP;
+    map<int,string> romateFDName;
+    deque<string> loglist;
+    
+    unsigned int getLocalIP();
+    const char* getLocalName();
+    map<int,unsigned int> getRomateFDIP();
+    map<int,string> getRomateFDName();
+    deque<string> getLoglist();
+    
     GRServer(void);
     ~GRServer(void);
 };

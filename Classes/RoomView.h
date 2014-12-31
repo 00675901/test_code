@@ -50,8 +50,6 @@ public:
     RoomView(int maxl,bool isServer,const char* username);
     ~RoomView();
     bool init();
-    map<int,unsigned int> clientFD;
-    deque<string> msglist;
     RCREATE_FUNC(RoomView);
     void closeView();
     void updateRoom();
