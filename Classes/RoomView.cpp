@@ -23,12 +23,6 @@ RoomView::RoomView(int maxl,bool isServer,const char* username){
     cout<<"RoomView BEGIN"<<endl;
 }
 RoomView::~RoomView(){
-    if (isSer) {
-        if (grs) {
-            grs->stopListenRoomService();
-            grs->stopSendRoomService();
-        }
-    }
     cout<<"RoomView END"<<endl;
 }
 
@@ -127,9 +121,12 @@ void RoomView::closeView(){
     CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateMsg");
     CCDirector* pDirector = CCDirector::sharedDirector();
     if (isSer) {
-       pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+        pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
+        if(grs){
+            grs->stopListenRoomService();
+            grs->stopSendRoomService();
+        }
     }else{
-        gcs=GRCServer::shareInstance();
         if (gcs) {
             gcs->stopConnectService();
         }

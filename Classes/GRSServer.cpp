@@ -70,6 +70,12 @@ void GRSServer::startListenRoomService(int maxl,const char* uname){
 void GRSServer::stopListenRoomService(){
     pthread_cancel(tidtcp);
     map<int,unsigned int>::iterator iter;
+    for (iter=romateFDIP.begin(); iter!=romateFDIP.end(); ++iter) {
+        close(iter->first);
+    }
+    romateFDIP.clear();
+    romateFDName.clear();
+    loglist.clear();
     delete tcps;
 }
 void* GRSServer::listenRoomService(void* obj){
@@ -124,10 +130,6 @@ void* GRSServer::listenRoomService(void* obj){
                     iters++;
                 }
                 tempClientFD->insert(tp(res,reAddr));
-                TcpServer::GCData tgcds;
-                tgcds.opcode=GCOPC_SSNAME;
-                tgcds.data=templocalName;
-                tempTcps->sendData(res, &tgcds);
             }
         }
         iter=tempClientFD->begin();
@@ -161,6 +163,10 @@ void* GRSServer::listenRoomService(void* obj){
                             tempMsglist->pop_front();
                         }
                         GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+                        TcpServer::GCData tgcds;
+                        tgcds.opcode=GCOPC_SSNAME;
+                        tgcds.data=templocalName;
+                        tempTcps->sendData(res, &tgcds);
                     }
                     iter++;
                 }

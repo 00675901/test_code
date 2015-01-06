@@ -144,6 +144,8 @@ bool GRCServer::initConnectService(int addr){
     if ((localFD=tcps->iniServer(10))>0) {
         serverFD=tcps->isConnect(addr, 52125);
         if (serverFD>0) {
+            typedef pair<int, int> tp;
+            romateFDIP.insert(tp(serverFD,addr));
             return true;
         }
     }
@@ -152,19 +154,24 @@ bool GRCServer::initConnectService(int addr){
 
 void GRCServer::startConnectService(const char* uname){
     localName=uname;
-    typedef pair<int, int> tp;
     
     TcpServer::GCData tgcd;
     tgcd.opcode=GCOPC_SCNAME;
     tgcd.data=localName;
     tcps->sendData(serverFD,&tgcd);
     
-    romateFDIP.insert(tp(serverFD,1));
     pthread_create(&listenRoc,NULL,GRCServer::listenRoomService,this);
 }
 
 void GRCServer::stopConnectService(){
     pthread_cancel(listenRoc);
+    map<int,unsigned int>::iterator iter;
+    for (iter=romateFDIP.begin(); iter!=romateFDIP.end(); ++iter) {
+        close(iter->first);
+    }
+    romateFDIP.clear();
+    romateFDName.clear();
+    loglist.clear();
     close(localFD);
     delete tcps;
 }
@@ -211,20 +218,16 @@ void* GRCServer::listenRoomService(void* obj){
             }
         }
         if (FD_ISSET(tempLocalFD, temptRfdset)) {
-            if ((res=tempTcps->isAccept())>0) {
+            sockaddr_in remoteAddr;
+            if ((res=tempTcps->isAccept(&remoteAddr))>0) {
+                unsigned int reAddr=remoteAddr.sin_addr.s_addr;
                 TcpServer::GCData tgcd;
                 tgcd.opcode=GCOPC_SCNAME;
                 tgcd.data=tempLocalName;
                 tempTcps->sendData(res,&tgcd);
-                tempRemotaFD->insert(tp(res,1));
-                tempMsglist->push_back(ts1);
-                if (tempMsglist->size()>14) {
-                    tempMsglist->pop_front();
-                }
-                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+                tempRemotaFD->insert(tp(res,reAddr));
             }else{
-                printf("asdfasadf:%d\n",res);
+                printf("客户端连接客户端失败~");
             }
         }
         iter=tempRemotaFD->begin();
@@ -252,26 +255,23 @@ void* GRCServer::listenRoomService(void* obj){
                         printf("remota Msg:%s(--%d--)\n",tdat.c_str(),reip);
                         int tempremo=tempTcps->isConnect(reip, 52125);
                         if (tempremo>0) {
-                            tempRemotaFD->insert(tp(tempremo,1));
+                            TcpServer::GCData temptd;
+                            temptd.opcode=GCOPC_SCNAME;
+                            temptd.data=tempLocalName;
+                            tempTcps->sendData(tempremo,&temptd);
+                            tempRemotaFD->insert(tp(tempremo,reip));
                         }
                         tempMsglist->push_back(ts1);
                         if (tempMsglist->size()>14) {
                             tempMsglist->pop_front();
                         }
-                    }else if (topc.compare(GCOPC_SSNAME)==0){
+                    }else if (topc.compare(GCOPC_SSNAME)==0||topc.compare(GCOPC_SCNAME)==0){
                         tempRemotaName->insert(ta(iter->first,tdat));
-                        
                         string ts="a player join the room!";
                         tempMsglist->push_back(ts);
                         if (tempMsglist->size()>14) {
                             tempMsglist->pop_front();
                         }
-                        
-                        printf("recv content opcode:%s\n",tgcd.opcode.c_str());
-                        printf("recv content data:%s\n",tgcd.data.c_str());
-                    }else if (topc.compare(GCOPC_SCNAME)==0){
-                        printf("recv content opcode:%s\n",tgcd.opcode.c_str());
-                        printf("recv content data:%s\n",tgcd.data.c_str());
                     }
                     iter++;
                 }

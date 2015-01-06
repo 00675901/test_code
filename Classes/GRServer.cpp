@@ -12,13 +12,6 @@ GRServer::GRServer(void){
     printf("GRServer BEGIN\n");
 }
 GRServer::~GRServer(void){
-    map<int,unsigned int>::iterator iter;
-    for (iter=romateFDIP.begin(); iter!=romateFDIP.end(); ++iter) {
-        close(iter->first);
-    }
-    romateFDIP.clear();
-    romateFDName.clear();
-    loglist.clear();
     printf("GRServer END\n");
 }
 
