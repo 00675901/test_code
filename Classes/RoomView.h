@@ -15,8 +15,8 @@
 #include "GSNotificationPool.h"
 #include <errno.h>
 #include "GUtils.h"
-#include "GRSServer.h"
-#include "GRCServer.h"
+#include "GNSServer.h"
+#include "GNCServer.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -43,8 +43,8 @@ private:
     int localTcpFD;
     CCLayerColor* clientLayer;
     CCLayerColor* msgLayer;
-    GRSServer* grs;
-    GRCServer* gcs;
+    GNSServer* grs;
+    GNCServer* gcs;
 public:
     static CCScene* scene(int maxl,bool isServer,const char* username);
     RoomView(int maxl,bool isServer,const char* username);

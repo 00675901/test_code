@@ -61,16 +61,15 @@ bool RoomView::init(){
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
     if (isSer) {
-        grs=GRSServer::shareInstance();
+        grs=GNSServer::shareInstance();
         if (grs) {
-            grs->startSendRoomService();
-            grs->startListenRoomService(maxLinsten,uname);
+//            grs->startListenRoomService(maxLinsten,uname);
         }
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
-        gcs=GRCServer::shareInstance();
+        gcs=GNCServer::shareInstance();
         if (gcs) {
-            gcs->startConnectService(uname);
+           
         }
     }
     cout<<"view init:"<<maxLinsten<<endl;
@@ -80,9 +79,9 @@ bool RoomView::init(){
 void RoomView::updateRoom(){
     map<int,string> clientFD;
     if (isSer) {
-        clientFD=grs->getRomateFDName();
+//        clientFD=grs->getRemoteFDName();
     }else{
-        clientFD=gcs->getRomateFDName();
+//        clientFD=gcs->getRemoteFDName();
     }
     cout<<"client count:"<<clientFD.size()<<endl;
     clientLayer->removeAllChildren();
@@ -102,9 +101,9 @@ void RoomView::updateRoom(){
 void RoomView::updateMsglist(){
     deque<string> msglist;
     if (isSer) {
-        msglist=grs->getLoglist();
+//        msglist=grs->getLoglist();
     }else{
-        msglist=gcs->getLoglist();
+//        msglist=gcs->getLoglist();
     }
     cout<<"msg count:"<<msglist.size()<<endl;
     msgLayer->removeAllChildren();
@@ -123,12 +122,11 @@ void RoomView::closeView(){
     if (isSer) {
         pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
         if(grs){
-            grs->stopListenRoomService();
-            grs->stopSendRoomService();
+            
         }
     }else{
         if (gcs) {
-            gcs->stopConnectService();
+            
         }
     }
     pDirector->popScene();

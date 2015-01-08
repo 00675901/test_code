@@ -13,7 +13,7 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "GSNotificationPool.h"
-#include "GRCServer.h"
+#include "GNCServer.h"
 #include "RoomView.h"
 
 USING_NS_CC_EXT;
@@ -36,7 +36,7 @@ static __TYPE__* create(const char* username) { \
 class RoomlistView : public CCLayerColor{
 private:
     CCLayerColor* roomListLayer;
-    GRCServer* grc;
+    GNCServer* grc;
     const char* uname;
 public:
     map<int,string> roomlist;
