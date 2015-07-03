@@ -25,7 +25,7 @@ GSNotificationPool* GSNotificationPool::shareInstance(){
 
 void GSNotificationPool::postNotifications(){
     pthread_mutex_lock(&mutex);
-    vector<NotiParams>::iterator iter=notifications.begin();
+    std::vector<NotiParams>::iterator iter=notifications.begin();
     while (iter!=notifications.end()) {
         CCNotificationCenter::sharedNotificationCenter()->postNotification(iter->name.c_str(), iter->obj);
         iter++;

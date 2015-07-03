@@ -48,7 +48,7 @@ bool RoomlistView::init(){
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
     grc=GNCServer::shareInstance();
     if (grc) {
-        
+        grc->startSearchService();
     }
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"RoomlistView INIT"<<endl;
@@ -63,6 +63,7 @@ void RoomlistView::closeView(){
 }
 
 void RoomlistView::updateRoomlist(){
+    cout<<"listSize:"<<roomlist.size()<<endl;
     roomListLayer->removeAllChildren();
     map<int, string>::iterator iter=roomlist.begin();
     int i=1;

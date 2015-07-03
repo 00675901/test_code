@@ -24,6 +24,7 @@ private:
     map<int,int> serverListStatus;
     deque<string> *msglist;
     map<int,unsigned int> *romateFD;
+    
     GNCServer(void);
     ~GNCServer(void);
 public:
@@ -39,6 +40,7 @@ public:
     //service function
     void startConnectService(int addr);
     void stopConnectService();
+    
 };
 
 #endif /* defined(__TestCocos2dx__GRCServer__) */

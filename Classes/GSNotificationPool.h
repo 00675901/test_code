@@ -15,15 +15,14 @@
 //#include "GMutexManager.h"
 
 USING_NS_CC;
-using namespace std;
 
 class GSNotificationPool:public CCObject{
     pthread_mutex_t mutex;
     typedef struct{
-        string name;
+        std::string name;
         CCObject* obj;
     }NotiParams;
-    vector<NotiParams> notifications;
+    std::vector<NotiParams> notifications;
     GSNotificationPool(void);
     ~GSNotificationPool(void);
 public:

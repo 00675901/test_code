@@ -30,7 +30,7 @@ void GNCServer::startSearchService(){
         serverStatus=SERVER_C_RUN;
         udps=new UdpServer(52157,52156,true);
         if (udps->iniServer()) {
-            pthread_create(&tidSearchServer,NULL,GNCServer::searchServer,udps);
+            pthread_create(&tidSearchServer,NULL,GNCServer::searchServer,this);
             pthread_create(&tidRecvServer,NULL,GNCServer::recvServerList,this);
         }
     }
@@ -134,10 +134,15 @@ void GNCServer::startConnectService(int addr){
             typedef pair<int, int> tp;
             remoteFDIP.insert(tp(remoteFD,addr));
             pthread_create(&tidListenNetService,NULL,GNCServer::listenNetService,this);
-            TcpServer::GCData tgcd;
-            tgcd.opcode=GNOC_GIP;
-            tgcd.data="0";
-            tcps->sendData(remoteFD,&tgcd);
+            TestPacket msg;
+            msg.code=GNOC_GIP;
+            msg.data="0";
+            bb<<msg;
+            tcps->sendData(remoteFD,(char*)bb.contents());
+//            TcpServer::GCData tgcd;
+//            tgcd.opcode=GNOC_GIP;
+//            tgcd.data="0";
+//            tcps->sendData(remoteFD,&tgcd);
         }
     }
 }

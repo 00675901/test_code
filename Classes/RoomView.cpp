@@ -64,6 +64,7 @@ bool RoomView::init(){
         grs=GNSServer::shareInstance();
         if (grs) {
 //            grs->startListenRoomService(maxLinsten,uname);
+            grs->startResponseService(maxLinsten, uname);
         }
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
@@ -122,7 +123,7 @@ void RoomView::closeView(){
     if (isSer) {
         pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
         if(grs){
-            
+            grs->stopResponseService();
         }
     }else{
         if (gcs) {

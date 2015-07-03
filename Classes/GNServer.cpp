@@ -36,6 +36,7 @@ void* GNServer::listenNetService(void* obj){
     int tempLocalFD=temp->localTcpFD;
     fd_set *temptRfdset=&(temp->rfdset);
     map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
+    ByteBuffer tempbb=temp->bb;
     int res;
     int maxFD=0;
     typedef pair<int,unsigned int> tp;
@@ -70,14 +71,20 @@ void* GNServer::listenNetService(void* obj){
         iter=tempRemotaFD->begin();
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
-                TcpServer::GCData tgcd;
-                int lenr=tempTcps->recvData(iter->first,&tgcd);
+                TestPacket msg;
+                char* pDataBuffer;
+                int lenr=tempTcps->recvData(iter->first,pDataBuffer);
+                // 清除缓存中数据
+                tempbb.clear();
+                // 将数据加入到缓存中去
+                tempbb.append((uint8_t*)pDataBuffer, sizeof(pDataBuffer));
+                tempbb>>msg;
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
                 }else{
-                    string topc=tgcd.opcode;
-                    string tdat=tgcd.data;
+                    string topc=msg.code;
+                    string tdat=msg.data;
                     if (topc.compare(GNOC_SIP)==0) {
                         int reip=GUtils::ctoi(tdat.c_str());
                         printf("remota Msg:%s(--%d--)\n",tdat.c_str(),reip);
@@ -88,15 +95,16 @@ void* GNServer::listenNetService(void* obj){
                     }else if (topc.compare(GNOC_GIP)==0){
                         map<int,unsigned int>::iterator iters;
                         for (iters=tempRemotaFD->begin(); iters!=tempRemotaFD->end(); ++iters) {
-                            tgcd.opcode=GNOC_SIP;
-                            tgcd.data=iter->second;
-                            tempTcps->sendData(iter->first,&tgcd);
+                            msg.code=GNOC_SIP;
+                            msg.data=iters->second;
+                            tempbb<<msg;
+                            tempTcps->sendData(iters->first,(char*)tempbb.contents());
                         }
                     }
                     iter++;
                 }
-//                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-//                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+                GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+                GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
             }else{
                 iter++;
             }

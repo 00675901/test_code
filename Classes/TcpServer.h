@@ -22,10 +22,6 @@ private:
     sockaddr_in localAddr;
     sockaddr_in remoteAddr;
 public:
-    typedef struct{
-        string opcode;
-        string data;
-    }GCData;
     TcpServer(int listenPort);
     ~TcpServer();
     int iniServer(int instenCount);
@@ -35,8 +31,6 @@ public:
     int isConnect(int addr,int rematePort);
     int sendData(int remoteSo,char* msg);
     int recvData(int remoteSo,char* buffer);
-    int sendData(int fd,GCData* pack);
-    int recvData(int fd,GCData* pack);
 };
 #endif /* defined(__cocos2dxTest__TcpServer__) */
 

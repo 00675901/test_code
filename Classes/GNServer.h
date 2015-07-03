@@ -19,6 +19,7 @@
 #include "pthread.h"
 #include "GSNotificationPool.h"
 #include "GUtils.h"
+#include "PackDefine.h"
 
 USING_NS_CC;
 
@@ -39,6 +40,7 @@ protected:
     int localTcpFD;
     map<int,unsigned int> remoteFDIP;
     map<int,string> serverList;
+    ByteBuffer bb;
 public:
     unsigned int getLocalIP();
     map<int,unsigned int> getRemoteFDIP();

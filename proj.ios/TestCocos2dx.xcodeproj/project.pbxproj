@@ -243,11 +243,11 @@
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
 		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
 		B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B059E3E219E62F58009AF4DE /* RoomlistView.cpp */; };
-		B067B0171A5BD5DC0018CF77 /* GNetServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B067B0151A5BD5DC0018CF77 /* GNetServer.cpp */; };
 		B071C1E019D9340C00D15D2B /* GNSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GNSServer.cpp */; };
 		B071C1E319D9342000D15D2B /* GNCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GNCServer.cpp */; };
 		B07412131A3034E200F1189B /* CCTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07412111A3034E200F1189B /* CCTextField.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
+		B0BF8B301B467AC800E71FE2 /* GSDataPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */; };
 		B0C63DA01A10946F00A7DF61 /* GNServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */; };
 		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
@@ -775,8 +775,6 @@
 		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
 		B059E3E219E62F58009AF4DE /* RoomlistView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomlistView.cpp; path = ../Classes/RoomlistView.cpp; sourceTree = "<group>"; };
 		B059E3E319E62F58009AF4DE /* RoomlistView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomlistView.h; path = ../Classes/RoomlistView.h; sourceTree = "<group>"; };
-		B067B0151A5BD5DC0018CF77 /* GNetServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNetServer.cpp; path = ../Classes/GNetServer.cpp; sourceTree = "<group>"; };
-		B067B0161A5BD5DC0018CF77 /* GNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNetServer.h; path = ../Classes/GNetServer.h; sourceTree = "<group>"; };
 		B071C1DE19D9340C00D15D2B /* GNSServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNSServer.cpp; path = ../Classes/GNSServer.cpp; sourceTree = "<group>"; };
 		B071C1DF19D9340C00D15D2B /* GNSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNSServer.h; path = ../Classes/GNSServer.h; sourceTree = "<group>"; };
 		B071C1E119D9342000D15D2B /* GNCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNCServer.cpp; path = ../Classes/GNCServer.cpp; sourceTree = "<group>"; };
@@ -785,6 +783,10 @@
 		B07412121A3034E200F1189B /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
+		B0BF8B2C1B46591700E71FE2 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteBuffer.h; path = ../Classes/ByteBuffer.h; sourceTree = "<group>"; };
+		B0BF8B2D1B46591700E71FE2 /* PackDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PackDefine.h; path = ../Classes/PackDefine.h; sourceTree = "<group>"; };
+		B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSDataPool.cpp; path = ../Classes/GSDataPool.cpp; sourceTree = "<group>"; };
+		B0BF8B2F1B467AC800E71FE2 /* GSDataPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSDataPool.h; path = ../Classes/GSDataPool.h; sourceTree = "<group>"; };
 		B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNServer.cpp; path = ../Classes/GNServer.cpp; sourceTree = "<group>"; };
 		B0C63D9F1A10946F00A7DF61 /* GNServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNServer.h; path = ../Classes/GNServer.h; sourceTree = "<group>"; };
 		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
@@ -1960,12 +1962,12 @@
 			children = (
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
+				B0BF8B2C1B46591700E71FE2 /* ByteBuffer.h */,
+				B0BF8B2D1B46591700E71FE2 /* PackDefine.h */,
 				C83B2B84199E39F500BD875B /* TcpServer.cpp */,
 				C83B2B85199E39F500BD875B /* TcpServer.h */,
 				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
 				C83B2B87199E39F500BD875B /* UdpServer.h */,
-				B067B0151A5BD5DC0018CF77 /* GNetServer.cpp */,
-				B067B0161A5BD5DC0018CF77 /* GNetServer.h */,
 				B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */,
 				B0C63D9F1A10946F00A7DF61 /* GNServer.h */,
 				B071C1DE19D9340C00D15D2B /* GNSServer.cpp */,
@@ -1974,6 +1976,8 @@
 				B071C1E219D9342000D15D2B /* GNCServer.h */,
 				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
 				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+				B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */,
+				B0BF8B2F1B467AC800E71FE2 /* GSDataPool.h */,
 				B0F477D919A476A700074890 /* GUtils.cpp */,
 				B0F477DA19A476A700074890 /* GUtils.h */,
 			);
@@ -2017,7 +2021,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0630;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TestCocos2dx" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2195,6 +2199,7 @@
 				298B29C118D0668400C1920F /* ListViewReader.cpp in Sources */,
 				15A3DA451682F826002FB0C5 /* CCParticleSystemQuadLoader.cpp in Sources */,
 				15A3DA461682F826002FB0C5 /* CCScale9SpriteLoader.cpp in Sources */,
+				B0BF8B301B467AC800E71FE2 /* GSDataPool.cpp in Sources */,
 				15A3DA471682F826002FB0C5 /* CCScrollViewLoader.cpp in Sources */,
 				15A3DA481682F826002FB0C5 /* CCSpriteLoader.cpp in Sources */,
 				15A3DA491682F826002FB0C5 /* CCControl.cpp in Sources */,
@@ -2262,7 +2267,6 @@
 				1A8F3B82175E05DA00049216 /* spine-cocos2dx.cpp in Sources */,
 				298B29C418D0668400C1920F /* ScrollViewReader.cpp in Sources */,
 				1AB87035175E0A84005D39BF /* WebSocket.cpp in Sources */,
-				B067B0171A5BD5DC0018CF77 /* GNetServer.cpp in Sources */,
 				375BD4C51868411B0024609E /* TriggerMng.cpp in Sources */,
 				1A9CE8781765A12C000E3062 /* AssetsManager.cpp in Sources */,
 				379BB99A17F03F3700829B88 /* CCArmatureAnimation.cpp in Sources */,
@@ -2333,7 +2337,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = NO;
@@ -2372,7 +2375,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-O2";
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
+				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2384,7 +2387,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = YES;
@@ -2420,7 +2422,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "B74699BC-6FD1-45D3-932C-97E8F0BF3E8A";
+				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
