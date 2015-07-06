@@ -116,7 +116,7 @@ void* GNCServer::recvServerList(void* obj){
             if (itm==temproomlist->end()) {
                 temproomlist->insert(tp(rip,testCount));
                 temproomlistInfo->insert(ts(rip,tbuffer));
-                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
+//                GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
             }else{
                 itm->second=testCount;
             }

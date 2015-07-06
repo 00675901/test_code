@@ -31,8 +31,6 @@ public:
     void resumeResponseService();
     void stopResponseService();
     static void* responseService(void* obj);
-
-    void sendMsgToAll(char* msg);
 };
 
 #endif /* defined(__TestCocos2dx__GRSServer__) */

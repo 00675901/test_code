@@ -783,6 +783,7 @@
 		B07412121A3034E200F1189B /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
+		B0AFEAAB1B4A3225000D3A04 /* GSObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSObserver.h; path = ../Classes/GSObserver.h; sourceTree = "<group>"; };
 		B0BF8B2C1B46591700E71FE2 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteBuffer.h; path = ../Classes/ByteBuffer.h; sourceTree = "<group>"; };
 		B0BF8B2D1B46591700E71FE2 /* PackDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PackDefine.h; path = ../Classes/PackDefine.h; sourceTree = "<group>"; };
 		B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSDataPool.cpp; path = ../Classes/GSDataPool.cpp; sourceTree = "<group>"; };
@@ -1976,6 +1977,7 @@
 				B071C1E219D9342000D15D2B /* GNCServer.h */,
 				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
 				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
+				B0AFEAAB1B4A3225000D3A04 /* GSObserver.h */,
 				B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */,
 				B0BF8B2F1B467AC800E71FE2 /* GSDataPool.h */,
 				B0F477D919A476A700074890 /* GUtils.cpp */,

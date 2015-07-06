@@ -22,6 +22,7 @@ private:
     pthread_t tidRecvServer;
     pthread_t tidListenNetService;
     map<int,int> serverListStatus;
+    map<int,string> serverList;
     deque<string> *msglist;
     map<int,unsigned int> *romateFD;
     

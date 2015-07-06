@@ -88,11 +88,11 @@ void* GNSServer::responseService(void* obj){
     return NULL;
 }
 
-void GNSServer::sendMsgToAll(char* msg){
-//    int msgsize=strlen(msg);
-    map<int,unsigned int>::iterator iters=remoteFDIP.begin();
-    while (iters!=remoteFDIP.end()) {
-//        tcps->sendMsg(iters->first, msg);
-        iters++;
-    }
-}
+//void GNSServer::sendMsgToAll(char* msg){
+////    int msgsize=strlen(msg);
+//    map<int,unsigned int>::iterator iters=remoteFDIP.begin();
+//    while (iters!=remoteFDIP.end()) {
+////        tcps->sendMsg(iters->first, msg);
+//        iters++;
+//    }
+//}

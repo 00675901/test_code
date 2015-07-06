@@ -20,6 +20,7 @@
 #include "GSNotificationPool.h"
 #include "GUtils.h"
 #include "PackDefine.h"
+#include "GSObserver.h"
 
 USING_NS_CC;
 
@@ -31,6 +32,7 @@ USING_NS_CC;
 class GNServer{
 private:
     fd_set rfdset;
+    list<GSObserver*> oblist;
 protected:
     pthread_mutex_t mut;
     UdpServer *udps;
@@ -39,14 +41,21 @@ protected:
     unsigned int localIP;
     int localTcpFD;
     map<int,unsigned int> remoteFDIP;
-    map<int,string> serverList;
     ByteBuffer bb;
 public:
-    unsigned int getLocalIP();
-    map<int,unsigned int> getRemoteFDIP();
-
     GNServer(void);
     ~GNServer(void);
+    void addObs(GSObserver *gob){oblist.push_back(gob);}
+    void removeObs(GSObserver *gob){oblist.remove(gob);}
+    void notify(TestPacket tp){
+        list<GSObserver*>::iterator iter=oblist.begin();
+        while (iter!=oblist.end()) {
+            (*iter)->Update(tp);
+            iter++;
+        }
+    }
+    unsigned int getLocalIP();
+    map<int,unsigned int> getRemoteFDIP();
     static void* listenNetService(void* obj);
 };
 
