@@ -50,6 +50,9 @@ bool RoomManager::init(){
     this->addChild(joinBtn);
     
     userNameField=CCTextField::textFieldWithPlaceHolder(USER_NAME_FIELD_DEFAULT,"", 50.0f);
+    string a="测试玩家No.";
+    a.append(GUtils::itos(10+arc4random()%100));
+    userNameField->setString(a.c_str());
     userNameField->setDimensions(CCSizeMake(400, 50));
     userNameField->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-100));
     userNameField->setAnchorPoint(ccp(0.5,1));
