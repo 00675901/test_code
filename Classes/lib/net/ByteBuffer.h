@@ -64,12 +64,7 @@ public:
         return *((T const*)&BData[pos]);
     }
     
-    void read(uint8_t *dest, size_t len)
-    {
-//        assert(BRPos  + len  <= size() || PrintPosError(false, BRPos,len));
-        memcpy(dest, &BData[BRPos], len);
-        BRPos += len;
-    }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 public:
     ByteBuffer& operator<<(bool value){

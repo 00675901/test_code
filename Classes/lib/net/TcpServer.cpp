@@ -1,11 +1,8 @@
 //
 //  TcpServer.cpp
-//  cocos2dxTest
 //
-//  Created by othink on 14-8-14.
 //  Server:Socket->bind->listen->accept
 //  Client:Socket->connect
-//
 //
 
 #include "TcpServer.h"
@@ -34,7 +31,7 @@ int TcpServer::iniServer(int instenCount){
             return -1;
         }else{
             if (instenCount>0) {
-                if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
+                if (::bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
                     perror("bind fail:");
                     return -1;
                 }else{
@@ -95,14 +92,62 @@ int TcpServer::isConnect(int addr,int rematePort){
     return remoteSo;
 }
 
-int TcpServer::recvData(int remoteSo,char* buffer){
-    int len=strlen(buffer);
-    int re=recv(remoteSo,buffer,len,0);
+long TcpServer::recvData(int remoteSo,char* buffer){
+    long len=strlen(buffer);
+    long re=recv(remoteSo,buffer,26,0);
+    if (re<0) {
+        printf("TCP_send_fail：%ld\n",re);
+    }
     return re;
 }
 
-int TcpServer::sendData(int remoteSo,char* msg){
-    int len=strlen(msg);
-    int re=send(remoteSo, msg, len, 0);
+long TcpServer::sendData(int remoteSo,char* msg){
+    long len=strlen(msg);
+    printf("send content:%s\n",msg);
+    long re=send(remoteSo, msg, len, 0);
+    if (re<0) {
+        printf("TCP_send_fail\n");
+    }
     return re;
+}
+
+long TcpServer::sendData(int remoteSo,GNPacket* msg){
+    int templen=msg->size();
+    char sendco[templen];
+    msg->serializer(sendco);
+    char send[templen+5];
+    sprintf(send, "%04d%s",templen,sendco);
+    std::cout<<"send content:"<<send<<std::endl;
+    long re=sendData(remoteSo,send);
+    return re;
+}
+long TcpServer::recvData(int remoteSo,GNPacket* buffer){
+    printf("content\n");
+    char bufhead[5];
+    int ret=recv(remoteSo, bufhead, 4, 0);
+    if (ret<0) {
+         printf("TCP_recv_sise_fail:%d\n",ret);
+    }else{
+        printf("content size:%d\n",ret);
+    }
+        
+    int dl=0;
+    if (ret==4) {
+        bufhead[4]='\0';
+        dl=GUtils::ctoi(bufhead);
+        printf("real_content size:%d\n",dl);
+    }
+    if (dl>0) {
+        char bufcon[dl];
+        printf("begin recv%d\n",dl);
+        ret=recv(remoteSo, bufcon, dl, 0);
+        if (ret<0) {
+            printf("TCP_recv_fail:%d\n",ret);
+        }else{
+            printf("real-content size:%d\n",ret);
+        }
+        buffer->deserializer(bufcon);
+        printf("vvvvv:%d,%d,%s,%d,%s\n",buffer->sysCode,buffer->origin,buffer->UUID.c_str(),buffer->NPCode,buffer->data.c_str());
+    }
+    return ret;
 }

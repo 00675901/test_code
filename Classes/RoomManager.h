@@ -16,6 +16,8 @@
 #include "RoomlistView.h"
 #include "CCTextField.h"
 
+#include "PackDefine.h"
+
 USING_NS_CC_EXT;
 USING_NS_CC;
 

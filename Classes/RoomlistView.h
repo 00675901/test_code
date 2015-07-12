@@ -13,7 +13,6 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include "GSNotificationPool.h"
-#include "GNCServer.h"
 #include "RoomView.h"
 
 USING_NS_CC_EXT;
@@ -36,10 +35,10 @@ static __TYPE__* create(const char* username) { \
 class RoomlistView : public CCLayerColor{
 private:
     CCLayerColor* roomListLayer;
-    GNCServer* grc;
     const char* uname;
+    NetAppCCJSController* gnapp;
 public:
-    map<int,string> roomlist;
+    map<unsigned int,string>* roomlist;
     static CCScene* scene(const char* username);
     RoomlistView(const char* username);
     ~RoomlistView();

@@ -19,10 +19,7 @@ RoomlistView::RoomlistView(const char* username){
     cout<<"RoomlistView BEGIN"<<endl;
 }
 RoomlistView::~RoomlistView(){
-    if (grc) {
-        
-    }
-    roomlist.clear();
+    roomlist->clear();
     cout<<"RoomlistView END"<<endl;
 }
 bool RoomlistView::init(){
@@ -45,30 +42,37 @@ bool RoomlistView::init(){
     roomListLayer->setAnchorPoint(ccp(0, 0));
     roomListLayer->setPosition(0, 0);
     this->addChild(roomListLayer);
-    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
-    grc=GNCServer::shareInstance();
-    if (grc) {
-        grc->startSearchService();
-    }
+//    CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomlistView::updateRoomlist), "updateRoomList", NULL);
+    
+    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(RoomlistView::updateRoomlist), this, 1, false);
+    
+    //启动客户端
+    std::string tempna(uname);
+    gnapp=new NetAppCCJSController(tempna);
+    gnapp->start_client();
+    roomlist=gnapp->getServerList();
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     cout<<"RoomlistView INIT"<<endl;
     return true;
 }
 
 void RoomlistView::closeView(){
-    CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoomList");
+//    CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoomList");
+    gnapp->stop_client_service();
+    delete gnapp;
     CCDirector* pDirector = CCDirector::sharedDirector();
+    pDirector->getScheduler()->unscheduleSelector(schedule_selector(RoomlistView::updateRoomlist), this);
     pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
     pDirector->popScene();
 }
 
 void RoomlistView::updateRoomlist(){
-    cout<<"listSize:"<<roomlist.size()<<endl;
+    roomlist=gnapp->getServerList();
     roomListLayer->removeAllChildren();
-    map<int, string>::iterator iter=roomlist.begin();
+    map<unsigned int, string>::iterator iter=roomlist->begin();
     int i=1;
-    while (iter!=roomlist.end()) {
-        printf("\nIP:%d,name:%s\n\n",iter->first,iter->second.c_str());
+    while (iter!=roomlist->end()) {
+        printf("IP:%d,name:%s\n",iter->first,iter->second.c_str());
         CCControlButton *pbtn=CCControlButton::create(iter->second.c_str(), "Marker Felt", 50);
         pbtn->setAnchorPoint(ccp(0.5,1));
         pbtn->setPosition(ccp(roomListLayer->getContentSize().width/2, roomListLayer->getContentSize().height-(i*80)));
@@ -84,9 +88,12 @@ void RoomlistView::updateRoomlist(){
 
 void RoomlistView::enterRoom(CCControlButton *sender){
     printf("tag:%d\n",sender->getTag());
-//    if(grc->initConnectService(sender->getTag())){
-        CCDirector* pDirector = CCDirector::sharedDirector();
-        CCScene* pScene=RoomView::scene(10,false,uname);
-        pDirector->pushScene(pScene);
-//    }
+    //暂停客户端
+    gnapp->pause_client_service();
+    //连接到服务器
+    gnapp->connect_server(sender->getTag());
+    
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    CCScene* pScene=RoomView::scene(10,false,uname);
+    pDirector->pushScene(pScene);
 }

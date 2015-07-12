@@ -60,35 +60,37 @@ bool RoomView::init(){
     
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
+    
+    
+    std::string tempna(uname);
+    gnapp=new NetAppCCJSController(tempna);
     if (isSer) {
-        grs=GNSServer::shareInstance();
-        if (grs) {
-//            grs->startListenRoomService(maxLinsten,uname);
-            grs->startResponseService(maxLinsten, uname);
-        }
+        //启动服务器
+        gnapp->start_server(10);
+        
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
-        gcs=GNCServer::shareInstance();
-        if (gcs) {
-           
-        }
+
     }
     cout<<"view init:"<<maxLinsten<<endl;
     return true;
 }
 
 void RoomView::updateRoom(){
-    map<int,string> clientFD;
-    if (isSer) {
-//        clientFD=grs->getRemoteFDName();
-    }else{
-//        clientFD=gcs->getRemoteFDName();
-    }
-    cout<<"client count:"<<clientFD.size()<<endl;
+//    map<int,string> clientFD;
+    
+    std::map<int,std::string>* clientFD=gnapp->getPalyerList();
+    
+//    if (isSer) {
+////        clientFD=grs->getRemoteFDName();
+//    }else{
+////        clientFD=gcs->getRemoteFDName();
+//    }
+    cout<<"client count:"<<clientFD->size()<<endl;
     clientLayer->removeAllChildren();
-    map<int,string>::iterator iter=clientFD.begin();
+    map<int,string>::iterator iter=clientFD->begin();
     int i=1;
-    while (iter!=clientFD.end()) {
+    while (iter!=clientFD->end()) {
         string ti=iter->second;
         CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
         ptext->setAnchorPoint(ccp(0.5,1));
@@ -122,13 +124,10 @@ void RoomView::closeView(){
     CCDirector* pDirector = CCDirector::sharedDirector();
     if (isSer) {
         pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
-        if(grs){
-            grs->stopResponseService();
-        }
+        gnapp->stop_server_service();
+        delete gnapp;
     }else{
-        if (gcs) {
-            
-        }
+
     }
     pDirector->popScene();
 }

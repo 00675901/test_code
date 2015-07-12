@@ -1,20 +1,15 @@
 //
 //  TcpServer.h
-//  cocos2dxTest
-//
-//  Created by othink on 14-8-14.
-//
 //
 
-#ifndef __cocos2dxTest__TcpServer__
-#define __cocos2dxTest__TcpServer__
+#ifndef __TcpServer__
+#define __TcpServer__
 
-#include <iostream>
-#include <sys/socket.h>
+#include <unistd.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
 #include "GUtils.h"
-
-using namespace std;
+#include "PackDefine.h"
 
 class TcpServer{
 private:
@@ -29,9 +24,13 @@ public:
     int isAccept(sockaddr_in* remoteAD);
     int isConnect(const char* addr,int rematePort);
     int isConnect(int addr,int rematePort);
-    int sendData(int remoteSo,char* msg);
-    int recvData(int remoteSo,char* buffer);
+    
+    long sendData(int remoteSo,char* msg);
+    long recvData(int remoteSo,char* buffer);
+    
+    long sendData(int remoteSo,GNPacket* msg);
+    long recvData(int remoteSo,GNPacket* buffer);
 };
-#endif /* defined(__cocos2dxTest__TcpServer__) */
+#endif /* defined(__TcpServer__) */
 
 

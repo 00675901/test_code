@@ -12,11 +12,8 @@
 #include <iostream>
 #include "cocos2d.h"
 #include "cocos-ext.h"
-#include "GSNotificationPool.h"
 #include <errno.h>
-#include "GUtils.h"
-#include "GNSServer.h"
-#include "GNCServer.h"
+#include "NetAppCCJSController.h"
 
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -43,8 +40,7 @@ private:
     int localTcpFD;
     CCLayerColor* clientLayer;
     CCLayerColor* msgLayer;
-    GNSServer* grs;
-    GNCServer* gcs;
+    NetAppCCJSController* gnapp;
 public:
     static CCScene* scene(int maxl,bool isServer,const char* username);
     RoomView(int maxl,bool isServer,const char* username);

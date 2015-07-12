@@ -1,9 +1,5 @@
 //
 //  UDPServer.cpp
-//  cocos2dxTest
-//
-//  Created by othink on 14-8-15.
-//
 //
 
 #include "UdpServer.h"
@@ -29,7 +25,7 @@ bool UdpServer::iniServer(){
         perror("socket udp fail:");
         return false;
     }else{
-        if (bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
+        if (::bind(localSo, (sockaddr *)&localAddr, sizeof(localAddr))<0) {
             perror("bind udp fail:");
             return false;
         }else{
@@ -52,34 +48,40 @@ bool UdpServer::iniServer(){
     }
 }
 
-int UdpServer::sendMsg(const char* msg){
-    int se;
+long UdpServer::sendMsg(const char* msg){
+    long se;
     if (isBroad) {
-        int len=strlen(msg);
+        long len=strlen(msg);
         se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
     }else{
         se=-1;
     }
+    if (se<0) {
+        printf("UdpServer_send_fail\n");
+    }
     return se;
 }
 
-int UdpServer::sendMsg(const char* addr,const char* msg){
+long UdpServer::sendMsg(const char* addr,const char* msg){
     if (!isBroad) {
         remoteBroAddr.sin_addr.s_addr=inet_addr(addr);
     }
-    int len=strlen(msg);
-    int se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+    long len=strlen(msg);
+    long se=sendto(localSo,msg,len,0,(sockaddr *)&remoteBroAddr,sizeof(remoteBroAddr));
+    if (se<0) {
+        printf("UdpServer_send_fail\n");
+    }
     return se;
 }
 
-int UdpServer::recvMsg(char* buff,unsigned const int len){
-    int relen=sizeof(remoteRecAddr);
-    int recvMsgSize=recvfrom(localSo,buff,len,0,(sockaddr *)&remoteRecAddr,(socklen_t*)&relen);
+long UdpServer::recvMsg(char* buff,unsigned const int len){
+    long relen=sizeof(remoteRecAddr);
+    long recvMsgSize=recvfrom(localSo,buff,len,0,(sockaddr *)&remoteRecAddr,(socklen_t*)&relen);
     return recvMsgSize;
 }
 
-int UdpServer::recvMsg(char* buff,unsigned const int len,sockaddr_in* remoteRecAD){
-    int relen=sizeof(*remoteRecAD);
-    int recvMsgSize=recvfrom(localSo,buff,len,0,(sockaddr *)remoteRecAD,(socklen_t*)&relen);
+long UdpServer::recvMsg(char* buff,unsigned const int len,sockaddr_in* remoteRecAD){
+    long relen=sizeof(*remoteRecAD);
+    long recvMsgSize=recvfrom(localSo,buff,len,0,(sockaddr *)remoteRecAD,(socklen_t*)&relen);
     return recvMsgSize;
 }

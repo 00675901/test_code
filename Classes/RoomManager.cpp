@@ -50,11 +50,51 @@ bool RoomManager::init(){
     this->addChild(joinBtn);
     
     userNameField=CCTextField::textFieldWithPlaceHolder(USER_NAME_FIELD_DEFAULT,"", 50.0f);
+    string a="测试玩家No.";
+    string b(GUtils::itos((arc4random()%100)+10));
+    a.append(b);
+    userNameField->setString(a.c_str());
     userNameField->setDimensions(CCSizeMake(400, 50));
     userNameField->setPosition(ccp(this->getContentSize().width/2,this->getContentSize().height-100));
     userNameField->setAnchorPoint(ccp(0.5,1));
     this->addChild(userNameField);
     
+    
+//    ByteBuffer bbs;
+    GNPacket gns;
+    gns.sysCode=234;
+    gns.origin=5435;
+    gns.NPCode=-6578;
+    gns.UUID="afefsfeggsdg";
+    gns.data="文dgeg地方噶尔+）——（adfs";
+    
+//    cout<<"cionsdf:"<<gns.size()<<endl;
+    
+    char s[gns.size()];
+//    memcpy(s, (uint8_t *)&gns.sysCode, sizeof(int));
+    
+    gns.serializer(s);
+    
+    cout<<"cionsdf:"<<s<<" siezes:"<<sizeof(s)<<endl;
+    
+    GNPacket gsss;
+    gsss.deserializer(s);
+    
+    printf("vvvvv:%d,%d,%s,%d,%s\n",gsss.sysCode,gsss.origin,gsss.UUID.c_str(),gsss.NPCode,gsss.data.c_str());
+    
+//    std::string gns("\n");
+    
+//    cout<<"cionsdf:"<<gns.size()<<" coanfsdfa:"<<sizeof(gns)<<" sdfae:"<<gns.length()<<endl;
+    
+//    cout<<"cionsdf:"<<gns.size()<<" coanfsdfa:"<<sizeof(gns)<<" sdfae:"<<gns.length()<<endl;;
+    
+//    bbs<<gns;
+//    
+//    cout<<"sasdfgas:"<<(char*)bbs.contents()<<endl;
+//    
+//    GNPacket gnsss;
+//    bbs>>gnsss;
+//    printf("vvvvv:%d,%d,%s,%d,%s",gnsss.sysCode,gnsss.origin,gnsss.UUID.c_str(),gnsss.NPCode,gnsss.data.c_str());
     return true;
 }
 

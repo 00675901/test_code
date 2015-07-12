@@ -243,19 +243,18 @@
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
 		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
 		B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B059E3E219E62F58009AF4DE /* RoomlistView.cpp */; };
-		B071C1E019D9340C00D15D2B /* GNSServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1DE19D9340C00D15D2B /* GNSServer.cpp */; };
-		B071C1E319D9342000D15D2B /* GNCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B071C1E119D9342000D15D2B /* GNCServer.cpp */; };
 		B07412131A3034E200F1189B /* CCTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07412111A3034E200F1189B /* CCTextField.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
-		B0BF8B301B467AC800E71FE2 /* GSDataPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */; };
-		B0C63DA01A10946F00A7DF61 /* GNServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */; };
-		B0F477DB19A476A700074890 /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0F477D919A476A700074890 /* GUtils.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712461292920000B8313A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB212928DE900B8313A /* libxml2.dylib */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
-		C83B2B88199E39F500BD875B /* TcpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C83B2B84199E39F500BD875B /* TcpServer.cpp */; };
-		C83B2B89199E39F500BD875B /* UdpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C83B2B86199E39F500BD875B /* UdpServer.cpp */; };
+		C8642D741B5035C4001B1DEB /* GNetApplications.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D641B5035C4001B1DEB /* GNetApplications.cpp */; };
+		C8642D751B5035C4001B1DEB /* GNetServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D671B5035C4001B1DEB /* GNetServer.cpp */; };
+		C8642D761B5035C4001B1DEB /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D691B5035C4001B1DEB /* GUtils.cpp */; };
+		C8642D781B5035C4001B1DEB /* TcpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D6E1B5035C4001B1DEB /* TcpServer.cpp */; };
+		C8642D7A1B5035C4001B1DEB /* UdpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D721B5035C4001B1DEB /* UdpServer.cpp */; };
+		C8642D7D1B5035F1001B1DEB /* NetAppCCJSController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */; };
 		C8B14B9A19A0EBA000CE5074 /* RoomManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */; };
 		D41A0AD1160F154A004552AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D41A0AD0160F154A004552AE /* Default-568h@2x.png */; };
 		D446FD6E16102124000ADA7B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D446FD6D16102124000ADA7B /* Default@2x.png */; };
@@ -775,31 +774,30 @@
 		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
 		B059E3E219E62F58009AF4DE /* RoomlistView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomlistView.cpp; path = ../Classes/RoomlistView.cpp; sourceTree = "<group>"; };
 		B059E3E319E62F58009AF4DE /* RoomlistView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomlistView.h; path = ../Classes/RoomlistView.h; sourceTree = "<group>"; };
-		B071C1DE19D9340C00D15D2B /* GNSServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNSServer.cpp; path = ../Classes/GNSServer.cpp; sourceTree = "<group>"; };
-		B071C1DF19D9340C00D15D2B /* GNSServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNSServer.h; path = ../Classes/GNSServer.h; sourceTree = "<group>"; };
-		B071C1E119D9342000D15D2B /* GNCServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNCServer.cpp; path = ../Classes/GNCServer.cpp; sourceTree = "<group>"; };
-		B071C1E219D9342000D15D2B /* GNCServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNCServer.h; path = ../Classes/GNCServer.h; sourceTree = "<group>"; };
 		B07412111A3034E200F1189B /* CCTextField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTextField.cpp; sourceTree = "<group>"; };
 		B07412121A3034E200F1189B /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
-		B0AFEAAB1B4A3225000D3A04 /* GSObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSObserver.h; path = ../Classes/GSObserver.h; sourceTree = "<group>"; };
-		B0BF8B2C1B46591700E71FE2 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteBuffer.h; path = ../Classes/ByteBuffer.h; sourceTree = "<group>"; };
-		B0BF8B2D1B46591700E71FE2 /* PackDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PackDefine.h; path = ../Classes/PackDefine.h; sourceTree = "<group>"; };
-		B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSDataPool.cpp; path = ../Classes/GSDataPool.cpp; sourceTree = "<group>"; };
-		B0BF8B2F1B467AC800E71FE2 /* GSDataPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSDataPool.h; path = ../Classes/GSDataPool.h; sourceTree = "<group>"; };
-		B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNServer.cpp; path = ../Classes/GNServer.cpp; sourceTree = "<group>"; };
-		B0C63D9F1A10946F00A7DF61 /* GNServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNServer.h; path = ../Classes/GNServer.h; sourceTree = "<group>"; };
-		B0F477D919A476A700074890 /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUtils.cpp; path = ../Classes/GUtils.cpp; sourceTree = "<group>"; };
-		B0F477DA19A476A700074890 /* GUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUtils.h; path = ../Classes/GUtils.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB212928DE900B8313A /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		C83B2B84199E39F500BD875B /* TcpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TcpServer.cpp; path = ../Classes/TcpServer.cpp; sourceTree = "<group>"; };
-		C83B2B85199E39F500BD875B /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TcpServer.h; path = ../Classes/TcpServer.h; sourceTree = "<group>"; };
-		C83B2B86199E39F500BD875B /* UdpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UdpServer.cpp; path = ../Classes/UdpServer.cpp; sourceTree = "<group>"; };
-		C83B2B87199E39F500BD875B /* UdpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UdpServer.h; path = ../Classes/UdpServer.h; sourceTree = "<group>"; };
+		C8642D641B5035C4001B1DEB /* GNetApplications.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GNetApplications.cpp; sourceTree = "<group>"; };
+		C8642D651B5035C4001B1DEB /* GNetApplications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNetApplications.h; sourceTree = "<group>"; };
+		C8642D661B5035C4001B1DEB /* GNetObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNetObserver.h; sourceTree = "<group>"; };
+		C8642D671B5035C4001B1DEB /* GNetServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GNetServer.cpp; sourceTree = "<group>"; };
+		C8642D681B5035C4001B1DEB /* GNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNetServer.h; sourceTree = "<group>"; };
+		C8642D691B5035C4001B1DEB /* GUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUtils.cpp; sourceTree = "<group>"; };
+		C8642D6A1B5035C4001B1DEB /* GUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUtils.h; sourceTree = "<group>"; };
+		C8642D6D1B5035C4001B1DEB /* PackDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PackDefine.h; sourceTree = "<group>"; };
+		C8642D6E1B5035C4001B1DEB /* TcpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TcpServer.cpp; sourceTree = "<group>"; };
+		C8642D6F1B5035C4001B1DEB /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TcpServer.h; sourceTree = "<group>"; };
+		C8642D721B5035C4001B1DEB /* UdpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UdpServer.cpp; sourceTree = "<group>"; };
+		C8642D731B5035C4001B1DEB /* UdpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpServer.h; sourceTree = "<group>"; };
+		C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NetAppCCJSController.cpp; path = ../Classes/NetAppCCJSController.cpp; sourceTree = "<group>"; };
+		C8642D7C1B5035F1001B1DEB /* NetAppCCJSController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetAppCCJSController.h; path = ../Classes/NetAppCCJSController.h; sourceTree = "<group>"; };
+		C88B98751B52793F001BE49A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		C8A8CD681B51938000B65261 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteBuffer.h; sourceTree = "<group>"; };
 		C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomManager.cpp; path = ../Classes/RoomManager.cpp; sourceTree = "<group>"; };
 		C8B14B9919A0EBA000CE5074 /* RoomManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomManager.h; path = ../Classes/RoomManager.h; sourceTree = "<group>"; };
 		D41A0AD0160F154A004552AE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../proj.ios/Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -1602,6 +1600,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C88B98751B52793F001BE49A /* libc++.dylib */,
 				1ACB3243164770DE00914215 /* libcurl.a */,
 				BF170DB212928DE900B8313A /* libxml2.dylib */,
 				BF170DB412928DE900B8313A /* libz.dylib */,
@@ -1963,25 +1962,10 @@
 			children = (
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
-				B0BF8B2C1B46591700E71FE2 /* ByteBuffer.h */,
-				B0BF8B2D1B46591700E71FE2 /* PackDefine.h */,
-				C83B2B84199E39F500BD875B /* TcpServer.cpp */,
-				C83B2B85199E39F500BD875B /* TcpServer.h */,
-				C83B2B86199E39F500BD875B /* UdpServer.cpp */,
-				C83B2B87199E39F500BD875B /* UdpServer.h */,
-				B0C63D9E1A10946F00A7DF61 /* GNServer.cpp */,
-				B0C63D9F1A10946F00A7DF61 /* GNServer.h */,
-				B071C1DE19D9340C00D15D2B /* GNSServer.cpp */,
-				B071C1DF19D9340C00D15D2B /* GNSServer.h */,
-				B071C1E119D9342000D15D2B /* GNCServer.cpp */,
-				B071C1E219D9342000D15D2B /* GNCServer.h */,
+				C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */,
+				C8642D7C1B5035F1001B1DEB /* NetAppCCJSController.h */,
 				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
 				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
-				B0AFEAAB1B4A3225000D3A04 /* GSObserver.h */,
-				B0BF8B2E1B467AC800E71FE2 /* GSDataPool.cpp */,
-				B0BF8B2F1B467AC800E71FE2 /* GSDataPool.h */,
-				B0F477D919A476A700074890 /* GUtils.cpp */,
-				B0F477DA19A476A700074890 /* GUtils.h */,
 			);
 			name = sys;
 			sourceTree = "<group>";
@@ -1989,11 +1973,32 @@
 		B07412101A3034E200F1189B /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				C8642D621B5035C4001B1DEB /* net */,
 				B07412111A3034E200F1189B /* CCTextField.cpp */,
 				B07412121A3034E200F1189B /* CCTextField.h */,
 			);
 			name = lib;
 			path = ../Classes/lib;
+			sourceTree = "<group>";
+		};
+		C8642D621B5035C4001B1DEB /* net */ = {
+			isa = PBXGroup;
+			children = (
+				C8642D641B5035C4001B1DEB /* GNetApplications.cpp */,
+				C8642D651B5035C4001B1DEB /* GNetApplications.h */,
+				C8642D661B5035C4001B1DEB /* GNetObserver.h */,
+				C8642D671B5035C4001B1DEB /* GNetServer.cpp */,
+				C8642D681B5035C4001B1DEB /* GNetServer.h */,
+				C8642D691B5035C4001B1DEB /* GUtils.cpp */,
+				C8642D6A1B5035C4001B1DEB /* GUtils.h */,
+				C8642D6D1B5035C4001B1DEB /* PackDefine.h */,
+				C8A8CD681B51938000B65261 /* ByteBuffer.h */,
+				C8642D6E1B5035C4001B1DEB /* TcpServer.cpp */,
+				C8642D6F1B5035C4001B1DEB /* TcpServer.h */,
+				C8642D721B5035C4001B1DEB /* UdpServer.cpp */,
+				C8642D731B5035C4001B1DEB /* UdpServer.h */,
+			);
+			path = net;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2024,6 +2029,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0630;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = SWK3MEZGSM;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TestCocos2dx" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2087,10 +2097,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				15A3D8FF1682F7D5002FB0C5 /* b2BroadPhase.cpp in Sources */,
-				B071C1E319D9342000D15D2B /* GNCServer.cpp in Sources */,
 				15A3D9001682F7D5002FB0C5 /* b2CollideCircle.cpp in Sources */,
 				B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */,
-				C83B2B89199E39F500BD875B /* UdpServer.cpp in Sources */,
 				298B29C018D0668400C1920F /* LayoutReader.cpp in Sources */,
 				15A3D9011682F7D5002FB0C5 /* b2CollideEdge.cpp in Sources */,
 				15A3D9021682F7D5002FB0C5 /* b2CollidePolygon.cpp in Sources */,
@@ -2124,6 +2132,8 @@
 				15A3D91A1682F7D5002FB0C5 /* b2Contact.cpp in Sources */,
 				15A3D91B1682F7D5002FB0C5 /* b2ContactSolver.cpp in Sources */,
 				298B29BA18D0668400C1920F /* ButtonReader.cpp in Sources */,
+				C8642D741B5035C4001B1DEB /* GNetApplications.cpp in Sources */,
+				C8642D761B5035C4001B1DEB /* GUtils.cpp in Sources */,
 				15A3D91C1682F7D5002FB0C5 /* b2EdgeAndCircleContact.cpp in Sources */,
 				15A3D91D1682F7D5002FB0C5 /* b2EdgeAndPolygonContact.cpp in Sources */,
 				15A3D91E1682F7D5002FB0C5 /* b2PolygonAndCircleContact.cpp in Sources */,
@@ -2150,7 +2160,6 @@
 				15A3D99B1682F7F9002FB0C5 /* cpGrooveJoint.c in Sources */,
 				15A3D99C1682F7F9002FB0C5 /* cpPinJoint.c in Sources */,
 				15A3D99D1682F7F9002FB0C5 /* cpPivotJoint.c in Sources */,
-				C83B2B88199E39F500BD875B /* TcpServer.cpp in Sources */,
 				15A3D99E1682F7F9002FB0C5 /* cpRatchetJoint.c in Sources */,
 				15A3D99F1682F7F9002FB0C5 /* cpRotaryLimitJoint.c in Sources */,
 				15A3D9A01682F7F9002FB0C5 /* cpSimpleMotor.c in Sources */,
@@ -2166,7 +2175,6 @@
 				15A3D9AA1682F7F9002FB0C5 /* cpShape.c in Sources */,
 				15A3D9AB1682F7F9002FB0C5 /* cpSpace.c in Sources */,
 				15A3D9AC1682F7F9002FB0C5 /* cpSpaceComponent.c in Sources */,
-				B071C1E019D9340C00D15D2B /* GNSServer.cpp in Sources */,
 				15A3D9AD1682F7F9002FB0C5 /* cpSpaceHash.c in Sources */,
 				15A3D9AE1682F7F9002FB0C5 /* cpSpaceQuery.c in Sources */,
 				15A3D9AF1682F7F9002FB0C5 /* cpSpaceStep.c in Sources */,
@@ -2191,7 +2199,6 @@
 				15A3DA3E1682F826002FB0C5 /* CCLayerGradientLoader.cpp in Sources */,
 				15A3DA3F1682F826002FB0C5 /* CCLayerLoader.cpp in Sources */,
 				15A3DA401682F826002FB0C5 /* CCMenuItemImageLoader.cpp in Sources */,
-				B0F477DB19A476A700074890 /* GUtils.cpp in Sources */,
 				375BD5101868454E0024609E /* CCActionFrameEasing.cpp in Sources */,
 				298B29C318D0668400C1920F /* PageViewReader.cpp in Sources */,
 				15A3DA411682F826002FB0C5 /* CCMenuItemLoader.cpp in Sources */,
@@ -2201,7 +2208,6 @@
 				298B29C118D0668400C1920F /* ListViewReader.cpp in Sources */,
 				15A3DA451682F826002FB0C5 /* CCParticleSystemQuadLoader.cpp in Sources */,
 				15A3DA461682F826002FB0C5 /* CCScale9SpriteLoader.cpp in Sources */,
-				B0BF8B301B467AC800E71FE2 /* GSDataPool.cpp in Sources */,
 				15A3DA471682F826002FB0C5 /* CCScrollViewLoader.cpp in Sources */,
 				15A3DA481682F826002FB0C5 /* CCSpriteLoader.cpp in Sources */,
 				15A3DA491682F826002FB0C5 /* CCControl.cpp in Sources */,
@@ -2251,6 +2257,7 @@
 				298B29C618D0668400C1920F /* TextFieldReader.cpp in Sources */,
 				1A8F3B73175E05DA00049216 /* Attachment.cpp in Sources */,
 				1A8F3B74175E05DA00049216 /* AttachmentLoader.cpp in Sources */,
+				C8642D7A1B5035C4001B1DEB /* UdpServer.cpp in Sources */,
 				1A8F3B75175E05DA00049216 /* Bone.cpp in Sources */,
 				1A8F3B76175E05DA00049216 /* BoneData.cpp in Sources */,
 				1A8F3B77175E05DA00049216 /* CCSkeleton.cpp in Sources */,
@@ -2288,11 +2295,11 @@
 				379BB9A717F03F3700829B88 /* CCArmatureDefine.cpp in Sources */,
 				379BB9A817F03F3700829B88 /* CCDataReaderHelper.cpp in Sources */,
 				379BB9A917F03F3700829B88 /* CCSpriteFrameCacheHelper.cpp in Sources */,
+				C8642D751B5035C4001B1DEB /* GNetServer.cpp in Sources */,
 				379BB9AA17F03F3700829B88 /* CCTransformHelp.cpp in Sources */,
 				379BB9AB17F03F3700829B88 /* CCTweenFunction.cpp in Sources */,
 				379BB9AC17F03F3700829B88 /* CCUtilMath.cpp in Sources */,
 				379BB9AD17F03F3700829B88 /* CCComAttribute.cpp in Sources */,
-				B0C63DA01A10946F00A7DF61 /* GNServer.cpp in Sources */,
 				379BB9AE17F03F3700829B88 /* CCComAudio.cpp in Sources */,
 				B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */,
 				379BB9AF17F03F3700829B88 /* CCComController.cpp in Sources */,
@@ -2303,6 +2310,7 @@
 				379BB9B617F03F3700829B88 /* UILayoutParameter.cpp in Sources */,
 				379BB9B717F03F3700829B88 /* UILayoutDefine.cpp in Sources */,
 				379BB9B817F03F3700829B88 /* CocosGUI.cpp in Sources */,
+				C8642D7D1B5035F1001B1DEB /* NetAppCCJSController.cpp in Sources */,
 				379BB9B917F03F3700829B88 /* UIHelper.cpp in Sources */,
 				379BB9BD17F03F3700829B88 /* UIListView.cpp in Sources */,
 				379BB9BE17F03F3700829B88 /* UIPageView.cpp in Sources */,
@@ -2318,6 +2326,7 @@
 				379BB9C617F03F3700829B88 /* UILoadingBar.cpp in Sources */,
 				379BB9C717F03F3700829B88 /* UISlider.cpp in Sources */,
 				379BB9C917F03F3700829B88 /* UITextField.cpp in Sources */,
+				C8642D781B5035C4001B1DEB /* TcpServer.cpp in Sources */,
 				379BB9CB17F03F3700829B88 /* DictionaryHelper.cpp in Sources */,
 				379BB9D317F03F3700829B88 /* GUIReader.cpp in Sources */,
 				379BB9D417F03F3700829B88 /* SceneReader.cpp in Sources */,
@@ -2339,6 +2348,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = NO;
@@ -2369,7 +2380,7 @@
 					"\"$(SRCROOT)/../../../cocos2dx/platform/ios/Simulation\"",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
@@ -2377,7 +2388,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-O2";
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
+				PROVISIONING_PROFILE = "bf3224fa-a377-48a3-a80a-e4f0ce95a2c2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2389,6 +2400,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
 				COPY_PHASE_STRIP = YES;
@@ -2417,14 +2430,14 @@
 					"\"$(SRCROOT)/../../../cocos2dx/platform/ios/Simulation\"",
 				);
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../../../cocos2dx/platform/third_party/ios/libraries\"",
 					"\"$(SRCROOT)/../../../external/libwebsockets/ios/lib\"",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
+				PROVISIONING_PROFILE = "bf3224fa-a377-48a3-a80a-e4f0ce95a2c2";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
