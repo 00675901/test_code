@@ -104,7 +104,6 @@ void* GNetServer::listenSNetService(void* obj){
     int maxFD=0;
     while (true) {
         pthread_testcancel();
-        printf("flush flush flush flush\n");
         FD_ZERO(temptRfdset);
         FD_SET(tempLocalFD, temptRfdset);
         maxFD=maxFD>tempLocalFD?maxFD:tempLocalFD;
@@ -128,75 +127,56 @@ void* GNetServer::listenSNetService(void* obj){
             sockaddr_in remoteAddr;
             int tempRFD;
             if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
-                printf("有人连接了\n");
                 unsigned int reAddr=remoteAddr.sin_addr.s_addr;
                 for (iter=tempRemotaFD->begin();iter!=tempRemotaFD->end(); ++iter) {
                     std::cout<<"ip:"<<iter->second<<std::endl;
+                    //server send all ip
                     GNPacket tgcd;
                     tgcd.sysCode=SEND_IP;
                     tgcd.data=iter->second;
                     tempTcps->sendData(tempRFD,&tgcd);
                 }
                 tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
-                
+                //server send name;
+                std::string tempn(temp->getLocalName());
                 GNPacket msg;
                 msg.sysCode=PLAYER_NAME;
-                msg.data=temp->getLocalName();
+                msg.data=tempn;
                 tempTcps->sendData(tempRFD,&msg);
-                
             }
         }
         iter=tempRemotaFD->begin();
-        printf("------------------------------------\n");
         while (iter!=tempRemotaFD->end()) {
-            printf("flush flush flush flush111\n");
             if (FD_ISSET(iter->first, temptRfdset)){
                 GNPacket msg;
                 long lenr=tempTcps->recvData(iter->first,&msg);
-                printf("grgrsdfh:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
-                
-                iter++;
-//                if (lenr<=0) {
-//                    close(iter->first);
-//                    tempRemotaFD->erase(iter++);
-//                    //系统通知有连接断开
-//                    GNPacket smsg;
-//                    smsg.sysCode=DISCONNECTION;
-//                    smsg.origin=iter->first;
-//                    temp->notificationSystemData(smsg);
-//                }else{
-//                    GNPacket tgcd;
-//                    // 清除缓存中数据
-//                    tempbb.clear();
-//                    // 将数据加入到缓存中去
-//                    tempbb.append((uint8_t*)pDataBuffer, sizeof(pDataBuffer));
-////                    tempbb>>tgcd;
-//                    iter++;
-//                    int tcd=tgcd.sysCode;
-//                    if (PLAYER_NAME==tcd) {
-//                        std::string tempn(temp->getLocalName());
-//                        GNPacket msg;
-//                        msg.sysCode=REPLAYER_NAME;
-//                        msg.data=tempn;
-//                        tempbb.clear();
-////                        tempbb<<msg;
-//                        if (tempTcps->sendData(iter->first,(char*)tempbb.contents())>0) {
-//                            //系统通知有新连接
-//                            GNPacket smsg;
-//                            smsg.sysCode=NEWCONNECTION;
-//                            smsg.origin=iter->first;
-//                            smsg.data=tgcd.data;
-//                            temp->notificationSystemData(smsg);
-//                        }
-//                    }else{
-//                        temp->distributeData(tgcd.UUID,tgcd);
-//                    }
-//                }
+                printf("Server Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                if (lenr<=0) {
+                    close(iter->first);
+                    tempRemotaFD->erase(iter++);
+                    //系统通知有连接断开
+                    GNPacket smsg;
+                    smsg.sysCode=DISCONNECTION;
+                    smsg.origin=msg.origin;
+                    temp->notificationSystemData(smsg);
+                }else{
+                    int tcd=msg.sysCode;
+                    if (REPLAYER_NAME==tcd) {
+                        //系统通知有新连接
+                        GNPacket smsg;
+                        smsg.sysCode=NEWCONNECTION;
+                        smsg.origin=msg.origin;
+                        smsg.data=msg.data;
+                        temp->notificationSystemData(smsg);
+                    }else{
+                        temp->distributeData(msg.UUID,msg);
+                    }
+                    iter++;
+                }
             }else{
                 iter++;
             }
         }
-        printf("------------------------------------\n");
     }
     return NULL;
 }
@@ -241,7 +221,7 @@ void* GNetServer::searchServer(void* obj){
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     GNetServer *temp=(GNetServer *)obj;
     UdpServer* tempudp=temp->udps;
-    pthread_mutex_t* tempmut=&(temp->mut);
+    pthread_mutex_t* tempmut=&(temp->udpMapMutex);
     std::map<int, int>* temproomlist=&(temp->udpMapStatus);
     std::map<int, int>::iterator itm;
     std::map<unsigned int, std::string>* temproomlistInfo=&(temp->udpMap);
@@ -274,17 +254,15 @@ void* GNetServer::recvServerList(void* obj){
     pthread_testcancel();
     GNetServer* tempgr=(GNetServer*)obj;
     UdpServer* tempudps=tempgr->udps;
-    pthread_mutex_t* tempmut=&(tempgr->mut);
+    pthread_mutex_t* tempmut=&(tempgr->udpMapMutex);
     std::map<unsigned int, std::string>* temproomlistInfo=&(tempgr->udpMap);
     std::map<int, int>* temproomlist=&(tempgr->udpMapStatus);
     std::map<int, int>::iterator itm;
-    printf("开始接受\n");
     while (true) {
         pthread_testcancel();
         char tbuffer[1024];
         sockaddr_in remoteRecAddr;
         long lenr=tempudps->recvMsg(tbuffer,1024,&remoteRecAddr);
-        printf("接收数据：%ld\n",lenr);
         if (lenr>0) {
             std::string temprip=GUtils::cptos(inet_ntoa(remoteRecAddr.sin_addr));
             int rip=remoteRecAddr.sin_addr.s_addr;
@@ -310,13 +288,9 @@ void GNetServer::connectService(int addr){
         if ((localFD=tcps->iniServer(10))>0) {
             int remoteFD=tcps->isConnect(addr, 52125);
             if (remoteFD>0) {
-                printf("GNetServer:连接成功\n");
-                pthread_create(&tidConnectService,NULL,GNetServer::listenCNetService,this);
                 remoteFDIP.insert(std::make_pair(remoteFD,addr));
-                std::map<int,unsigned int>::iterator iter;
-                for (iter=remoteFDIP.begin();iter!=remoteFDIP.end(); ++iter) {
-                    std::cout<<"-------key:"<<iter->first<<"-------- value:"<<iter->second<<std::endl;
-                }
+                fdStatusMap.insert(std::make_pair(remoteFD, TCPLIVECOUNT));
+                pthread_create(&tidConnectService,NULL,GNetServer::listenCNetService,this);
             }
         }
     }
@@ -331,6 +305,7 @@ void* GNetServer::listenCNetService(void* obj){
     int tempLocalFD=temp->localFD;
     fd_set *temptRfdset=&(temp->rfdset);
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
+    std::map<int,int> *tempFdStatus=&(temp->fdStatusMap);
     int maxFD=0;
     while (true) {
         pthread_testcancel();
@@ -359,85 +334,72 @@ void* GNetServer::listenCNetService(void* obj){
             if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
                 unsigned int reAddr=remoteAddr.sin_addr.s_addr;
                 tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+                
+                std::string tempn(temp->getLocalName());
+                GNPacket rmsg;
+                rmsg.sysCode=PLAYER_NAME;
+                rmsg.data=tempn;
+                tempTcps->sendData(tempRFD,&rmsg);
             }
         }
         iter=tempRemotaFD->begin();
-//        printf("------------------------------------\n");
         while (iter!=tempRemotaFD->end()) {
             if (FD_ISSET(iter->first, temptRfdset)){
-                printf("remota FD:%d\n",iter->first);
                 GNPacket msg;
                 long lenr=tempTcps->recvData(iter->first,&msg);
-                printf("grgrhyjuju:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
-//                if (lenr<=0) {
-//                    close(iter->first);
-//                    tempRemotaFD->erase(iter++);
-//                    //系统通知有连接断开
-//                    GNPacket smsg;
-//                    smsg.sysCode=DISCONNECTION;
-//                    smsg.origin=iter->first;
-//                    temp->notificationSystemData(smsg);
-//                }else{
-//                    GNPacket tgcd;
-//                    // 清除缓存中数据
-//                    tempbb.clear();
-//                    // 将数据加入到缓存中去
-//                    tempbb.append((uint8_t*)pDataBuffer, sizeof(pDataBuffer));
-//                    tempbb>>tgcd;
-//                    int tcd=tgcd.sysCode;
-//                    if (SEND_IP==tcd) {
-//                        int reip=GUtils::ctoi((tgcd.data).c_str());
-//                        printf("remota Msg:%s(--%d--)\n",(tgcd.data).c_str(),reip);
-//                        int tempremo=tempTcps->isConnect(reip, 52125);
-//                        if (tempremo>0) {
-//                            tempRemotaFD->insert(std::make_pair(tempremo,reip));
-//                            std::string tempn(temp->getLocalName());
-//                            GNPacket msg;
-//                            msg.sysCode=PLAYER_NAME;
-//                            msg.data=tempn;
-//                            tempbb.clear();
-//                            tempbb<<msg;
-//                            tempTcps->sendData(tempremo,(char*)tempbb.contents());
-//                        }
-//                    }else if (REPLAYER_NAME==tcd) {
-//                        //系统通知有新连接
-//                        GNPacket smsg;
-//                        smsg.sysCode=NEWCONNECTION;
-//                        smsg.origin=iter->first;
-//                        smsg.data=tgcd.data;
-//                        temp->notificationSystemData(smsg);
-//                    }else if (PLAYER_NAME==tcd) {
-//                        std::string tempn(temp->getLocalName());
-//                        GNPacket msg;
-//                        msg.sysCode=REPLAYER_NAME;
-//                        msg.data=tempn;
-//                        tempbb.clear();
-//                        tempbb<<msg;
-//                        if (tempTcps->sendData(iter->first,(char*)tempbb.contents())>0) {
-//                            //系统通知有新连接
-//                            GNPacket smsg;
-//                            smsg.sysCode=NEWCONNECTION;
-//                            smsg.origin=iter->first;
-//                            smsg.data=tgcd.data;
-//                            temp->notificationSystemData(smsg);
-//                        }
-//                    }else{
-//                        temp->distributeData(tgcd.UUID,tgcd);
-//                    }
-//                    iter++;
-//                }
+                printf("Client Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                if (lenr<=0) {
+                    close(iter->first);
+                    tempRemotaFD->erase(iter++);
+                    //系统通知有连接断开
+                    GNPacket smsg;
+                    smsg.sysCode=DISCONNECTION;
+                    smsg.origin=msg.origin;
+                    temp->notificationSystemData(smsg);
+                }else{
+                    int tcd=msg.sysCode;
+                    if (SEND_IP==tcd) {
+                        int reip=GUtils::ctoi((msg.data).c_str());
+                        printf("remota Msg:%s(--%d--)\n",(msg.data).c_str(),reip);
+                        int tempremo=tempTcps->isConnect(reip, 52125);
+                        if (tempremo>0) {
+                            tempRemotaFD->insert(std::make_pair(tempremo,reip));
+                            tempFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
+                        }
+                    }else if (PLAYER_NAME==tcd) {
+                        std::string tempn(temp->getLocalName());
+                        GNPacket rmsg;
+                        rmsg.sysCode=REPLAYER_NAME;
+                        rmsg.data=tempn;
+                        tempTcps->sendData(iter->first,&rmsg);
+                        //系统通知有新连接
+                        GNPacket smsg;
+                        smsg.sysCode=NEWCONNECTION;
+                        smsg.origin=msg.origin;
+                        smsg.data=msg.data;
+                        temp->notificationSystemData(smsg);
+                    }else if (REPLAYER_NAME==tcd) {
+                        //系统通知有新连接
+                        GNPacket smsg;
+                        smsg.sysCode=NEWCONNECTION;
+                        smsg.origin=msg.origin;
+                        smsg.data=msg.data;
+                        temp->notificationSystemData(smsg);
+                    }else{
+                        temp->distributeData(msg.UUID,msg);
+                    }
+                    iter++;
+                }
             }else{
                 iter++;
             }
         }
-//        printf("------------------------------------\n");
-        sleep(1);
     }
     return NULL;
 }
 
 long GNetServer::sendNetPack(int fd,GNPacket* np){
-
+    
     return tcps->sendData(fd,np);
 }
 long GNetServer::sendNetPack(GNPacket* np){
@@ -462,3 +424,30 @@ void GNetServer::disconnectService(){
         serverStatus=SERVER_STOP;
     }
 }
+
+void* GNetServer::listenConnectServer(void* obj){
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+    pthread_testcancel();
+    GNetServer *th_obj=(GNetServer *)obj;
+    TcpServer *thTcps=th_obj->tcps;
+    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
+    //    int tempLocalFD=temp->localFD;
+    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
+    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
+    sockaddr_in remoteAddr;
+    int tempRFD;
+    if ((tempRFD=thTcps->isAccept(&remoteAddr))>0) {
+        unsigned int reAddr=remoteAddr.sin_addr.s_addr;
+        pthread_mutex_lock(thMut);
+        thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+        thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
+        pthread_mutex_unlock(thMut);
+    }
+    return NULL;
+}
+
+void* GNetServer::heartBeatServer(void* obj){
+    return NULL;
+}
+

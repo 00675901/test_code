@@ -94,7 +94,7 @@ int TcpServer::isConnect(int addr,int rematePort){
 
 long TcpServer::recvData(int remoteSo,char* buffer){
     long len=strlen(buffer);
-    long re=recv(remoteSo,buffer,26,0);
+    long re=recv(remoteSo,buffer,len,0);
     if (re<0) {
         printf("TCP_send_fail：%ld\n",re);
     }
@@ -117,29 +117,26 @@ long TcpServer::sendData(int remoteSo,GNPacket* msg){
     msg->serializer(sendco);
     char send[templen+5];
     sprintf(send, "%04d%s",templen,sendco);
-    std::cout<<"send content:"<<send<<std::endl;
     long re=sendData(remoteSo,send);
     return re;
 }
 long TcpServer::recvData(int remoteSo,GNPacket* buffer){
-    printf("content\n");
     char bufhead[5];
     int ret=recv(remoteSo, bufhead, 4, 0);
     if (ret<0) {
-         printf("TCP_recv_sise_fail:%d\n",ret);
+        printf("TCP_recv_sise_fail:%d\n",ret);
     }else{
         printf("content size:%d\n",ret);
     }
-        
     int dl=0;
     if (ret==4) {
         bufhead[4]='\0';
         dl=GUtils::ctoi(bufhead);
-        printf("real_content size:%d\n",dl);
+        printf("parser_content size:%d\n",dl);
     }
     if (dl>0) {
         char bufcon[dl];
-        printf("begin recv%d\n",dl);
+        printf("begin recv:%d\n",dl);
         ret=recv(remoteSo, bufcon, dl, 0);
         if (ret<0) {
             printf("TCP_recv_fail:%d\n",ret);
@@ -147,7 +144,7 @@ long TcpServer::recvData(int remoteSo,GNPacket* buffer){
             printf("real-content size:%d\n",ret);
         }
         buffer->deserializer(bufcon);
-        printf("vvvvv:%d,%d,%s,%d,%s\n",buffer->sysCode,buffer->origin,buffer->UUID.c_str(),buffer->NPCode,buffer->data.c_str());
+        printf("recv Content Packet:%d,%d,%s,%d,%s\n",buffer->sysCode,buffer->origin,buffer->UUID.c_str(),buffer->NPCode,buffer->data.c_str());
     }
     return ret;
 }

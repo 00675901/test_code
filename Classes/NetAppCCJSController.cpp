@@ -60,7 +60,7 @@ bool NetAppCCJSController::send_message(std::string jsonString){
     GNPacket msg;
     msg.UUID=this->UDID;
     msg.data=jsonString;
-    if(gns->sendNetPack(msg)>0){
+    if(gns->sendNetPack(&msg)>0){
         return true;
     }
     return false;

@@ -17,6 +17,7 @@
 #include "GNetObserver.h"
 
 #define UDPLIVECOUNT 5
+#define TCPLIVECOUNT 5
 
 class GNetServer{
 private:
@@ -43,12 +44,14 @@ private:
     UdpServer *udps;
     TcpServer *tcps;
 //    int serverStatus;
-    pthread_mutex_t mut;
+    pthread_mutex_t udpMapMutex;
+    pthread_mutex_t remoteFDIPMutex;
     unsigned int localIP;
     int localFD=0;
     const char* localName;
     //除自己之外,fd-ip表
     std::map<int,unsigned int> remoteFDIP;
+    std::map<int,int> fdStatusMap;
     fd_set rfdset;
     
     //UDP Send localIP Service function
@@ -68,12 +71,14 @@ private:
     
     GNetServer(void){
         serverStatus=SERVER_STOP;
-        pthread_mutex_init(&mut, NULL);
+        pthread_mutex_init(&udpMapMutex, NULL);
+        pthread_mutex_init(&remoteFDIPMutex, NULL);
         printf("GNetServer BEGIN\n");
     }
     ~GNetServer(void){
         obmap.clear();
-        pthread_mutex_destroy(&mut);
+        pthread_mutex_destroy(&udpMapMutex);
+        pthread_mutex_destroy(&remoteFDIPMutex);
         printf("GNetServer END\n");
     }
 public:
@@ -143,6 +148,11 @@ public:
     //通过tcp fd 发送封包
     long sendNetPack(int,GNPacket*);
     long sendNetPack(GNPacket*);
+    
+    //监听连接线程
+    void* listenConnectServer(void* obj);
+    void* heartBeatServer(void* obj);
+    void* nettyNetService(void* obj);
 };
 
 #endif /* defined(__GNetServer__) */

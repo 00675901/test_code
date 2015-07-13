@@ -19,19 +19,27 @@ public:
         printf("NetAppCCJSController end\n");
     }
     void NewConnection(GNPacket gp){
-//        pthread_mutex_lock(&mut);
         playerList.insert(std::make_pair(gp.origin, gp.data));
         
-        GSNotificationPool::shareInstance()->postNotification("updateRoomList", NULL);
-//        pthread_mutex_unlock(&mut);
+        std::map<int,std::string>::iterator iter;
+        for (iter=playerList.begin(); iter!=playerList.end(); ++iter) {
+            std::cout<<"origin:"<<iter->first<<" name:"<<iter->second<<std::endl;
+        }
+        
+        msgList.push_back("a player join the room!!");
+        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
     }
-    void Update(GNPacket gp){
-//        pthread_mutex_lock(&mut);
-        msgList.push_back(gp.data);
-//        pthread_mutex_unlock(&mut);
-    }
-    void DisConnection(GNPacket){
     
+    void Update(GNPacket gp){
+        
+    }
+    
+    void DisConnection(GNPacket gp){
+        playerList.erase(gp.origin);
+        msgList.push_back("a player leave the room!!");
+        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
     }
     //启动服务器
     void start_server(int);
