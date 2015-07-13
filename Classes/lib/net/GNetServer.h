@@ -35,7 +35,8 @@ private:
         DISCONNECTION,
         PLAYER_NAME,
         REPLAYER_NAME,
-        SEND_IP
+        SEND_IP,
+        TEST_DATA
     }sysEvent;
     
     std::map<std::string,GNetObserver*> obmap;
@@ -106,6 +107,7 @@ public:
     }
     //系统全局通知
     void notificationSystemData(GNPacket tp){
+        printf("通知全局\n");
         std::map<std::string,GNetObserver*>::iterator iter=obmap.begin();
         if (NEWCONNECTION==tp.sysCode) {       //操作码为1 通知所有ob有新连接
             while (iter!=obmap.end()) {

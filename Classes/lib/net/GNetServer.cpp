@@ -367,6 +367,9 @@ void* GNetServer::listenCNetService(void* obj){
                             tempFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
                         }
                     }else if (PLAYER_NAME==tcd) {
+                        printf("111\n");
+                        sleep(5);
+                        printf("222\n");
                         std::string tempn(temp->getLocalName());
                         GNPacket rmsg;
                         rmsg.sysCode=REPLAYER_NAME;

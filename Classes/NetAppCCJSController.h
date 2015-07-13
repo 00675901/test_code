@@ -19,6 +19,8 @@ public:
         printf("NetAppCCJSController end\n");
     }
     void NewConnection(GNPacket gp){
+        printf("被通知\n");
+        
         playerList.insert(std::make_pair(gp.origin, gp.data));
         
         std::map<int,std::string>::iterator iter;

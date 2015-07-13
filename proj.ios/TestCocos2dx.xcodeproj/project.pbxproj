@@ -2348,6 +2348,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
@@ -2388,7 +2389,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-O2";
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
+				PROVISIONING_PROFILE = "766e6a16-b47e-4d7e-b1d0-00922c186226";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2400,6 +2401,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Liu Bo (NCL64T6CTJ)";
@@ -2437,7 +2439,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
+				PROVISIONING_PROFILE = "766e6a16-b47e-4d7e-b1d0-00922c186226";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
