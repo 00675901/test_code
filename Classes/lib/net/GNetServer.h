@@ -50,7 +50,6 @@ private:
     //除自己之外,fd-ip表
     std::map<int,unsigned int> remoteFDIP;
     fd_set rfdset;
-    ByteBuffer bb;
     
     //UDP Send localIP Service function
     int maxLinsten;
@@ -114,18 +113,7 @@ public:
                 iter++;
             }
         }
-        
     }
-//    void testaaaa(){
-//        std::cout<<"---------------------------------------"<<std::endl;
-//        std::cout<<"obmap size:"<<obmap.size()<<std::endl;
-//        std::map<std::string,GNetObserver*>::iterator iters;
-//        for (iters=obmap.begin(); iters!=obmap.end(); ++iters) {
-//            std::cout<<"key:"<<iters->first<<"---value:"<<iters->second<<std::endl;
-//            iters->second->testUpdate(iters->first);
-//        }
-//        std::cout<<"---------------------------------------"<<std::endl;
-//    }
     
     //use member function
     unsigned int* getLocalIP();
@@ -153,8 +141,8 @@ public:
     static void* listenSNetService(void* obj);
     static void* listenCNetService(void* obj);
     //通过tcp fd 发送封包
-    long sendNetPack(int,GNPacket);
-    long sendNetPack(GNPacket);
+    long sendNetPack(int,GNPacket*);
+    long sendNetPack(GNPacket*);
 };
 
 #endif /* defined(__GNetServer__) */

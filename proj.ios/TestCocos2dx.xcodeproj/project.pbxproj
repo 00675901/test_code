@@ -2388,7 +2388,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-O2";
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "bf3224fa-a377-48a3-a80a-e4f0ce95a2c2";
+				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2437,7 +2437,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = TestCocos2dx;
-				PROVISIONING_PROFILE = "bf3224fa-a377-48a3-a80a-e4f0ce95a2c2";
+				PROVISIONING_PROFILE = "4d5a29de-6ffc-4baf-a0ae-957dbcda3de4";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

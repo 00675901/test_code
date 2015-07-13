@@ -100,7 +100,6 @@ void* GNetServer::listenSNetService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localFD;
     fd_set *temptRfdset=&(temp->rfdset);
-    ByteBuffer tempbb=temp->bb;
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
     int maxFD=0;
     while (true) {
@@ -131,37 +130,20 @@ void* GNetServer::listenSNetService(void* obj){
             if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
                 printf("有人连接了\n");
                 unsigned int reAddr=remoteAddr.sin_addr.s_addr;
-//                for (iter=tempRemotaFD->begin();iter!=tempRemotaFD->end(); ++iter) {
-//                    std::cout<<"ip:"<<iter->second<<std::endl;
-//                    GNPacket tgcd;
-//                    tgcd.sysCode=SEND_IP;
-//                    tgcd.data=iter->second;
-//                    tempbb.clear();
-////                    tempbb<<tgcd;
-//                    tempTcps->sendData(tempRFD,(char*)tempbb.contents());
-//                }
-                ByteBuffer bbs;
+                for (iter=tempRemotaFD->begin();iter!=tempRemotaFD->end(); ++iter) {
+                    std::cout<<"ip:"<<iter->second<<std::endl;
+                    GNPacket tgcd;
+                    tgcd.sysCode=SEND_IP;
+                    tgcd.data=iter->second;
+                    tempTcps->sendData(tempRFD,&tgcd);
+                }
+                tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+                
                 GNPacket msg;
                 msg.sysCode=PLAYER_NAME;
-                msg.data="ceshi测试";
-                bbs<<msg;
-                
+                msg.data=temp->getLocalName();
                 tempTcps->sendData(tempRFD,&msg);
                 
-                printf("sdfasdf:%lu\n",bbs.size());
-                
-                ByteBuffer bbs2;
-                GNPacket buffersss;
-                bbs2.append((uint8_t*)bbs.contents(),bbs.size());
-                bbs2>>buffersss;
-            
-                printf("tttttttt:%d,%d,%s,%d,%s\n",buffersss.sysCode,buffersss.origin,buffersss.UUID.c_str(),buffersss.NPCode,buffersss.data.c_str());
-                
-//                tempTcps->sendData(tempRFD,&msg);
-                tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
-                for (iter=tempRemotaFD->begin();iter!=tempRemotaFD->end(); ++iter) {
-                    std::cout<<"key:"<<iter->first<<" value:"<<iter->second<<std::endl;
-                }
             }
         }
         iter=tempRemotaFD->begin();
@@ -171,6 +153,8 @@ void* GNetServer::listenSNetService(void* obj){
             if (FD_ISSET(iter->first, temptRfdset)){
                 GNPacket msg;
                 long lenr=tempTcps->recvData(iter->first,&msg);
+                printf("grgrsdfh:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                
                 iter++;
 //                if (lenr<=0) {
 //                    close(iter->first);
@@ -333,8 +317,6 @@ void GNetServer::connectService(int addr){
                 for (iter=remoteFDIP.begin();iter!=remoteFDIP.end(); ++iter) {
                     std::cout<<"-------key:"<<iter->first<<"-------- value:"<<iter->second<<std::endl;
                 }
-
-//                tcps->sendData(remoteFD,&msg);
             }
         }
     }
@@ -348,7 +330,6 @@ void* GNetServer::listenCNetService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localFD;
     fd_set *temptRfdset=&(temp->rfdset);
-    ByteBuffer tempbb=temp->bb;
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
     int maxFD=0;
     while (true) {
@@ -386,9 +367,8 @@ void* GNetServer::listenCNetService(void* obj){
             if (FD_ISSET(iter->first, temptRfdset)){
                 printf("remota FD:%d\n",iter->first);
                 GNPacket msg;
-//                char msg[26];
                 long lenr=tempTcps->recvData(iter->first,&msg);
-                printf("vdfdvvvv:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                printf("grgrhyjuju:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
 //                if (lenr<=0) {
 //                    close(iter->first);
 //                    tempRemotaFD->erase(iter++);
@@ -456,12 +436,11 @@ void* GNetServer::listenCNetService(void* obj){
     return NULL;
 }
 
-long GNetServer::sendNetPack(int fd,GNPacket np){
-    GNPacket msg;
-//    bb<<msg;
-    return tcps->sendData(fd,(char*)bb.contents());
+long GNetServer::sendNetPack(int fd,GNPacket* np){
+
+    return tcps->sendData(fd,np);
 }
-long GNetServer::sendNetPack(GNPacket np){
+long GNetServer::sendNetPack(GNPacket* np){
     long i=0;
     std::map<int,unsigned int>::iterator iter;
     for (iter=remoteFDIP.begin(); iter!=remoteFDIP.end(); ++iter) {
