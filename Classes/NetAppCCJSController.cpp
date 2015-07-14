@@ -42,6 +42,10 @@ void NetAppCCJSController::stop_client_service(){
 void NetAppCCJSController::connect_server(int ip){
     gns->connectService(ip);
 }
+void NetAppCCJSController::disconnect_server(){
+    gns->disconnectService();
+}
+
 std::string NetAppCCJSController::get_server_list(){
     gns->getTempUdpMap();
     return "";

@@ -127,7 +127,8 @@ void RoomView::closeView(){
         gnapp->stop_server_service();
         delete gnapp;
     }else{
-
+        gnapp->disconnect_server();
+        delete gnapp;
     }
     pDirector->popScene();
 }

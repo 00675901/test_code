@@ -62,6 +62,9 @@ public:
     
     //连接服务器
     void connect_server(int ip);
+    //断开服务器
+    void disconnect_server();
+    
     //获取服务器列表
     std::string get_server_list();
     //获取已经连接到服务器的玩家列表

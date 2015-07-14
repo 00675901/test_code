@@ -9,6 +9,7 @@
 
 TcpServer::TcpServer(int listenPort){
     memset(&localAddr, 0, sizeof(localAddr));
+    pthread_mutex_init(&tcpMutex, NULL);
     localAddr.sin_family=AF_INET;
     localAddr.sin_port=htons(listenPort);
     localAddr.sin_addr.s_addr=htonl(INADDR_ANY);
@@ -16,6 +17,7 @@ TcpServer::TcpServer(int listenPort){
 }
 
 TcpServer::~TcpServer(){
+    pthread_mutex_destroy(&tcpMutex);
     close(localSo);
     std::cout<<"TCP Service Closed"<<std::endl;
 }
@@ -26,6 +28,8 @@ int TcpServer::iniServer(int instenCount){
         return -1;
     }else{
         int on=1;
+        int flags=fcntl(localSo,F_GETFL, 0);
+        fcntl(localSo, F_SETFL,flags|O_NONBLOCK);
         if (setsockopt(localSo, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))<0) {
             perror("set fail:");
             return -1;

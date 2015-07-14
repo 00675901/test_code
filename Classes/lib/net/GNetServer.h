@@ -35,8 +35,7 @@ private:
         DISCONNECTION,
         PLAYER_NAME,
         REPLAYER_NAME,
-        SEND_IP,
-        TEST_DATA
+        SEND_IP
     }sysEvent;
     
     std::map<std::string,GNetObserver*> obmap;
@@ -55,20 +54,21 @@ private:
     std::map<int,int> fdStatusMap;
     fd_set rfdset;
     
-    //UDP Send localIP Service function
+    //UDP Send localIP Service function(Server)
     int maxLinsten;
     int localTcpFD;
     pthread_t tidRoomService;
-    pthread_t tidListenRoomService;
+    pthread_t tidListenSConnectService;
+    pthread_t tidListenSRemotaService;
     
-    //UDP search response 用于搜寻网络
+    //UDP search response 用于搜寻网络(Client)
     std::map<unsigned int, std::string> udpMap; //临时ip-描述信息表
     std::map<int,int> udpMapStatus;
     pthread_t tidSearchServer;
     pthread_t tidRecvServer;
-    
     //TCP connect
-    pthread_t tidConnectService;
+    pthread_t tidListenCConnectService;
+    pthread_t tidListenCRemotaService;
     
     GNetServer(void){
         serverStatus=SERVER_STOP;
@@ -134,6 +134,13 @@ public:
     void resumeResponseService();
     void stopResponseService();
     static void* responseService(void* obj);
+    //监听连接\接收封包线程
+    static void* listenSConnectServer(void* obj);
+    static void* listenSRemotaServer(void* obj);
+    
+    static void* listenSNetService(void* obj);
+    
+    
     //UDP search response
     void startSearchService(const char* uname);
     void pauseSearchService();
@@ -145,16 +152,15 @@ public:
     void connectService(int addr);
     void disconnectService();
     //监听tcp通信,接收封包
-    static void* listenSNetService(void* obj);
-    static void* listenCNetService(void* obj);
+    static void* listenCConnectServer(void* obj);
+    static void* listenCRemotaServer(void* obj);
+    
     //通过tcp fd 发送封包
     long sendNetPack(int,GNPacket*);
     long sendNetPack(GNPacket*);
     
-    //监听连接线程
-    void* listenConnectServer(void* obj);
-    void* heartBeatServer(void* obj);
-    void* nettyNetService(void* obj);
+    //心跳线程
+    static void* nettyNetService(void* obj);
 };
 
 #endif /* defined(__GNetServer__) */

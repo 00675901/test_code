@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include "GUtils.h"
 #include "PackDefine.h"
 
@@ -16,6 +17,7 @@ private:
     int localSo;
     sockaddr_in localAddr;
     sockaddr_in remoteAddr;
+    pthread_mutex_t tcpMutex;
 public:
     TcpServer(int listenPort);
     ~TcpServer();
