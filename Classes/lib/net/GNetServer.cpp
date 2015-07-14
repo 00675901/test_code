@@ -4,7 +4,7 @@
 //
 
 #include "GNetServer.h"
-
+using namespace std;
 static GNetServer* GNetServerInstance;
 GNetServer* GNetServer::shareInstance(){
     if (!GNetServerInstance) {
@@ -67,6 +67,7 @@ void GNetServer::stopResponseService(){
             close(iter->first);
         }
         remoteFDIP.clear();
+        close(localTcpFD);
         delete tcps;
         delete udps;
         serverStatus=SERVER_STOP;
@@ -101,23 +102,23 @@ void* GNetServer::listenSNetService(void* obj){
     pthread_testcancel();
     GNetServer *temp=(GNetServer *)obj;
     TcpServer *tempTcps=temp->tcps;
-    int &tempLocalFD=temp->localFD;
+    int tempLocalFD=temp->localTcpFD;
     fd_set *temptRfdset=&(temp->rfdset);
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
     int maxFD=0;
-    struct timeval wt;
+    struct timeval tv;
     while (true) {
         pthread_testcancel();
         FD_ZERO(temptRfdset);
         FD_SET(tempLocalFD, temptRfdset);
-        maxFD=maxFD>tempLocalFD?maxFD:tempLocalFD;
+        maxFD=tempLocalFD;
         std::map<int,unsigned int>::iterator iter;
         for (iter=tempRemotaFD->begin(); iter!=tempRemotaFD->end(); ++iter) {
             FD_SET(iter->first, temptRfdset);
             maxFD=maxFD>(iter->first)?maxFD:(iter->first);
         }
-        wt.tv_sec=1;
-        wt.tv_usec=0;
+        tv.tv_sec=1;
+        tv.tv_usec=0;
         int sel=select(maxFD+1, temptRfdset, NULL, NULL, NULL);
         printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
         
@@ -133,9 +134,8 @@ void* GNetServer::listenSNetService(void* obj){
             sockaddr_in remoteAddr;
             int tempRFD;
             printf("----------------------\n");
-            unsigned int remoteaddrlen=sizeof(remoteAddr);
-            //
-//            accept(tempLocalFD, (sockaddr *)&remoteAddr, &remoteaddrlen)
+            //            unsigned int remoteaddrlen=sizeof(remoteAddr);
+            //            accept(tempLocalFD, (sockaddr *)&remoteAddr, &remoteaddrlen)
             if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
                 printf("--------------------------------------------------\n");
                 unsigned int reAddr=remoteAddr.sin_addr.s_addr;
@@ -144,7 +144,7 @@ void* GNetServer::listenSNetService(void* obj){
                     //server send all ip
                     GNPacket tgcd;
                     tgcd.sysCode=SEND_IP;
-                    tgcd.data=iter->second;
+                    tgcd.data=GUtils::itos(iter->second);
                     tempTcps->sendData(tempRFD,&tgcd);
                 }
                 tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
@@ -153,6 +153,9 @@ void* GNetServer::listenSNetService(void* obj){
                 GNPacket msg;
                 msg.sysCode=PLAYER_NAME;
                 msg.data=tempn;
+                
+                printf("Server SendSend Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                
                 tempTcps->sendData(tempRFD,&msg);
             }
         }
@@ -192,133 +195,136 @@ void* GNetServer::listenSNetService(void* obj){
     return NULL;
 }
 
-
-
-
-
-
-
-void* GNetServer::listenSConnectServer(void* obj){
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    pthread_testcancel();
-    GNetServer *th_obj=(GNetServer *)obj;
-    TcpServer *thTcps=th_obj->tcps;
-    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
-    //    int tempLocalFD=temp->localFD;
-    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
-    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
-    std::map<int,unsigned int>::iterator iter;
-    std::map<int,unsigned int>::iterator enditer;
-    while (true) {
-        sockaddr_in remoteAddr;
-        int tempRFD;
-        if ((tempRFD=thTcps->isAccept(&remoteAddr))>0) {
-            unsigned int reAddr=remoteAddr.sin_addr.s_addr;
-            iter=thRemotaFD->begin();
-            enditer=thRemotaFD->end();
-            for (;iter!=enditer; ++iter) {
-                std::cout<<"ip:"<<iter->second<<std::endl;
-                //server send all ip
-                GNPacket tgcd;
-                tgcd.sysCode=SEND_IP;
-                tgcd.data=iter->second;
-                thTcps->sendData(tempRFD,&tgcd);
-            }
-            pthread_mutex_lock(thMut);
-            thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
-            thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
-            pthread_mutex_unlock(thMut);
-            //server send name;
-            std::string tempn(th_obj->getLocalName());
-            GNPacket msg;
-            msg.sysCode=PLAYER_NAME;
-            msg.data=tempn;
-            thTcps->sendData(tempRFD,&msg);
-        }
-    }
-    return NULL;
-}
-
-void* GNetServer::listenSRemotaServer(void* obj){
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    pthread_testcancel();
-    GNetServer *th_obj=(GNetServer *)obj;
-    TcpServer *thTcps=th_obj->tcps;
-    fd_set *thFDset=&(th_obj->rfdset);
-    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
-    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
+//void* GNetServer::listenSConnectServer(void* obj){
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    pthread_testcancel();
+//    GNetServer *th_obj=(GNetServer *)obj;
+//    TcpServer *thTcps=th_obj->tcps;
+//    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
+//    pthread_mutex_t* thNetMut=&(th_obj->netMutex);
+//    //    int tempLocalFD=temp->localFD;
+//    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
 //    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
-    
-    int thLocalFD=th_obj->localFD;
-    int maxFD=0;
-    struct timeval tv;
-    std::map<int,unsigned int>::iterator iter;
-    std::map<int,unsigned int>::iterator enditer;
-    while (true) {
-        pthread_testcancel();
-        FD_ZERO(thFDset);
-        
-        FD_SET(thLocalFD, thFDset);
-        maxFD=maxFD>thLocalFD?maxFD:thLocalFD;
-        
-        iter=thRemotaFD->begin();
-        enditer=thRemotaFD->end();
-        for (; iter!=enditer; ++iter) {
-            FD_SET(iter->first, thFDset);
-            maxFD=maxFD>(iter->first)?maxFD:(iter->first);
-        }
-        tv.tv_sec=1;
-        tv.tv_usec=0;
-        int sel=select(maxFD+1, thFDset, NULL, NULL, NULL);
-        printf("===========================server============================\n");
-        if (sel<0) {
-            if (EINTR==errno) {
-                continue;
-            }else{
-                printf("select faild:%m");
-            }
-        }
-        iter=thRemotaFD->begin();
-        enditer=thRemotaFD->end();
-        while (iter!=enditer) {
-            if (FD_ISSET(iter->first, thFDset)){
-                GNPacket msg;
-                long lenr=thTcps->recvData(iter->first,&msg);
-                printf("Server Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
-                if (lenr<=0) {
-                    close(iter->first);
-                    pthread_mutex_lock(thMut);
-                    thRemotaFD->erase(iter++);
-                    pthread_mutex_unlock(thMut);
-//                    thFdStatus->find(iter->first)->second=0;
-                    //系统通知有连接断开
-                    GNPacket smsg;
-                    smsg.sysCode=DISCONNECTION;
-                    smsg.origin=msg.origin;
-                    th_obj->notificationSystemData(smsg);
-                }else{
-                    int tcd=msg.sysCode;
-                    if (REPLAYER_NAME==tcd) {
-                        //系统通知有新连接
-                        GNPacket smsg;
-                        smsg.sysCode=NEWCONNECTION;
-                        smsg.origin=msg.origin;
-                        smsg.data=msg.data;
-                        th_obj->notificationSystemData(smsg);
-                    }else{
-                        th_obj->distributeData(msg.UUID,msg);
-                    }
-                    iter++;
-                }
-            }else{
-                iter++;
-            }
-        }
-    }
-    return NULL;
-}
+//    std::map<int,unsigned int>::iterator iter;
+//    std::map<int,unsigned int>::iterator enditer;
+//    while (true) {
+//        printf("gadgadsfgsdfgsdfgsdfg\n");
+//        sockaddr_in remoteAddr;
+//        int tempRFD;
+//        if ((tempRFD=thTcps->isAccept(&remoteAddr))>0) {
+//            unsigned int reAddr=remoteAddr.sin_addr.s_addr;
+////            pthread_mutex_lock(thMut);
+////            thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+////            thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
+////            pthread_mutex_unlock(thMut);
+//            iter=thRemotaFD->begin();
+//            enditer=thRemotaFD->end();
+//            for (;iter!=enditer; ++iter) {
+//                std::cout<<"ip:"<<iter->second<<std::endl;
+//                //server send all ip
+//                GNPacket tgcd;
+//                tgcd.sysCode=SEND_IP;
+//                tgcd.data=GUtils::itos(iter->second);
+//                pthread_mutex_lock(thNetMut);
+//                thTcps->sendData(tempRFD,&tgcd);
+//                pthread_mutex_unlock(thNetMut);
+//            }
+//            pthread_mutex_lock(thMut);
+//            thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+//            thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
+//            pthread_mutex_unlock(thMut);
+//            //server send name;
+//            std::string tempn(th_obj->getLocalName());
+//            GNPacket msg;
+//            msg.sysCode=PLAYER_NAME;
+//            msg.data=tempn;
+//            pthread_mutex_lock(thNetMut);
+//            thTcps->sendData(tempRFD,&msg);
+//            pthread_mutex_unlock(thNetMut);
+//        }
+//    }
+//    return NULL;
+//}
+//
+//void* GNetServer::listenSRemotaServer(void* obj){
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    pthread_testcancel();
+//    GNetServer *th_obj=(GNetServer *)obj;
+//    TcpServer *thTcps=th_obj->tcps;
+//    fd_set *thFDset=&(th_obj->rfdset);
+//    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
+//    pthread_mutex_t* thNetMut=&(th_obj->netMutex);
+//    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
+////    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
+//    
+////    int thLocalFD=th_obj->localFD;
+//    int maxFD=0;
+//    struct timeval tv;
+//    std::map<int,unsigned int>::iterator iter;
+//    std::map<int,unsigned int>::iterator enditer;
+//    while (true) {
+//        pthread_testcancel();
+//        FD_ZERO(thFDset);
+////        FD_SET(thLocalFD, thFDset);
+////        maxFD=maxFD>thLocalFD?maxFD:thLocalFD;
+//        iter=thRemotaFD->begin();
+//        enditer=thRemotaFD->end();
+//        for (; iter!=enditer; ++iter) {
+//            FD_SET(iter->first, thFDset);
+//            maxFD=maxFD>(iter->first)?maxFD:(iter->first);
+//        }
+//        tv.tv_sec=0;
+//        tv.tv_usec=500;
+//        int sel=select(maxFD+1, thFDset, NULL, NULL, &tv);
+////        printf("===========================server============================\n");
+//        if (sel<0) {
+//            if (EINTR==errno) {
+//                continue;
+//            }else{
+//                printf("select faild:%m");
+//            }
+//        }
+//        iter=thRemotaFD->begin();
+//        enditer=thRemotaFD->end();
+//        while (iter!=enditer) {
+//            if (FD_ISSET(iter->first, thFDset)){
+//                GNPacket msg;
+//                long lenr=thTcps->recvData(iter->first,&msg);
+//                printf("Server Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+//                if (lenr<=0) {
+//                    close(iter->first);
+//                    pthread_mutex_lock(thMut);
+//                    thRemotaFD->erase(iter++);
+//                    pthread_mutex_unlock(thMut);
+////                    thFdStatus->find(iter->first)->second=0;
+//                    //系统通知有连接断开
+//                    GNPacket smsg;
+//                    smsg.sysCode=DISCONNECTION;
+//                    smsg.origin=msg.origin;
+//                    th_obj->notificationSystemData(smsg);
+//                }else{
+//                    int tcd=msg.sysCode;
+//                    if (REPLAYER_NAME==tcd) {
+//                        //系统通知有新连接
+//                        GNPacket smsg;
+//                        smsg.sysCode=NEWCONNECTION;
+//                        smsg.origin=msg.origin;
+//                        smsg.data=msg.data;
+//                        th_obj->notificationSystemData(smsg);
+//                    }else{
+//                        th_obj->distributeData(msg.UUID,msg);
+//                    }
+//                    iter++;
+//                }
+//            }else{
+//                iter++;
+//            }
+//        }
+//    }
+//    return NULL;
+//}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -425,173 +431,49 @@ void GNetServer::connectService(int addr){
     if (SERVER_C_TCP_RUN!=serverStatus){
         serverStatus=SERVER_C_TCP_RUN;
         tcps=new TcpServer(52125);
-        if ((localFD=tcps->iniServer(10))>0) {
+        if ((localTcpFD=tcps->iniServer(10))>0) {
             int remoteFD=tcps->isConnect(addr, 52125);
             if (remoteFD>0) {
 //                pthread_mutex_lock(&remoteFDIPMutex);
                 remoteFDIP.insert(std::make_pair(remoteFD,addr));
                 fdStatusMap.insert(std::make_pair(remoteFD, TCPLIVECOUNT));
 //                pthread_mutex_unlock(&remoteFDIPMutex);
-                pthread_create(&tidListenCRemotaService,NULL,GNetServer::listenCRemotaServer,this);
-                pthread_create(&tidListenCConnectService,NULL,GNetServer::listenCConnectServer,this);
+//                pthread_create(&tidListenCRemotaService,NULL,GNetServer::listenCRemotaServer,this);
+//                pthread_create(&tidListenCConnectService,NULL,GNetServer::listenCConnectServer,this);
+                pthread_create(&tidListenCConnectService,NULL,GNetServer::listenCNetService,this);
             }
         }
     }
 }
 
-//void* GNetServer::listenCNetService(void* obj){
-//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-//    pthread_testcancel();
-//    GNetServer *temp=(GNetServer *)obj;
-//    TcpServer *tempTcps=temp->tcps;
-//    int tempLocalFD=temp->localFD;
-//    fd_set *temptRfdset=&(temp->rfdset);
-//    std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
-//    std::map<int,int> *tempFdStatus=&(temp->fdStatusMap);
-//    int maxFD=0;
-//    struct timeval wt;
-//    while (true) {
-//        pthread_testcancel();
-//        FD_ZERO(temptRfdset);
-//        FD_SET(tempLocalFD, temptRfdset);
-//        maxFD=maxFD>tempLocalFD?maxFD:tempLocalFD;
-//        std::map<int,unsigned int>::iterator iter;
-//        for (iter=tempRemotaFD->begin(); iter!=tempRemotaFD->end(); ++iter) {
-//            FD_SET(iter->first, temptRfdset);
-//        }
-//        if (!tempRemotaFD->empty()) {
-//            --iter;
-//            maxFD=maxFD>(iter->first)?maxFD:(iter->first);
-//        }
-//        wt.tv_sec=0;
-//        wt.tv_usec=0;
-//        int sel=select(maxFD+1, temptRfdset, NULL, NULL, NULL);
-//        if (sel<0) {
-//            if (EINTR==errno) {
-//                continue;
-//            }else{
-//                printf("select faild:%m");
-//            }
-//        }
-//        if (FD_ISSET(tempLocalFD, temptRfdset)) {
-//            sockaddr_in remoteAddr;
-//            int tempRFD;
-//            if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
-//                unsigned int reAddr=remoteAddr.sin_addr.s_addr;
-//                tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
-//                
-//                std::string tempn(temp->getLocalName());
-//                GNPacket rmsg;
-//                rmsg.sysCode=PLAYER_NAME;
-//                rmsg.data=tempn;
-//                tempTcps->sendData(tempRFD,&rmsg);
-//            }
-//        }
-//        iter=tempRemotaFD->begin();
-//        while (iter!=tempRemotaFD->end()) {
-//            if (FD_ISSET(iter->first, temptRfdset)){
-//                GNPacket msg;
-//                long lenr=tempTcps->recvData(iter->first,&msg);
-//                printf("Client Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
-//                if (lenr<=0) {
-//                    close(iter->first);
-//                    tempRemotaFD->erase(iter++);
-//                    //系统通知有连接断开
-//                    GNPacket smsg;
-//                    smsg.sysCode=DISCONNECTION;
-//                    smsg.origin=msg.origin;
-//                    temp->notificationSystemData(smsg);
-//                }else{
-//                    int tcd=msg.sysCode;
-//                    if (SEND_IP==tcd) {
-//                        int reip=GUtils::ctoi((msg.data).c_str());
-//                        printf("remota Msg:%s(--%d--)\n",(msg.data).c_str(),reip);
-//                        int tempremo=tempTcps->isConnect(reip, 52125);
-//                        if (tempremo>0) {
-//                            tempRemotaFD->insert(std::make_pair(tempremo,reip));
-//                            tempFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
-//                        }
-//                    }else if (PLAYER_NAME==tcd) {
-//                        sleep(5);
-//                        std::string tempn(temp->getLocalName());
-//                        GNPacket rmsg;
-//                        rmsg.sysCode=REPLAYER_NAME;
-//                        rmsg.data=tempn;
-//                        tempTcps->sendData(iter->first,&rmsg);
-//                        //系统通知有新连接
-//                        GNPacket smsg;
-//                        smsg.sysCode=NEWCONNECTION;
-//                        smsg.origin=msg.origin;
-//                        smsg.data=msg.data;
-//                        temp->notificationSystemData(smsg);
-//                    }else if (REPLAYER_NAME==tcd) {
-//                        //系统通知有新连接
-//                        GNPacket smsg;
-//                        smsg.sysCode=NEWCONNECTION;
-//                        smsg.origin=msg.origin;
-//                        smsg.data=msg.data;
-//                        temp->notificationSystemData(smsg);
-//                    }else{
-//                        temp->distributeData(msg.UUID,msg);
-//                    }
-//                    iter++;
-//                }
-//            }else{
-//                iter++;
-//            }
-//        }
-//    }
-//    return NULL;
-//}
-
-void* GNetServer::listenCConnectServer(void* obj){
+void* GNetServer::listenCNetService(void* obj){
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
     pthread_testcancel();
-    GNetServer *th_obj=(GNetServer *)obj;
-    TcpServer *thTcps=th_obj->tcps;
-    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
-    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
-    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
-    sockaddr_in remoteAddr;
-    int tempRFD;
-    if ((tempRFD=thTcps->isAccept(&remoteAddr))>0) {
-        unsigned int reAddr=remoteAddr.sin_addr.s_addr;
-        pthread_mutex_lock(thMut);
-        thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
-        thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
-        pthread_mutex_unlock(thMut);
-    }
-    return NULL;
-}
-void* GNetServer::listenCRemotaServer(void* obj){
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    pthread_testcancel();
-    GNetServer *th_obj=(GNetServer *)obj;
-    TcpServer *thTcps=th_obj->tcps;
-    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
-    fd_set *thFDset=&(th_obj->rfdset);
-    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
-    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
+    GNetServer *temp=(GNetServer *)obj;
+    TcpServer *tempTcps=temp->tcps;
+    int tempLocalFD=temp->localTcpFD;
+    fd_set *temptRfdset=&(temp->rfdset);
+    std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
+    std::map<int,int> *tempFdStatus=&(temp->fdStatusMap);
     int maxFD=0;
-    struct timeval tv;
-    std::map<int,unsigned int>::iterator iter;
-    std::map<int,unsigned int>::iterator enditer;
+    struct timeval wt;
     while (true) {
         pthread_testcancel();
-        FD_ZERO(thFDset);
-        iter=thRemotaFD->begin();
-        enditer=thRemotaFD->end();
-        for (; iter!=enditer; ++iter) {
-            FD_SET(iter->first, thFDset);
-             maxFD=maxFD>(iter->first)?maxFD:(iter->first);
+        FD_ZERO(temptRfdset);
+        FD_SET(tempLocalFD, temptRfdset);
+        maxFD=maxFD>tempLocalFD?maxFD:tempLocalFD;
+        std::map<int,unsigned int>::iterator iter;
+        for (iter=tempRemotaFD->begin(); iter!=tempRemotaFD->end(); ++iter) {
+            FD_SET(iter->first, temptRfdset);
         }
-        tv.tv_sec=1;
-        tv.tv_usec=0;
-        int sel=select(maxFD+1, thFDset, NULL, NULL, NULL);
-        printf("===========================client============================\n");
+        if (!tempRemotaFD->empty()) {
+            --iter;
+            maxFD=maxFD>(iter->first)?maxFD:(iter->first);
+        }
+        wt.tv_sec=0;
+        wt.tv_usec=0;
+        int sel=select(maxFD+1, temptRfdset, NULL, NULL, NULL);
         if (sel<0) {
             if (EINTR==errno) {
                 continue;
@@ -599,57 +481,65 @@ void* GNetServer::listenCRemotaServer(void* obj){
                 printf("select faild:%m");
             }
         }
-        iter=thRemotaFD->begin();
-        enditer=thRemotaFD->end();
-        while (iter!=enditer) {
-            if (FD_ISSET(iter->first, thFDset)){
+        if (FD_ISSET(tempLocalFD, temptRfdset)) {
+            sockaddr_in remoteAddr;
+            int tempRFD;
+            if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
+                unsigned int reAddr=remoteAddr.sin_addr.s_addr;
+                tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+                
+                std::string tempn(temp->getLocalName());
+                GNPacket rmsg;
+                rmsg.sysCode=PLAYER_NAME;
+                rmsg.data=tempn;
+                tempTcps->sendData(tempRFD,&rmsg);
+            }
+        }
+        iter=tempRemotaFD->begin();
+        while (iter!=tempRemotaFD->end()) {
+            if (FD_ISSET(iter->first, temptRfdset)){
                 GNPacket msg;
-                long lenr=thTcps->recvData(iter->first,&msg);
+                long lenr=tempTcps->recvData(iter->first,&msg);
                 printf("Client Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
                 if (lenr<=0) {
                     close(iter->first);
-//                    thFdStatus->find(iter->first)->second=0;
-                    pthread_mutex_lock(thMut);
-                    thRemotaFD->erase(iter++);
-                    pthread_mutex_unlock(thMut);
+                    tempRemotaFD->erase(iter++);
                     //系统通知有连接断开
                     GNPacket smsg;
                     smsg.sysCode=DISCONNECTION;
                     smsg.origin=msg.origin;
-                    th_obj->notificationSystemData(smsg);
+                    temp->notificationSystemData(smsg);
                 }else{
                     int tcd=msg.sysCode;
                     if (SEND_IP==tcd) {
                         int reip=GUtils::ctoi((msg.data).c_str());
                         printf("remota Msg:%s(--%d--)\n",(msg.data).c_str(),reip);
-                        int tempremo=thTcps->isConnect(reip, 52125);
+                        int tempremo=tempTcps->isConnect(reip, 52125);
                         if (tempremo>0) {
-                            pthread_mutex_lock(thMut);
-                            thRemotaFD->insert(std::make_pair(tempremo,reip));
-                            thFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
-                            pthread_mutex_unlock(thMut);
+                            tempRemotaFD->insert(std::make_pair(tempremo,reip));
+                            tempFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
                         }
                     }else if (PLAYER_NAME==tcd) {
-                        std::string tempn(th_obj->getLocalName());
+                        std::string tempn(temp->getLocalName());
                         GNPacket rmsg;
                         rmsg.sysCode=REPLAYER_NAME;
                         rmsg.data=tempn;
-                        thTcps->sendData(iter->first,&rmsg);
+                        tempTcps->sendData(iter->first,&rmsg);
                         //系统通知有新连接
                         GNPacket smsg;
                         smsg.sysCode=NEWCONNECTION;
                         smsg.origin=msg.origin;
                         smsg.data=msg.data;
-                        th_obj->notificationSystemData(smsg);
+                        temp->notificationSystemData(smsg);
                     }else if (REPLAYER_NAME==tcd) {
                         //系统通知有新连接
                         GNPacket smsg;
                         smsg.sysCode=NEWCONNECTION;
                         smsg.origin=msg.origin;
                         smsg.data=msg.data;
-                        th_obj->notificationSystemData(smsg);
+                        temp->notificationSystemData(smsg);
                     }else{
-                        th_obj->distributeData(msg.UUID,msg);
+                        temp->distributeData(msg.UUID,msg);
                     }
                     iter++;
                 }
@@ -661,8 +551,129 @@ void* GNetServer::listenCRemotaServer(void* obj){
     return NULL;
 }
 
+//void* GNetServer::listenCConnectServer(void* obj){
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    pthread_testcancel();
+//    GNetServer *th_obj=(GNetServer *)obj;
+//    TcpServer *thTcps=th_obj->tcps;
+//    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
+//    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
+//    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
+//    sockaddr_in remoteAddr;
+//    int tempRFD;
+//    if ((tempRFD=thTcps->isAccept(&remoteAddr))>0) {
+//        unsigned int reAddr=remoteAddr.sin_addr.s_addr;
+//        pthread_mutex_lock(thMut);
+//        thRemotaFD->insert(std::make_pair(tempRFD,reAddr));
+//        thFdStatus->insert(std::make_pair(tempRFD,TCPLIVECOUNT));
+//        pthread_mutex_unlock(thMut);
+//    }
+//    return NULL;
+//}
+//void* GNetServer::listenCRemotaServer(void* obj){
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    pthread_testcancel();
+//    GNetServer *th_obj=(GNetServer *)obj;
+//    TcpServer *thTcps=th_obj->tcps;
+//    pthread_mutex_t* thMut=&(th_obj->remoteFDIPMutex);
+//    pthread_mutex_t* thNetMut=&(th_obj->netMutex);
+//    fd_set *thFDset=&(th_obj->rfdset);
+//    std::map<int,unsigned int> *thRemotaFD=&(th_obj->remoteFDIP);
+//    std::map<int,int> *thFdStatus=&(th_obj->fdStatusMap);
+//    int maxFD=0;
+//    struct timeval tv;
+//    std::map<int,unsigned int>::iterator iter;
+//    std::map<int,unsigned int>::iterator enditer;
+//    while (true) {
+//        pthread_testcancel();
+//        FD_ZERO(thFDset);
+//        iter=thRemotaFD->begin();
+//        enditer=thRemotaFD->end();
+//        for (; iter!=enditer; ++iter) {
+//            FD_SET(iter->first, thFDset);
+//             maxFD=maxFD>(iter->first)?maxFD:(iter->first);
+//        }
+//        tv.tv_sec=0;
+//        tv.tv_usec=500;
+//        int sel=select(maxFD+1, thFDset, NULL, NULL, &tv);
+////        printf("===========================client============================\n");
+//        if (sel<0) {
+//            if (EINTR==errno) {
+//                continue;
+//            }else{
+//                printf("select faild:%m");
+//            }
+//        }
+//        iter=thRemotaFD->begin();
+//        enditer=thRemotaFD->end();
+//        while (iter!=enditer) {
+//            if (FD_ISSET(iter->first, thFDset)){
+//                GNPacket msg;
+//                long lenr=thTcps->recvData(iter->first,&msg);
+//                printf("Client Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+//                if (lenr<=0) {
+//                    close(iter->first);
+////                    thFdStatus->find(iter->first)->second=0;
+//                    pthread_mutex_lock(thMut);
+//                    thRemotaFD->erase(iter++);
+//                    pthread_mutex_unlock(thMut);
+//                    //系统通知有连接断开
+//                    GNPacket smsg;
+//                    smsg.sysCode=DISCONNECTION;
+//                    smsg.origin=msg.origin;
+//                    th_obj->notificationSystemData(smsg);
+//                }else{
+//                    int tcd=msg.sysCode;
+//                    if (SEND_IP==tcd) {
+//                        int reip=GUtils::stoi(msg.data);
+//                        printf("remota Msg:%s(--%d--)\n",(msg.data).c_str(),reip);
+//                        int tempremo=thTcps->isConnect(reip, 52125);
+//                        if (tempremo>0) {
+//                            pthread_mutex_lock(thMut);
+//                            thRemotaFD->insert(std::make_pair(tempremo,reip));
+//                            thFdStatus->insert(std::make_pair(tempremo,TCPLIVECOUNT));
+//                            pthread_mutex_unlock(thMut);
+//                        }
+//                    }else if (PLAYER_NAME==tcd) {
+//                        std::string tempn(th_obj->getLocalName());
+//                        GNPacket rmsg;
+//                        rmsg.sysCode=REPLAYER_NAME;
+//                        rmsg.data=tempn;
+//                        pthread_mutex_lock(thNetMut);
+//                        thTcps->sendData(iter->first,&rmsg);
+//                        pthread_mutex_unlock(thNetMut);
+//                        //系统通知有新连接
+//                        GNPacket smsg;
+//                        smsg.sysCode=NEWCONNECTION;
+//                        smsg.origin=msg.origin;
+//                        smsg.data=msg.data;
+//                        th_obj->notificationSystemData(smsg);
+//                    }else if (REPLAYER_NAME==tcd) {
+//                        //系统通知有新连接
+//                        GNPacket smsg;
+//                        smsg.sysCode=NEWCONNECTION;
+//                        smsg.origin=msg.origin;
+//                        smsg.data=msg.data;
+//                        th_obj->notificationSystemData(smsg);
+//                    }else{
+//                        th_obj->distributeData(msg.UUID,msg);
+//                    }
+//                    iter++;
+//                }
+//            }else{
+//                iter++;
+//            }
+//        }
+//    }
+//    return NULL;
+//}
+
 long GNetServer::sendNetPack(int fd,GNPacket* np){
+//    pthread_mutex_unlock(&netMutex);
     return tcps->sendData(fd,np);
+//    pthread_mutex_unlock(&netMutex);
 }
 long GNetServer::sendNetPack(GNPacket* np){
     long i=0;
@@ -676,13 +687,13 @@ long GNetServer::sendNetPack(GNPacket* np){
 void GNetServer::disconnectService(){
     if (SERVER_C_TCP_RUN==serverStatus){
         pthread_cancel(tidListenCConnectService);
-        pthread_cancel(tidListenCRemotaService);
+//        pthread_cancel(tidListenCRemotaService);
         std::map<int,unsigned int>::iterator iter;
         for (iter=remoteFDIP.begin(); iter!=remoteFDIP.end(); ++iter) {
             close(iter->first);
         }
         remoteFDIP.clear();
-        close(localFD);
+        close(localTcpFD);
         delete tcps;
         serverStatus=SERVER_STOP;
     }

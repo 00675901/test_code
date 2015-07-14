@@ -10,14 +10,16 @@ class NetAppCCJSController:public GNetApplications{
 private:
     std::vector<std::string> msgList;
     std::map<int,std::string> playerList;
-public:
-    std::string name;
     NetAppCCJSController(std::string a):name(a){
         printf("NetAppCCJSController begin\n");
     }
     ~NetAppCCJSController(){
         printf("NetAppCCJSController end\n");
     }
+public:
+    std::string name;
+    static NetAppCCJSController* shareInstance(std::string);
+    
     void NewConnection(GNPacket gp){
         printf("被通知\n");
         
@@ -38,6 +40,7 @@ public:
     }
     
     void DisConnection(GNPacket gp){
+        printf("被通知\n");
         playerList.erase(gp.origin);
         msgList.push_back("a player leave the room!!");
         GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
@@ -76,7 +79,9 @@ public:
     
     //测试获取服务器（未序列化）
     std::map<unsigned int, std::string>* getServerList();
-    //测试获玩家列表（未序列化）
+    //测试获取玩家列表（未序列化）
     std::map<int,std::string>* getPalyerList();
+    //测试获取信息列表（未序列化）
+    std::vector<std::string>* getMsgList();
 };
 

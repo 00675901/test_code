@@ -48,7 +48,7 @@ bool RoomlistView::init(){
     
     //启动客户端
     std::string tempna(uname);
-    gnapp=new NetAppCCJSController(tempna);
+    gnapp=NetAppCCJSController::shareInstance(tempna);
     gnapp->start_client();
     roomlist=gnapp->getServerList();
     CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
@@ -59,7 +59,6 @@ bool RoomlistView::init(){
 void RoomlistView::closeView(){
 //    CCNotificationCenter::sharedNotificationCenter()->removeObserver(this, "updateRoomList");
     gnapp->stop_client_service();
-    delete gnapp;
     CCDirector* pDirector = CCDirector::sharedDirector();
     pDirector->getScheduler()->unscheduleSelector(schedule_selector(RoomlistView::updateRoomlist), this);
     pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());

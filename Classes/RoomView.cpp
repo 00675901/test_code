@@ -63,7 +63,7 @@ bool RoomView::init(){
     
     
     std::string tempna(uname);
-    gnapp=new NetAppCCJSController(tempna);
+    gnapp=NetAppCCJSController::shareInstance(tempna);
     if (isSer) {
         //启动服务器
         gnapp->start_server(10);
@@ -77,15 +77,7 @@ bool RoomView::init(){
 }
 
 void RoomView::updateRoom(){
-//    map<int,string> clientFD;
-    
     std::map<int,std::string>* clientFD=gnapp->getPalyerList();
-    
-//    if (isSer) {
-////        clientFD=grs->getRemoteFDName();
-//    }else{
-////        clientFD=gcs->getRemoteFDName();
-//    }
     cout<<"client count:"<<clientFD->size()<<endl;
     clientLayer->removeAllChildren();
     map<int,string>::iterator iter=clientFD->begin();
@@ -102,16 +94,11 @@ void RoomView::updateRoom(){
 }
 
 void RoomView::updateMsglist(){
-    deque<string> msglist;
-    if (isSer) {
-//        msglist=grs->getLoglist();
-    }else{
-//        msglist=gcs->getLoglist();
-    }
+    vector<string> msglist=*gnapp->getMsgList();
     cout<<"msg count:"<<msglist.size()<<endl;
     msgLayer->removeAllChildren();
     for (int i=0; i<msglist.size(); i++) {
-        CCLabelTTF *ptext=CCLabelTTF::create(msglist[i].c_str(), "Marker Felt", 30);
+        CCLabelTTF *ptext=CCLabelTTF::create((msglist[i]).c_str(), "Marker Felt", 30);
         ptext->setAnchorPoint(ccp(0,1));
         ptext->setPosition(ccp(5, msgLayer->getContentSize().height-(i*40)));
         msgLayer->addChild(ptext);
@@ -125,10 +112,9 @@ void RoomView::closeView(){
     if (isSer) {
         pDirector->getScheduler()->unscheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance());
         gnapp->stop_server_service();
-        delete gnapp;
     }else{
         gnapp->disconnect_server();
-        delete gnapp;
+        gnapp->resume_client_service();
     }
     pDirector->popScene();
 }

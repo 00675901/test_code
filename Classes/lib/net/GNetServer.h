@@ -46,8 +46,11 @@ private:
 //    int serverStatus;
     pthread_mutex_t udpMapMutex;
     pthread_mutex_t remoteFDIPMutex;
+    pthread_mutex_t netMutex;
+    
+    int maxLinsten;
+    int localTcpFD;
     unsigned int localIP;
-    int localFD=0;
     const char* localName;
     //除自己之外,fd-ip表
     std::map<int,unsigned int> remoteFDIP;
@@ -55,8 +58,6 @@ private:
     fd_set rfdset;
     
     //UDP Send localIP Service function(Server)
-    int maxLinsten;
-    int localTcpFD;
     pthread_t tidRoomService;
     pthread_t tidListenSConnectService;
     pthread_t tidListenSRemotaService;
@@ -74,12 +75,14 @@ private:
         serverStatus=SERVER_STOP;
         pthread_mutex_init(&udpMapMutex, NULL);
         pthread_mutex_init(&remoteFDIPMutex, NULL);
+        pthread_mutex_init(&netMutex, NULL);
         printf("GNetServer BEGIN\n");
     }
     ~GNetServer(void){
         obmap.clear();
         pthread_mutex_destroy(&udpMapMutex);
         pthread_mutex_destroy(&remoteFDIPMutex);
+        pthread_mutex_destroy(&netMutex);
         printf("GNetServer END\n");
     }
 public:
@@ -154,6 +157,8 @@ public:
     //监听tcp通信,接收封包
     static void* listenCConnectServer(void* obj);
     static void* listenCRemotaServer(void* obj);
+    
+    static void* listenCNetService(void* obj);
     
     //通过tcp fd 发送封包
     long sendNetPack(int,GNPacket*);

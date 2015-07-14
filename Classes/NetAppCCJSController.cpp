@@ -6,6 +6,15 @@
 //
 //
 #include "NetAppCCJSController.h"
+static NetAppCCJSController* NetAppCCJSControllerInstance;
+NetAppCCJSController* NetAppCCJSController::shareInstance(std::string name){
+    if (!NetAppCCJSControllerInstance) {
+        NetAppCCJSControllerInstance=new NetAppCCJSController(name);
+        NetAppCCJSControllerInstance->bind();
+    }
+    return NetAppCCJSControllerInstance;
+}
+
 //启动服务器
 void NetAppCCJSController::start_server(int playerCount){
     gns->startResponseService(playerCount, name.c_str());
@@ -80,4 +89,8 @@ std::map<unsigned int, std::string>* NetAppCCJSController::getServerList(){
 
 std::map<int,std::string>* NetAppCCJSController::getPalyerList(){
     return &playerList;
+}
+
+std::vector<std::string>* NetAppCCJSController::getMsgList(){
+    return &msgList;
 }

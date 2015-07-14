@@ -28,8 +28,6 @@ int TcpServer::iniServer(int instenCount){
         return -1;
     }else{
         int on=1;
-        int flags=fcntl(localSo,F_GETFL, 0);
-        fcntl(localSo, F_SETFL,flags|O_NONBLOCK);
         if (setsockopt(localSo, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))<0) {
             perror("set fail:");
             return -1;
@@ -107,7 +105,7 @@ long TcpServer::recvData(int remoteSo,char* buffer){
 
 long TcpServer::sendData(int remoteSo,char* msg){
     long len=strlen(msg);
-    printf("send content:%s\n",msg);
+    printf("send content:%s(%ld)\n",msg,len);
     long re=send(remoteSo, msg, len, 0);
     if (re<0) {
         printf("TCP_send_fail\n");
@@ -116,6 +114,7 @@ long TcpServer::sendData(int remoteSo,char* msg){
 }
 
 long TcpServer::sendData(int remoteSo,GNPacket* msg){
+
     int templen=msg->size();
     char sendco[templen];
     msg->serializer(sendco);
@@ -139,15 +138,17 @@ long TcpServer::recvData(int remoteSo,GNPacket* buffer){
         printf("parser_content size:%d\n",dl);
     }
     if (dl>0) {
-        char bufcon[dl];
+        char bufcon[dl+1];
         printf("begin recv:%d\n",dl);
         ret=recv(remoteSo, bufcon, dl, 0);
+        bufcon[ret]='\0';
         if (ret<0) {
             printf("TCP_recv_fail:%d\n",ret);
         }else{
-            printf("real-content size:%d\n",ret);
+            printf("real-content:%s(size:%d)\n",bufcon,ret);
         }
         buffer->deserializer(bufcon);
+        buffer->origin=remoteSo;
         printf("recv Content Packet:%d,%d,%s,%d,%s\n",buffer->sysCode,buffer->origin,buffer->UUID.c_str(),buffer->NPCode,buffer->data.c_str());
     }
     return ret;
