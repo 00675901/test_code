@@ -113,11 +113,10 @@ long TcpServer::sendData(int remoteSo,char* msg){
     return re;
 }
 
-long TcpServer::sendData(int remoteSo,GNPacket* msg){
-
-    int templen=msg->size();
+long TcpServer::sendData(int remoteSo,GNPacket msg){
+    int templen=msg.size();
     char sendco[templen];
-    msg->serializer(sendco);
+    msg.serializer(sendco);
     char send[templen+5];
     sprintf(send, "%04d%s",templen,sendco);
     long re=sendData(remoteSo,send);

@@ -48,10 +48,14 @@ bool RoomView::init(){
     clientLayer->setAnchorPoint(ccp(0, 0));
     clientLayer->setPosition(0, 0);
     this->addChild(clientLayer);
-    CCLabelTTF *ptext=CCLabelTTF::create(uname, "Marker Felt", 30);
-    ptext->setAnchorPoint(ccp(0.5,1));
-    ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height));
-    this->addChild(ptext);
+    
+    CCControlButton *pbtn=CCControlButton::create(uname, "Marker Felt", 40);
+    pbtn->setAnchorPoint(ccp(0.5,1));
+    pbtn->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height));
+    pbtn->setTitleColorForState(ccWHITE, CCControlStateNormal);
+    pbtn->setTitleColorForState(ccRED, CCControlStateHighlighted);
+    pbtn->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomView::SendMsgToAll), CCControlEventTouchUpInside);
+    this->addChild(pbtn);
     
     msgLayer=CCLayerColor::create(ccc4(0, 0, 0, 255), this->getContentSize().width*4/5-10, this->getContentSize().height-60);
     msgLayer->setAnchorPoint(ccp(0, 0));
@@ -67,7 +71,6 @@ bool RoomView::init(){
     if (isSer) {
         //启动服务器
         gnapp->start_server(10);
-        
         CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(GSNotificationPool::postNotifications), GSNotificationPool::shareInstance(), 0.5, false);
     }else{
 
@@ -84,18 +87,34 @@ void RoomView::updateRoom(){
     int i=1;
     while (iter!=clientFD->end()) {
         string ti=iter->second;
-        CCLabelTTF *ptext=CCLabelTTF::create(ti.c_str(), "Marker Felt", 30);
-        ptext->setAnchorPoint(ccp(0.5,1));
-        ptext->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height-(i*40)));
-        clientLayer->addChild(ptext);
+        CCControlButton *pbtn=CCControlButton::create(iter->second.c_str(), "Marker Felt", 40);
+        pbtn->setAnchorPoint(ccp(0.5,1));
+        pbtn->setPosition(ccp(clientLayer->getContentSize().width/2, clientLayer->getContentSize().height-(i*80)));
+        pbtn->setTitleColorForState(ccWHITE, CCControlStateNormal);
+        pbtn->setTitleColorForState(ccRED, CCControlStateHighlighted);
+        pbtn->setTag(iter->first);
+        pbtn->addTargetWithActionForControlEvents(this, cccontrol_selector(RoomView::SendMsgToTag), CCControlEventTouchUpInside);
+        clientLayer->addChild(pbtn);
         iter++;
         i++;
     }
 }
 
+void RoomView::SendMsgToTag(CCControlButton* sender){
+    printf("safe:%d\n",sender->getTag());
+    gnapp->sendMsg(sender->getTag());
+}
+void RoomView::SendMsgToAll(){
+    printf("print ALLALLALL\n");
+    gnapp->sendMsg();
+}
+
 void RoomView::updateMsglist(){
-    vector<string> msglist=*gnapp->getMsgList();
+    deque<string> msglist=*gnapp->getMsgList();
     cout<<"msg count:"<<msglist.size()<<endl;
+    if (msglist.size()>14) {
+        msglist.pop_front();
+    }
     msgLayer->removeAllChildren();
     for (int i=0; i<msglist.size(); i++) {
         CCLabelTTF *ptext=CCLabelTTF::create((msglist[i]).c_str(), "Marker Felt", 30);

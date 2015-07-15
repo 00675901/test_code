@@ -50,6 +50,9 @@ public:
     void closeView();
     void updateRoom();
     void updateMsglist();
+    
+    void SendMsgToTag(CCControlButton*);
+    void SendMsgToAll();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */

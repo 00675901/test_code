@@ -5,10 +5,11 @@
 
 #include "GNetApplications.h"
 #include "GSNotificationPool.h"
+#include <deque>
 
 class NetAppCCJSController:public GNetApplications{
 private:
-    std::vector<std::string> msgList;
+    std::deque<std::string> msgList;
     std::map<int,std::string> playerList;
     NetAppCCJSController(std::string a):name(a){
         printf("NetAppCCJSController begin\n");
@@ -36,7 +37,8 @@ public:
     }
     
     void Update(GNPacket gp){
-        
+        msgList.push_back(gp.data);
+        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
     }
     
     void DisConnection(GNPacket gp){
@@ -82,6 +84,10 @@ public:
     //测试获取玩家列表（未序列化）
     std::map<int,std::string>* getPalyerList();
     //测试获取信息列表（未序列化）
-    std::vector<std::string>* getMsgList();
+    std::deque<std::string>* getMsgList();
+    //测试发送信息（未序列化,直接发送数据包）
+    void sendMsg(int tag);
+    //测试获取信息列表（未序列化,直接发送数据包）
+    void sendMsg();
 };
 

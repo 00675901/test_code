@@ -242,8 +242,9 @@
 		46513EB1187BFBA200B5ABE1 /* UITouchGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 46513EAF187BFBA200B5ABE1 /* UITouchGroup.cpp */; };
 		7855E0E1153FEF240059DD9A /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7855E0DF153FEF240059DD9A /* Default.png */; };
 		B0088B0D19AB322C00D8C4D3 /* RoomView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */; };
+		B021F3B41B565CE300CDB41C /* CCTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B021F3B21B565CE300CDB41C /* CCTextField.cpp */; };
+		B021F3B71B565CF100CDB41C /* NetAppCCJSController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B021F3B51B565CF100CDB41C /* NetAppCCJSController.cpp */; };
 		B059E3E419E62F58009AF4DE /* RoomlistView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B059E3E219E62F58009AF4DE /* RoomlistView.cpp */; };
-		B07412131A3034E200F1189B /* CCTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B07412111A3034E200F1189B /* CCTextField.cpp */; };
 		B083C3AB19A72F6F00F7E23D /* GSNotificationPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712461292920000B8313A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB212928DE900B8313A /* libxml2.dylib */; };
@@ -254,7 +255,6 @@
 		C8642D761B5035C4001B1DEB /* GUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D691B5035C4001B1DEB /* GUtils.cpp */; };
 		C8642D781B5035C4001B1DEB /* TcpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D6E1B5035C4001B1DEB /* TcpServer.cpp */; };
 		C8642D7A1B5035C4001B1DEB /* UdpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D721B5035C4001B1DEB /* UdpServer.cpp */; };
-		C8642D7D1B5035F1001B1DEB /* NetAppCCJSController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */; };
 		C8B14B9A19A0EBA000CE5074 /* RoomManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */; };
 		D41A0AD1160F154A004552AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D41A0AD0160F154A004552AE /* Default-568h@2x.png */; };
 		D446FD6E16102124000ADA7B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D446FD6D16102124000ADA7B /* Default@2x.png */; };
@@ -772,10 +772,12 @@
 		7855E0DF153FEF240059DD9A /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = SOURCE_ROOT; };
 		B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomView.cpp; path = ../Classes/RoomView.cpp; sourceTree = "<group>"; };
 		B0088B0C19AB322C00D8C4D3 /* RoomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomView.h; path = ../Classes/RoomView.h; sourceTree = "<group>"; };
+		B021F3B21B565CE300CDB41C /* CCTextField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CCTextField.cpp; path = ../Classes/CCTextField.cpp; sourceTree = "<group>"; };
+		B021F3B31B565CE300CDB41C /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCTextField.h; path = ../Classes/CCTextField.h; sourceTree = "<group>"; };
+		B021F3B51B565CF100CDB41C /* NetAppCCJSController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetAppCCJSController.cpp; sourceTree = "<group>"; };
+		B021F3B61B565CF100CDB41C /* NetAppCCJSController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetAppCCJSController.h; sourceTree = "<group>"; };
 		B059E3E219E62F58009AF4DE /* RoomlistView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomlistView.cpp; path = ../Classes/RoomlistView.cpp; sourceTree = "<group>"; };
 		B059E3E319E62F58009AF4DE /* RoomlistView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RoomlistView.h; path = ../Classes/RoomlistView.h; sourceTree = "<group>"; };
-		B07412111A3034E200F1189B /* CCTextField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCTextField.cpp; sourceTree = "<group>"; };
-		B07412121A3034E200F1189B /* CCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTextField.h; sourceTree = "<group>"; };
 		B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSNotificationPool.cpp; path = ../Classes/GSNotificationPool.cpp; sourceTree = "<group>"; };
 		B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSNotificationPool.h; path = ../Classes/GSNotificationPool.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -794,8 +796,6 @@
 		C8642D6F1B5035C4001B1DEB /* TcpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TcpServer.h; sourceTree = "<group>"; };
 		C8642D721B5035C4001B1DEB /* UdpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UdpServer.cpp; sourceTree = "<group>"; };
 		C8642D731B5035C4001B1DEB /* UdpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpServer.h; sourceTree = "<group>"; };
-		C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NetAppCCJSController.cpp; path = ../Classes/NetAppCCJSController.cpp; sourceTree = "<group>"; };
-		C8642D7C1B5035F1001B1DEB /* NetAppCCJSController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetAppCCJSController.h; path = ../Classes/NetAppCCJSController.h; sourceTree = "<group>"; };
 		C88B98751B52793F001BE49A /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		C8A8CD681B51938000B65261 /* ByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteBuffer.h; sourceTree = "<group>"; };
 		C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RoomManager.cpp; path = ../Classes/RoomManager.cpp; sourceTree = "<group>"; };
@@ -1947,6 +1947,8 @@
 		B0088B0E19AB323700D8C4D3 /* room */ = {
 			isa = PBXGroup;
 			children = (
+				B021F3B21B565CE300CDB41C /* CCTextField.cpp */,
+				B021F3B31B565CE300CDB41C /* CCTextField.h */,
 				C8B14B9819A0EBA000CE5074 /* RoomManager.cpp */,
 				C8B14B9919A0EBA000CE5074 /* RoomManager.h */,
 				B0088B0B19AB322C00D8C4D3 /* RoomView.cpp */,
@@ -1962,8 +1964,6 @@
 			children = (
 				1AFAF8B316D35DE700DB1158 /* AppDelegate.cpp */,
 				1AFAF8B416D35DE700DB1158 /* AppDelegate.h */,
-				C8642D7B1B5035F1001B1DEB /* NetAppCCJSController.cpp */,
-				C8642D7C1B5035F1001B1DEB /* NetAppCCJSController.h */,
 				B083C3A919A72F6F00F7E23D /* GSNotificationPool.cpp */,
 				B083C3AA19A72F6F00F7E23D /* GSNotificationPool.h */,
 			);
@@ -1973,9 +1973,9 @@
 		B07412101A3034E200F1189B /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				B021F3B51B565CF100CDB41C /* NetAppCCJSController.cpp */,
+				B021F3B61B565CF100CDB41C /* NetAppCCJSController.h */,
 				C8642D621B5035C4001B1DEB /* net */,
-				B07412111A3034E200F1189B /* CCTextField.cpp */,
-				B07412121A3034E200F1189B /* CCTextField.h */,
 			);
 			name = lib;
 			path = ../Classes/lib;
@@ -2137,6 +2137,7 @@
 				15A3D91C1682F7D5002FB0C5 /* b2EdgeAndCircleContact.cpp in Sources */,
 				15A3D91D1682F7D5002FB0C5 /* b2EdgeAndPolygonContact.cpp in Sources */,
 				15A3D91E1682F7D5002FB0C5 /* b2PolygonAndCircleContact.cpp in Sources */,
+				B021F3B41B565CE300CDB41C /* CCTextField.cpp in Sources */,
 				15A3D91F1682F7D5002FB0C5 /* b2PolygonContact.cpp in Sources */,
 				15A3D9201682F7D5002FB0C5 /* b2DistanceJoint.cpp in Sources */,
 				298B29BD18D0668400C1920F /* LabelAtlasReader.cpp in Sources */,
@@ -2222,7 +2223,6 @@
 				15A3DA501682F826002FB0C5 /* CCControlStepper.cpp in Sources */,
 				15A3DA511682F826002FB0C5 /* CCControlSwitch.cpp in Sources */,
 				298B29C718D0668400C1920F /* WidgetReader.cpp in Sources */,
-				B07412131A3034E200F1189B /* CCTextField.cpp in Sources */,
 				15A3DA521682F826002FB0C5 /* CCControlUtils.cpp in Sources */,
 				375BD4C41868411B0024609E /* TriggerBase.cpp in Sources */,
 				298B29BB18D0668400C1920F /* CheckBoxReader.cpp in Sources */,
@@ -2310,7 +2310,7 @@
 				379BB9B617F03F3700829B88 /* UILayoutParameter.cpp in Sources */,
 				379BB9B717F03F3700829B88 /* UILayoutDefine.cpp in Sources */,
 				379BB9B817F03F3700829B88 /* CocosGUI.cpp in Sources */,
-				C8642D7D1B5035F1001B1DEB /* NetAppCCJSController.cpp in Sources */,
+				B021F3B71B565CF100CDB41C /* NetAppCCJSController.cpp in Sources */,
 				379BB9B917F03F3700829B88 /* UIHelper.cpp in Sources */,
 				379BB9BD17F03F3700829B88 /* UIListView.cpp in Sources */,
 				379BB9BE17F03F3700829B88 /* UIPageView.cpp in Sources */,

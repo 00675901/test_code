@@ -30,7 +30,7 @@ public:
     long sendData(int remoteSo,char* msg);
     long recvData(int remoteSo,char* buffer);
     
-    long sendData(int remoteSo,GNPacket* msg);
+    long sendData(int remoteSo,GNPacket msg);
     long recvData(int remoteSo,GNPacket* buffer);
 };
 #endif /* defined(__TcpServer__) */

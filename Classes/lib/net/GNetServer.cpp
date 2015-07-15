@@ -120,8 +120,6 @@ void* GNetServer::listenSNetService(void* obj){
         tv.tv_sec=1;
         tv.tv_usec=0;
         int sel=select(maxFD+1, temptRfdset, NULL, NULL, NULL);
-        printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-        
         if (sel<0) {
             if (EINTR==errno) {
                 continue;
@@ -129,15 +127,10 @@ void* GNetServer::listenSNetService(void* obj){
                 printf("select faild:%m");
             }
         }
-        printf("++++++++++++++++++++++++++++++++++++++\n");
         if (FD_ISSET(tempLocalFD, temptRfdset)) {
             sockaddr_in remoteAddr;
             int tempRFD;
-            printf("----------------------\n");
-            //            unsigned int remoteaddrlen=sizeof(remoteAddr);
-            //            accept(tempLocalFD, (sockaddr *)&remoteAddr, &remoteaddrlen)
             if ((tempRFD=tempTcps->isAccept(&remoteAddr))>0) {
-                printf("--------------------------------------------------\n");
                 unsigned int reAddr=remoteAddr.sin_addr.s_addr;
                 for (iter=tempRemotaFD->begin();iter!=tempRemotaFD->end(); ++iter) {
                     std::cout<<"ip:"<<iter->second<<std::endl;
@@ -145,7 +138,7 @@ void* GNetServer::listenSNetService(void* obj){
                     GNPacket tgcd;
                     tgcd.sysCode=SEND_IP;
                     tgcd.data=GUtils::itos(iter->second);
-                    tempTcps->sendData(tempRFD,&tgcd);
+                    tempTcps->sendData(tempRFD,tgcd);
                 }
                 tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
                 //server send name;
@@ -153,10 +146,7 @@ void* GNetServer::listenSNetService(void* obj){
                 GNPacket msg;
                 msg.sysCode=PLAYER_NAME;
                 msg.data=tempn;
-                
-                printf("Server SendSend Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
-                
-                tempTcps->sendData(tempRFD,&msg);
+                tempTcps->sendData(tempRFD,msg);
             }
         }
         iter=tempRemotaFD->begin();
@@ -165,23 +155,20 @@ void* GNetServer::listenSNetService(void* obj){
                 GNPacket msg;
                 long lenr=tempTcps->recvData(iter->first,&msg);
                 printf("Server Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                msg.origin=iter->first;
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
                     //系统通知有连接断开
-                    GNPacket smsg;
-                    smsg.sysCode=DISCONNECTION;
-                    smsg.origin=msg.origin;
-                    temp->notificationSystemData(smsg);
+                    msg.sysCode=DISCONNECTION;
+                    temp->notificationSystemData(msg);
                 }else{
                     int tcd=msg.sysCode;
                     if (REPLAYER_NAME==tcd) {
                         //系统通知有新连接
-                        GNPacket smsg;
-                        smsg.sysCode=NEWCONNECTION;
-                        smsg.origin=msg.origin;
-                        smsg.data=msg.data;
-                        temp->notificationSystemData(smsg);
+                        msg.sysCode=NEWCONNECTION;
+                        msg.data=msg.data;
+                        temp->notificationSystemData(msg);
                     }else{
                         temp->distributeData(msg.UUID,msg);
                     }
@@ -492,7 +479,7 @@ void* GNetServer::listenCNetService(void* obj){
                 GNPacket rmsg;
                 rmsg.sysCode=PLAYER_NAME;
                 rmsg.data=tempn;
-                tempTcps->sendData(tempRFD,&rmsg);
+                tempTcps->sendData(tempRFD,rmsg);
             }
         }
         iter=tempRemotaFD->begin();
@@ -501,14 +488,13 @@ void* GNetServer::listenCNetService(void* obj){
                 GNPacket msg;
                 long lenr=tempTcps->recvData(iter->first,&msg);
                 printf("Client Recv Content Packet:%d,%d,%s,%d,%s\n",msg.sysCode,msg.origin,msg.UUID.c_str(),msg.NPCode,msg.data.c_str());
+                msg.origin=iter->first;
                 if (lenr<=0) {
                     close(iter->first);
                     tempRemotaFD->erase(iter++);
                     //系统通知有连接断开
-                    GNPacket smsg;
-                    smsg.sysCode=DISCONNECTION;
-                    smsg.origin=msg.origin;
-                    temp->notificationSystemData(smsg);
+                    msg.sysCode=DISCONNECTION;
+                    temp->notificationSystemData(msg);
                 }else{
                     int tcd=msg.sysCode;
                     if (SEND_IP==tcd) {
@@ -524,20 +510,14 @@ void* GNetServer::listenCNetService(void* obj){
                         GNPacket rmsg;
                         rmsg.sysCode=REPLAYER_NAME;
                         rmsg.data=tempn;
-                        tempTcps->sendData(iter->first,&rmsg);
+                        tempTcps->sendData(iter->first,rmsg);
                         //系统通知有新连接
-                        GNPacket smsg;
-                        smsg.sysCode=NEWCONNECTION;
-                        smsg.origin=msg.origin;
-                        smsg.data=msg.data;
-                        temp->notificationSystemData(smsg);
+                        msg.sysCode=NEWCONNECTION;
+                        temp->notificationSystemData(msg);
                     }else if (REPLAYER_NAME==tcd) {
                         //系统通知有新连接
-                        GNPacket smsg;
-                        smsg.sysCode=NEWCONNECTION;
-                        smsg.origin=msg.origin;
-                        smsg.data=msg.data;
-                        temp->notificationSystemData(smsg);
+                        msg.sysCode=NEWCONNECTION;
+                        temp->notificationSystemData(msg);
                     }else{
                         temp->distributeData(msg.UUID,msg);
                     }
@@ -670,12 +650,12 @@ void* GNetServer::listenCNetService(void* obj){
 //    return NULL;
 //}
 
-long GNetServer::sendNetPack(int fd,GNPacket* np){
+long GNetServer::sendNetPack(int fd,GNPacket np){
 //    pthread_mutex_unlock(&netMutex);
     return tcps->sendData(fd,np);
 //    pthread_mutex_unlock(&netMutex);
 }
-long GNetServer::sendNetPack(GNPacket* np){
+long GNetServer::sendNetPack(GNPacket np){
     long i=0;
     std::map<int,unsigned int>::iterator iter;
     for (iter=remoteFDIP.begin(); iter!=remoteFDIP.end(); ++iter) {

@@ -10,7 +10,7 @@ static NetAppCCJSController* NetAppCCJSControllerInstance;
 NetAppCCJSController* NetAppCCJSController::shareInstance(std::string name){
     if (!NetAppCCJSControllerInstance) {
         NetAppCCJSControllerInstance=new NetAppCCJSController(name);
-        NetAppCCJSControllerInstance->bind();
+        NetAppCCJSControllerInstance->bind(CLASS_NAME(NetAppCCJSControllerInstance));
     }
     return NetAppCCJSControllerInstance;
 }
@@ -73,7 +73,7 @@ bool NetAppCCJSController::send_message(std::string jsonString){
     GNPacket msg;
     msg.UUID=this->UDID;
     msg.data=jsonString;
-    if(gns->sendNetPack(&msg)>0){
+    if(gns->sendNetPack(msg)>0){
         return true;
     }
     return false;
@@ -91,6 +91,27 @@ std::map<int,std::string>* NetAppCCJSController::getPalyerList(){
     return &playerList;
 }
 
-std::vector<std::string>* NetAppCCJSController::getMsgList(){
+std::deque<std::string>* NetAppCCJSController::getMsgList(){
     return &msgList;
+}
+
+void NetAppCCJSController::sendMsg(int tag){
+    std::map<int,std::string>::iterator iter=playerList.find(tag);
+    if (iter!=playerList.end()) {
+        std::string a(name);
+        a.append(":你好,");
+        a.append(iter->second);
+        GNPacket msg;
+        msg.UUID=this->UDID;
+        msg.data=a;
+        gns->sendNetPack(tag, msg);
+    }
+}
+
+void NetAppCCJSController::sendMsg(){
+    std::map<int,std::string>::iterator iter=playerList.begin();
+    std::map<int,std::string>::iterator enditer=playerList.end();
+    for (; iter!=enditer; ++iter) {
+        this->sendMsg(iter->first);
+    }
 }

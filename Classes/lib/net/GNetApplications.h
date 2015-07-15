@@ -6,7 +6,8 @@
 //
 #pragma once
 #include "GNetServer.h"
-#include <uuid/uuid.h>
+
+#define CLASS_NAME(_TYPE_) typeid(_TYPE_).name()
 
 class GNetApplications:public GNetObserver{
 public:
@@ -20,12 +21,8 @@ public:
     pthread_mutex_t mut;
     std::string UDID;
     GNetServer* gns;
-    bool bind(){
-        uuid_t uuid;
-        char s[40];
-        uuid_generate(uuid);
-        uuid_unparse_lower(uuid, s);
-        std::string keys(s);
+    bool bind(const char* cn){
+        std::string keys(cn);
         UDID=keys;
         return gns->addObs(UDID, this);
     }

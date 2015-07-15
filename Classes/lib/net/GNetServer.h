@@ -161,8 +161,8 @@ public:
     static void* listenCNetService(void* obj);
     
     //通过tcp fd 发送封包
-    long sendNetPack(int,GNPacket*);
-    long sendNetPack(GNPacket*);
+    long sendNetPack(int,GNPacket);
+    long sendNetPack(GNPacket);
     
     //心跳线程
     static void* nettyNetService(void* obj);
