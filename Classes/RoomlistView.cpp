@@ -66,6 +66,9 @@ void RoomlistView::closeView(){
 }
 
 void RoomlistView::updateRoomlist(){
+    
+    cout<<"server_JSON:"<<gnapp->get_server_list()<<endl;
+    
     roomlist=gnapp->getServerList();
     roomListLayer->removeAllChildren();
     map<unsigned int, string>::iterator iter=roomlist->begin();

@@ -6,13 +6,53 @@
 //
 //
 #include "NetAppCCJSController.h"
+
 static NetAppCCJSController* NetAppCCJSControllerInstance;
 NetAppCCJSController* NetAppCCJSController::shareInstance(std::string name){
     if (!NetAppCCJSControllerInstance) {
         NetAppCCJSControllerInstance=new NetAppCCJSController(name);
         NetAppCCJSControllerInstance->bind(CLASS_NAME(NetAppCCJSControllerInstance));
+        NetAppCCJSControllerInstance->inite();
     }
     return NetAppCCJSControllerInstance;
+}
+
+void NetAppCCJSController::NewConnection(GNPacket gp){
+    printf("被通知\n");
+    
+//    pthread_mutex_lock(&playInfoMux);
+//    std::string tempa=GUtils::itos(gp.origin);
+//    playInfoDoc.AddMember(tempa.c_str(), gp.data.c_str(), playInfoDoc.GetAllocator());
+//    pthread_mutex_unlock(&playInfoMux);
+    
+    playerList.insert(std::make_pair(gp.origin, gp.data));
+    
+    std::map<int,std::string>::iterator iter;
+    for (iter=playerList.begin(); iter!=playerList.end(); ++iter) {
+        std::cout<<"origin:"<<iter->first<<" name:"<<iter->second<<std::endl;
+    }
+    
+    msgList.push_back("a player join the room!!");
+    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+}
+
+void NetAppCCJSController::Update(GNPacket gp){
+    msgList.push_back(gp.data);
+    
+//    pthread_mutex_lock(&dataListMux);
+//    dataListVal.PushBack(gp.data.c_str(), dataListDoc.GetAllocator());
+//    pthread_mutex_unlock(&dataListMux);
+    
+    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+}
+
+void NetAppCCJSController::DisConnection(GNPacket gp){
+    printf("被通知\n");
+    playerList.erase(gp.origin);
+    msgList.push_back("a player leave the room!!");
+    GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
+    GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
 }
 
 //启动服务器
@@ -56,16 +96,36 @@ void NetAppCCJSController::disconnect_server(){
 }
 
 std::string NetAppCCJSController::get_server_list(){
-    gns->getTempUdpMap();
+//    std::map<unsigned int, std::string>* tempa=gns->getTempUdpMap();
+//    std::map<unsigned int, std::string>::iterator iter=tempa->begin();
+//    std::map<unsigned int, std::string>::iterator enditer=tempa->end();
+//    pthread_mutex_lock(&serverInfoMux);
+//    for (; iter!=enditer; ++iter) {
+//        std::cout<<"first:"<<iter->first<<std::endl;
+//        std::cout<<"first1:"<<GUtils::itos(iter->first)<<std::endl;
+//        std::cout<<"first2:"<<GUtils::itos(iter->first).c_str()<<std::endl;
+//        
+//        serverInfoDoc.AddMember(GUtils::itos(iter->first).c_str(), iter->second.c_str(), serverInfoDoc.GetAllocator());
+//    }
+//    rapidjson::Writer<rapidjson::StringBuffer> writer(serverInfo);
+//    serverInfoDoc.Accept(writer);
+//    std::string result(serverInfo.GetString());
+//    serverInfo.Clear();
+////    serverInfoDoc.Clear();
+//    pthread_mutex_unlock(&serverInfoMux);
+//    return result;
     return "";
 }
 //获取已经连接到服务器的玩家列表
 std::string NetAppCCJSController::get_player_list(){
-    std::map<unsigned int,std::string> *tempm=gns->getTempUdpMap();
-    std::map<unsigned int,std::string>::iterator iter;
-    for (iter=tempm->begin(); iter!=tempm->end(); ++iter) {
-        std::cout<<"ip:"<<iter->first<<"----name:"<<iter->second<<std::endl;
-    }
+//    pthread_mutex_lock(&playInfoMux);
+//    rapidjson::Writer<rapidjson::StringBuffer> writer(playInfo);
+//    playInfoDoc.Accept(writer);
+//    std::string result(playInfo.GetString());
+//    playInfo.Clear();
+////    playInfoDoc.Clear();
+//    pthread_mutex_unlock(&playInfoMux);
+//    return result;
     return "";
 };
 //发送信息
@@ -80,6 +140,15 @@ bool NetAppCCJSController::send_message(std::string jsonString){
 }
 //获取信息
 std::string NetAppCCJSController::get_message(){
+//    pthread_mutex_lock(&dataListMux);
+//    rapidjson::Writer<rapidjson::StringBuffer> writer(dataList);
+//    dataListVal.Accept(writer);
+//    std::string result(dataList.GetString());
+//    dataList.Clear();
+//    dataListVal.Clear();
+////    dataListDoc.Clear();
+//    pthread_mutex_unlock(&dataListMux);
+//    return result;
     return "";
 }
 

@@ -7,47 +7,56 @@
 #include "GSNotificationPool.h"
 #include <deque>
 
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
+
 class NetAppCCJSController:public GNetApplications{
 private:
     std::deque<std::string> msgList;
     std::map<int,std::string> playerList;
     NetAppCCJSController(std::string a):name(a){
+        pthread_mutex_init(&playInfoMux, NULL);
+        pthread_mutex_init(&serverInfoMux, NULL);
+        pthread_mutex_init(&dataListMux, NULL);
         printf("NetAppCCJSController begin\n");
     }
     ~NetAppCCJSController(){
+        pthread_mutex_destroy(&playInfoMux);
+        pthread_mutex_destroy(&serverInfoMux);
+        pthread_mutex_destroy(&dataListMux);
         printf("NetAppCCJSController end\n");
     }
+    
 public:
     std::string name;
+    rapidjson::StringBuffer playInfo;
+    rapidjson::Document playInfoDoc;
+    pthread_mutex_t playInfoMux;
+    
+    rapidjson::StringBuffer serverInfo;
+    rapidjson::Document serverInfoDoc;
+    pthread_mutex_t serverInfoMux;
+
+    rapidjson::StringBuffer dataList;
+    rapidjson::Document dataListDoc;
+    rapidjson::Value dataListVal;
+    pthread_mutex_t dataListMux;
+    
     static NetAppCCJSController* shareInstance(std::string);
     
-    void NewConnection(GNPacket gp){
-        printf("被通知\n");
-        
-        playerList.insert(std::make_pair(gp.origin, gp.data));
-        
-        std::map<int,std::string>::iterator iter;
-        for (iter=playerList.begin(); iter!=playerList.end(); ++iter) {
-            std::cout<<"origin:"<<iter->first<<" name:"<<iter->second<<std::endl;
-        }
-        
-        msgList.push_back("a player join the room!!");
-        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
+    void inite(){
+        playInfoDoc.SetObject();
+        serverInfoDoc.SetObject();
+        dataListVal.SetObject();
+        dataListDoc.SetObject();
     }
     
-    void Update(GNPacket gp){
-        msgList.push_back(gp.data);
-        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-    }
+    void NewConnection(GNPacket gp);
+    void Update(GNPacket gp);
+    void DisConnection(GNPacket gp);
     
-    void DisConnection(GNPacket gp){
-        printf("被通知\n");
-        playerList.erase(gp.origin);
-        msgList.push_back("a player leave the room!!");
-        GSNotificationPool::shareInstance()->postNotification("updateRoom", NULL);
-        GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
-    }
     //启动服务器
     void start_server(int);
     //暂停服务器

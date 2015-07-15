@@ -12,13 +12,10 @@
 class GNetApplications:public GNetObserver{
 public:
     GNetApplications(){
-        pthread_mutex_init(&mut, NULL);
         gns=GNetServer::shareInstance();
     }
-    ~GNetApplications(){
-        pthread_mutex_destroy(&mut);
-    }
-    pthread_mutex_t mut;
+    ~GNetApplications(){}
+    
     std::string UDID;
     GNetServer* gns;
     bool bind(const char* cn){
