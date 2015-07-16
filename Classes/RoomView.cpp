@@ -65,6 +65,7 @@ bool RoomView::init(){
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateRoom), "updateRoom", NULL);
     CCNotificationCenter::sharedNotificationCenter()->addObserver(this, callfuncO_selector(RoomView::updateMsglist), "updateMsg", NULL);
     
+    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(RoomView::testGetJSON), this, 3, false);
     
     std::string tempna(uname);
     gnapp=NetAppCCJSController::shareInstance(tempna);
@@ -77,6 +78,11 @@ bool RoomView::init(){
     }
     cout<<"view init:"<<maxLinsten<<endl;
     return true;
+}
+
+void RoomView::testGetJSON(){
+    cout<<"playList_JSON:"<<gnapp->get_player_list()<<endl;
+    cout<<"Data_JSON:"<<gnapp->get_message()<<endl;
 }
 
 void RoomView::updateRoom(){

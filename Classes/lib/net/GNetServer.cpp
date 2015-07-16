@@ -104,6 +104,7 @@ void* GNetServer::listenSNetService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localTcpFD;
     fd_set *temptRfdset=&(temp->rfdset);
+    pthread_mutex_t* thsentMut=&(temp->sendMut);
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
     int maxFD=0;
     struct timeval tv;
@@ -138,7 +139,10 @@ void* GNetServer::listenSNetService(void* obj){
                     GNPacket tgcd;
                     tgcd.sysCode=SEND_IP;
                     tgcd.data=GUtils::itos(iter->second);
+                    
+                    pthread_mutex_lock(thsentMut);
                     tempTcps->sendData(tempRFD,tgcd);
+                    pthread_mutex_unlock(thsentMut);
                 }
                 tempRemotaFD->insert(std::make_pair(tempRFD,reAddr));
                 //server send name;
@@ -146,7 +150,9 @@ void* GNetServer::listenSNetService(void* obj){
                 GNPacket msg;
                 msg.sysCode=PLAYER_NAME;
                 msg.data=tempn;
+                pthread_mutex_lock(thsentMut);
                 tempTcps->sendData(tempRFD,msg);
+                pthread_mutex_unlock(thsentMut);
             }
         }
         iter=tempRemotaFD->begin();
@@ -441,6 +447,7 @@ void* GNetServer::listenCNetService(void* obj){
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localTcpFD;
     fd_set *temptRfdset=&(temp->rfdset);
+    pthread_mutex_t* thsentMut=&(temp->sendMut);
     std::map<int,unsigned int> *tempRemotaFD=&(temp->remoteFDIP);
     std::map<int,int> *tempFdStatus=&(temp->fdStatusMap);
     int maxFD=0;
@@ -479,7 +486,9 @@ void* GNetServer::listenCNetService(void* obj){
                 GNPacket rmsg;
                 rmsg.sysCode=PLAYER_NAME;
                 rmsg.data=tempn;
+                pthread_mutex_lock(thsentMut);
                 tempTcps->sendData(tempRFD,rmsg);
+                pthread_mutex_unlock(thsentMut);
             }
         }
         iter=tempRemotaFD->begin();
@@ -510,7 +519,9 @@ void* GNetServer::listenCNetService(void* obj){
                         GNPacket rmsg;
                         rmsg.sysCode=REPLAYER_NAME;
                         rmsg.data=tempn;
+                        pthread_mutex_lock(thsentMut);
                         tempTcps->sendData(iter->first,rmsg);
+                        pthread_mutex_unlock(thsentMut);
                         //系统通知有新连接
                         msg.sysCode=NEWCONNECTION;
                         temp->notificationSystemData(msg);
@@ -651,9 +662,9 @@ void* GNetServer::listenCNetService(void* obj){
 //}
 
 long GNetServer::sendNetPack(int fd,GNPacket np){
-//    pthread_mutex_unlock(&netMutex);
+//    pthread_mutex_lock(&sendMut);
     return tcps->sendData(fd,np);
-//    pthread_mutex_unlock(&netMutex);
+//    pthread_mutex_unlock(&sendMut);
 }
 long GNetServer::sendNetPack(GNPacket np){
     long i=0;

@@ -12,6 +12,8 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 
+using namespace rapidjson;
+
 class NetAppCCJSController:public GNetApplications{
 private:
     std::deque<std::string> msgList;
@@ -31,26 +33,24 @@ private:
     
 public:
     std::string name;
-    rapidjson::StringBuffer playInfo;
-    rapidjson::Document playInfoDoc;
+    StringBuffer playInfo;
+    Document playInfoDoc;
     pthread_mutex_t playInfoMux;
     
-    rapidjson::StringBuffer serverInfo;
-    rapidjson::Document serverInfoDoc;
+    StringBuffer serverInfo;
+    Document serverInfoDoc;
     pthread_mutex_t serverInfoMux;
 
-    rapidjson::StringBuffer dataList;
-    rapidjson::Document dataListDoc;
-    rapidjson::Value dataListVal;
+    StringBuffer dataList;
+    Document dataListDoc;
     pthread_mutex_t dataListMux;
     
     static NetAppCCJSController* shareInstance(std::string);
     
     void inite(){
-        playInfoDoc.SetObject();
-        serverInfoDoc.SetObject();
-        dataListVal.SetObject();
-        dataListDoc.SetObject();
+        playInfoDoc.SetArray();
+        serverInfoDoc.SetArray();
+        dataListDoc.SetArray();
     }
     
     void NewConnection(GNPacket gp);
@@ -83,11 +83,15 @@ public:
     std::string get_server_list();
     //获取已经连接到服务器的玩家列表
     std::string get_player_list();
-    //发送信息
+    //群发信息
     bool send_message(std::string jsonString);
+    //发送信息
+    bool send_message(int tag,std::string jsonString);
+    
     //获取信息
     std::string get_message();
     
+ /////////////////////////////////测试用方法///////////////////////////////////////////////
     //测试获取服务器（未序列化）
     std::map<unsigned int, std::string>* getServerList();
     //测试获取玩家列表（未序列化）
@@ -98,5 +102,6 @@ public:
     void sendMsg(int tag);
     //测试获取信息列表（未序列化,直接发送数据包）
     void sendMsg();
+//////////////////////////////////测试用方法//////////////////////////////////////////////
 };
 

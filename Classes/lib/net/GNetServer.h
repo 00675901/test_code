@@ -46,7 +46,9 @@ private:
 //    int serverStatus;
     pthread_mutex_t udpMapMutex;
     pthread_mutex_t remoteFDIPMutex;
-    pthread_mutex_t netMutex;
+    
+    pthread_mutex_t sendMut;
+    pthread_mutex_t recvMut;
     
     int maxLinsten;
     int localTcpFD;
@@ -75,14 +77,21 @@ private:
         serverStatus=SERVER_STOP;
         pthread_mutex_init(&udpMapMutex, NULL);
         pthread_mutex_init(&remoteFDIPMutex, NULL);
-        pthread_mutex_init(&netMutex, NULL);
+        
+        pthread_mutex_init(&sendMut, NULL);
+        pthread_mutex_init(&recvMut, NULL); //测试中...
+        
+
         printf("GNetServer BEGIN\n");
     }
     ~GNetServer(void){
         obmap.clear();
         pthread_mutex_destroy(&udpMapMutex);
         pthread_mutex_destroy(&remoteFDIPMutex);
-        pthread_mutex_destroy(&netMutex);
+        
+        pthread_mutex_destroy(&sendMut);
+        pthread_mutex_destroy(&recvMut);//测试中...
+        
         printf("GNetServer END\n");
     }
 public:

@@ -53,6 +53,8 @@ public:
     
     void SendMsgToTag(CCControlButton*);
     void SendMsgToAll();
+    
+    void testGetJSON();
 };
 
 #endif /* defined(__TestCocos2dx__RoomView__) */

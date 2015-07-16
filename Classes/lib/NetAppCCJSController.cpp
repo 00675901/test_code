@@ -20,10 +20,14 @@ NetAppCCJSController* NetAppCCJSController::shareInstance(std::string name){
 void NetAppCCJSController::NewConnection(GNPacket gp){
     printf("被通知\n");
     
-//    pthread_mutex_lock(&playInfoMux);
-//    std::string tempa=GUtils::itos(gp.origin);
-//    playInfoDoc.AddMember(tempa.c_str(), gp.data.c_str(), playInfoDoc.GetAllocator());
-//    pthread_mutex_unlock(&playInfoMux);
+    pthread_mutex_lock(&playInfoMux);
+    Document::AllocatorType& allocator=playInfoDoc.GetAllocator();
+    Value templ(kObjectType);
+    Value key(gp.data.c_str());
+    Value val(gp.origin);
+    templ.AddMember(key, val, allocator);
+    playInfoDoc.PushBack(templ, allocator);
+    pthread_mutex_unlock(&playInfoMux);
     
     playerList.insert(std::make_pair(gp.origin, gp.data));
     
@@ -40,9 +44,10 @@ void NetAppCCJSController::NewConnection(GNPacket gp){
 void NetAppCCJSController::Update(GNPacket gp){
     msgList.push_back(gp.data);
     
-//    pthread_mutex_lock(&dataListMux);
-//    dataListVal.PushBack(gp.data.c_str(), dataListDoc.GetAllocator());
-//    pthread_mutex_unlock(&dataListMux);
+    pthread_mutex_lock(&dataListMux);
+    Value val(gp.data.c_str());
+    dataListDoc.PushBack(val, dataListDoc.GetAllocator());
+    pthread_mutex_unlock(&dataListMux);
     
     GSNotificationPool::shareInstance()->postNotification("updateMsg", NULL);
 }
@@ -96,39 +101,37 @@ void NetAppCCJSController::disconnect_server(){
 }
 
 std::string NetAppCCJSController::get_server_list(){
-//    std::map<unsigned int, std::string>* tempa=gns->getTempUdpMap();
-//    std::map<unsigned int, std::string>::iterator iter=tempa->begin();
-//    std::map<unsigned int, std::string>::iterator enditer=tempa->end();
-//    pthread_mutex_lock(&serverInfoMux);
-//    for (; iter!=enditer; ++iter) {
-//        std::cout<<"first:"<<iter->first<<std::endl;
-//        std::cout<<"first1:"<<GUtils::itos(iter->first)<<std::endl;
-//        std::cout<<"first2:"<<GUtils::itos(iter->first).c_str()<<std::endl;
-//        
-//        serverInfoDoc.AddMember(GUtils::itos(iter->first).c_str(), iter->second.c_str(), serverInfoDoc.GetAllocator());
-//    }
-//    rapidjson::Writer<rapidjson::StringBuffer> writer(serverInfo);
-//    serverInfoDoc.Accept(writer);
-//    std::string result(serverInfo.GetString());
-//    serverInfo.Clear();
-////    serverInfoDoc.Clear();
-//    pthread_mutex_unlock(&serverInfoMux);
-//    return result;
-    return "";
+    std::map<unsigned int, std::string>* tempa=gns->getTempUdpMap();
+    std::map<unsigned int, std::string>::iterator iter=tempa->begin();
+    std::map<unsigned int, std::string>::iterator enditer=tempa->end();
+    pthread_mutex_lock(&serverInfoMux);
+    for (;iter!=enditer; ++iter) {
+        Value tempa(kObjectType);
+        Value key(iter->second.c_str(),serverInfoDoc.GetAllocator());
+        Value val(iter->first);
+        tempa.AddMember(key, val, serverInfoDoc.GetAllocator());
+        serverInfoDoc.PushBack(tempa, serverInfoDoc.GetAllocator());
+    }
+    rapidjson::Writer<rapidjson::StringBuffer> writer(serverInfo);
+    serverInfoDoc.Accept(writer);
+    std::string result(serverInfo.GetString());
+    serverInfo.Clear();
+    serverInfoDoc.Clear();
+    pthread_mutex_unlock(&serverInfoMux);
+    return result;
 }
 //获取已经连接到服务器的玩家列表
 std::string NetAppCCJSController::get_player_list(){
-//    pthread_mutex_lock(&playInfoMux);
-//    rapidjson::Writer<rapidjson::StringBuffer> writer(playInfo);
-//    playInfoDoc.Accept(writer);
-//    std::string result(playInfo.GetString());
-//    playInfo.Clear();
-////    playInfoDoc.Clear();
-//    pthread_mutex_unlock(&playInfoMux);
-//    return result;
-    return "";
+    pthread_mutex_lock(&playInfoMux);
+    rapidjson::Writer<rapidjson::StringBuffer> writer(playInfo);
+    playInfoDoc.Accept(writer);
+    std::string result(playInfo.GetString());
+    playInfo.Clear();
+    playInfoDoc.Clear();
+    pthread_mutex_unlock(&playInfoMux);
+    return result;
 };
-//发送信息
+//群发信息
 bool NetAppCCJSController::send_message(std::string jsonString){
     GNPacket msg;
     msg.UUID=this->UDID;
@@ -138,18 +141,27 @@ bool NetAppCCJSController::send_message(std::string jsonString){
     }
     return false;
 }
+//发送信息
+bool NetAppCCJSController::send_message(int tag, std::string jsonString){
+    GNPacket msg;
+    msg.UUID=this->UDID;
+    msg.data=jsonString;
+    if(gns->sendNetPack(tag,msg)>0){
+        return true;
+    }
+    return false;
+}
+
 //获取信息
 std::string NetAppCCJSController::get_message(){
-//    pthread_mutex_lock(&dataListMux);
-//    rapidjson::Writer<rapidjson::StringBuffer> writer(dataList);
-//    dataListVal.Accept(writer);
-//    std::string result(dataList.GetString());
-//    dataList.Clear();
-//    dataListVal.Clear();
-////    dataListDoc.Clear();
-//    pthread_mutex_unlock(&dataListMux);
-//    return result;
-    return "";
+    pthread_mutex_lock(&dataListMux);
+    rapidjson::Writer<rapidjson::StringBuffer> writer(dataList);
+    dataListDoc.Accept(writer);
+    std::string result(dataList.GetString());
+    dataList.Clear();
+    dataListDoc.Clear();
+    pthread_mutex_unlock(&dataListMux);
+    return result;
 }
 
 std::map<unsigned int, std::string>* NetAppCCJSController::getServerList(){
