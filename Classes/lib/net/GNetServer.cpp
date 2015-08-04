@@ -27,10 +27,18 @@ std::map<unsigned int, std::string>* GNetServer::getTempUdpMap(){
     return &udpMap;
 }
 
+void GNetServer::threadhanlder(int sig){
+    printf("signal:%d\n",sig);
+//    pthread_exit(0);
+}
+
 //Send Room Service function
 void GNetServer::startResponseService(int maxl,const char* uname){
     if (SERVER_STOP==serverStatus) {
         serverStatus=SERVER_S_RUN;
+        
+
+        
         udps=new UdpServer(52156,52157,false);
         if (udps->iniServer()) {
             pthread_create(&tidRoomService,NULL,GNetServer::responseService,this);
@@ -59,47 +67,65 @@ void GNetServer::resumeResponseService(){
 }
 void GNetServer::stopResponseService(){
     if(SERVER_S_RUN==serverStatus){
-        pthread_cancel(tidRoomService);
-        pthread_cancel(tidListenSConnectService);
+//        pthread_cancel(tidRoomService);
+//        pthread_cancel(tidListenSConnectService);
 //        pthread_cancel(tidListenSRemotaService);
-        std::map<int,unsigned int>::iterator iter;
-        for (iter=remoteFDIP.begin(); iter!=remoteFDIP.end(); ++iter) {
-            close(iter->first);
+        int tempaa=pthread_kill(tidRoomService,SIGUSR1);
+        if (tempaa==ESRCH) {
+            printf("不存在\n");
+        }else if(tempaa==EINVAL){
+            printf("信号不合法\n");
+        }else{
+            printf("信号:%d\n",tempaa);
         }
-        remoteFDIP.clear();
-        close(localTcpFD);
-        delete tcps;
-        delete udps;
+//        std::map<int,unsigned int>::iterator iter;
+//        for (iter=remoteFDIP.begin(); iter!=remoteFDIP.end(); ++iter) {
+//            close(iter->first);
+//        }
+//        remoteFDIP.clear();
+//        close(localTcpFD);
+//        delete tcps;
+//        delete udps;
         serverStatus=SERVER_STOP;
     }
 }
 void* GNetServer::responseService(void* obj){
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    GNetServer *tempgr=(GNetServer *)obj;
-    UdpServer *temp=tempgr->udps;
-    std::string tis=tempgr->localName;
-    tis.append("的房间");
+//    sigset_t mask;
+//    sigfillset(&mask);
+//    pthread_sigmask(SIG_BLOCK, &mask, NULL);
+    struct sigaction actions;
+    memset(&actions, 0, sizeof(actions));
+    sigemptyset(&actions.sa_mask);
+    actions.sa_flags=0;
+    actions.sa_handler=threadhanlder;
+    sigaction(SIGUSR1, &actions, NULL);
+    
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    GNetServer *tempgr=(GNetServer *)obj;
+//    UdpServer *temp=tempgr->udps;
+//    std::string tis=tempgr->localName;
+//    tis.append("的房间");
     while (true) {
-        pthread_testcancel();
-        long res=0;
-        char tbuffer[8];
-        sockaddr_in remoteRecAddr;
-        res=temp->recvMsg(tbuffer,8,&remoteRecAddr);
-        if (res>0) {
-            const char* sa=inet_ntoa(remoteRecAddr.sin_addr);
-            std::string temps=tbuffer;
-            const char* s=tis.c_str();
-            temp->sendMsg(sa,s);
-        }
+////        pthread_testcancel();
+//        long res=0;
+//        char tbuffer[8];
+//        sockaddr_in remoteRecAddr;
+//        res=temp->recvMsg(tbuffer,8,&remoteRecAddr);
+//        if (res>0) {
+//            const char* sa=inet_ntoa(remoteRecAddr.sin_addr);
+//            std::string temps=tbuffer;
+//            const char* s=tis.c_str();
+//            temp->sendMsg(sa,s);
+//        }
     }
     return NULL;
 }
 
 void* GNetServer::listenSNetService(void* obj){
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-    pthread_testcancel();
+//    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+//    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+//    pthread_testcancel();
     GNetServer *temp=(GNetServer *)obj;
     TcpServer *tempTcps=temp->tcps;
     int tempLocalFD=temp->localTcpFD;
@@ -109,7 +135,7 @@ void* GNetServer::listenSNetService(void* obj){
     int maxFD=0;
     struct timeval tv;
     while (true) {
-        pthread_testcancel();
+//        pthread_testcancel();
         FD_ZERO(temptRfdset);
         FD_SET(tempLocalFD, temptRfdset);
         maxFD=tempLocalFD;

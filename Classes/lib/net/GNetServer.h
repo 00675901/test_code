@@ -12,7 +12,8 @@
 #include <map>
 #include "TcpServer.h"
 #include "UdpServer.h"
-#include "pthread.h"
+#include <pthread.h>
+#include <signal.h>
 #include "ByteBuffer.h"
 #include "GNetObserver.h"
 
@@ -95,6 +96,8 @@ private:
         printf("GNetServer END\n");
     }
 public:
+    static void threadhanlder(int sig);
+    
     static GNetServer* shareInstance();
     //netService secretary
     bool addObs(std::string name ,GNetObserver* gob){
@@ -147,8 +150,8 @@ public:
     void stopResponseService();
     static void* responseService(void* obj);
     //监听连接\接收封包线程
-    static void* listenSConnectServer(void* obj);
-    static void* listenSRemotaServer(void* obj);
+//    static void* listenSConnectServer(void* obj);
+//    static void* listenSRemotaServer(void* obj);
     
     static void* listenSNetService(void* obj);
     
@@ -164,8 +167,8 @@ public:
     void connectService(int addr);
     void disconnectService();
     //监听tcp通信,接收封包
-    static void* listenCConnectServer(void* obj);
-    static void* listenCRemotaServer(void* obj);
+//    static void* listenCConnectServer(void* obj);
+//    static void* listenCRemotaServer(void* obj);
     
     static void* listenCNetService(void* obj);
     
