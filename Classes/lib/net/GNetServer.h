@@ -81,7 +81,6 @@ private:
         
         pthread_mutex_init(&sendMut, NULL);
         pthread_mutex_init(&recvMut, NULL); //测试中...
-        
 
         printf("GNetServer BEGIN\n");
     }
@@ -149,12 +148,8 @@ public:
     void resumeResponseService();
     void stopResponseService();
     static void* responseService(void* obj);
-    //监听连接\接收封包线程
-//    static void* listenSConnectServer(void* obj);
-//    static void* listenSRemotaServer(void* obj);
     
     static void* listenSNetService(void* obj);
-    
     
     //UDP search response
     void startSearchService(const char* uname);
@@ -166,9 +161,6 @@ public:
     //TCP connect
     void connectService(int addr);
     void disconnectService();
-    //监听tcp通信,接收封包
-//    static void* listenCConnectServer(void* obj);
-//    static void* listenCRemotaServer(void* obj);
     
     static void* listenCNetService(void* obj);
     
